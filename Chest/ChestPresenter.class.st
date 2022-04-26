@@ -35,48 +35,6 @@ ChestPresenter class >> debugWorldMenuOn: aBuilder [
 		icon: (Smalltalk ui icons iconNamed: #group).
 ]
 
-{ #category : #layout }
-ChestPresenter class >> defaultLayout [
-	| labelHeight topThirdHeight toolbarHeight helpButtonSize bottomRibbonHeight |
-	labelHeight := 20.
-	topThirdHeight := 200. "Height of playground and other elements on the same horizontal line"
-	toolbarHeight := 35.
-	helpButtonSize := 35.
-	bottomRibbonHeight := 35.
-    ^ SpBoxLayout newVertical
-			add: (SpPanedLayout newHorizontal 
-				add: (SpPanedLayout newHorizontal
-					add: (SpBoxLayout newVertical
-						add: 'Chests' withConstraints: [:cstr | cstr height: labelHeight];
-						add: #chestsTable;
-						add: #chestsTableToolbar withConstraints: [:cstr| cstr height: toolbarHeight];
-						yourself
-					);
-					add: (SpBoxLayout newVertical
-						add: 'Chest Contents' withConstraints: [:cstr | cstr height: labelHeight];
-						add: #chestContentsTable;
-						add: #chestContentsTableToolbar withConstraints: [:cstr| cstr height: toolbarHeight];
-						yourself
-					);
-					yourself
-				);
-				add: #playground;
-				yourself
-			) withConstraints: [:cstr | cstr height: topThirdHeight];
-			add: #inspector;
-			add: (SpBoxLayout newHorizontal
-				add: 'Use Chests to store and access objects from anywhere';
-				add: #helpButton withConstraints: [:c | c height: helpButtonSize; width: helpButtonSize];
-				yourself
-			) withConstraints: [:c | c height: bottomRibbonHeight];
-			yourself
-]
-
-{ #category : #specs }
-ChestPresenter class >> initialExtent [
-	^ 550@500
-]
-
 { #category : #examples }
 ChestPresenter class >> open [
 
@@ -84,13 +42,51 @@ ChestPresenter class >> open [
 	| chestPresenter |
 	chestPresenter := self newApplication: StPharoApplication new.
 	chestPresenter open.
-	chestPresenter window extent: self initialExtent.
+
 	^ chestPresenter
 ]
 
-{ #category : #specs }
-ChestPresenter class >> title [
-	^ 'Chests'
+{ #category : #layout }
+ChestPresenter >> defaultLayout [
+
+	| labelHeight topThirdHeight toolbarHeight helpButtonSize bottomRibbonHeight |
+	labelHeight := 20.
+	topThirdHeight := 300.
+	toolbarHeight := 35.
+	helpButtonSize := 35.
+	bottomRibbonHeight := 35.
+	^ SpBoxLayout newVertical
+		  add: (SpPanedLayout newHorizontal
+				   add: (SpPanedLayout newHorizontal
+						    add: (SpBoxLayout newVertical
+								     add:
+									     (self
+										      headerLayoutWithTitle: 'Chests'
+										      withToolbar: #chestsTableToolbar)
+								     withConstraints: [ :cstr | cstr height: toolbarHeight ];
+								     add: #chestsTable;
+								     yourself);
+						    add: (SpBoxLayout newVertical
+								     add: (self
+										      headerLayoutWithTitle: 'Chest Contents'
+										      withToolbar: #chestContentsTableToolbar)
+								     withConstraints: [ :cstr | cstr height: toolbarHeight ];
+								     add: #chestContentsTable;
+								     yourself);
+						    yourself);
+				   add: #playground;
+				   yourself)
+		  withConstraints: [ :cstr | cstr height: topThirdHeight ];
+		  add: #inspector;
+		  add: (SpBoxLayout newHorizontal
+				   add: 'Use Chests to store and access objects from anywhere';
+				   add: #helpButton withConstraints: [ :c | 
+					   c
+						   height: helpButtonSize;
+						   width: helpButtonSize ];
+				   yourself)
+		  withConstraints: [ :c | c height: bottomRibbonHeight ];
+		  yourself
 ]
 
 { #category : #initialization }
@@ -112,6 +108,15 @@ ChestPresenter >> event_contentOfChest: aChest updatedTo: newContents [
 { #category : #initialization }
 ChestPresenter >> event_newChest: aChest [
 	self updateChestsTable
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
+
+	^ SpBoxLayout newHorizontal
+		  add: aString expand: false;
+		  add: aToolbar expand: false;
+		  yourself
 ]
 
 { #category : #updating }
@@ -162,6 +167,11 @@ ChestPresenter >> iconManager [
 	^ Smalltalk ui icons
 ]
 
+{ #category : #specs }
+ChestPresenter >> initialExtent [
+	^ 800@600
+]
+
 { #category : #initialization }
 ChestPresenter >> initialize [
 	super initialize.
@@ -170,7 +180,7 @@ ChestPresenter >> initialize [
 ]
 
 { #category : #initialization }
-ChestPresenter >> initializeWidgets [
+ChestPresenter >> initializePresenters [
 	playground := StPlayground new.
 	chestsTable := self makeChestsTable.
 	chestsTableToolbar := self makeChestsTableToolbar.
@@ -178,7 +188,9 @@ ChestPresenter >> initializeWidgets [
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 	inspector := StInspector on: (StInspectorModel on: nil).
 	helpButton := self makeHelpButton.
-	chestsTable selectIndex: 1
+	chestsTable selectIndex: 1.
+	
+	self layout: self defaultLayout 
 
 	"objectTable := self makeObjectTable.
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
@@ -191,6 +203,14 @@ ChestPresenter >> initializeWidgets [
 	leftSpacerForHelpTitleLabel := SpSpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpSpacerPresenter new.
 	helpText := self newText enabled: false; text: self helpText."
+]
+
+{ #category : #specs }
+ChestPresenter >> initializeWindow: aWindowPresenter [
+
+	aWindowPresenter
+		title: self title;
+		initialExtent: self initialExtent
 ]
 
 { #category : #accessing }
@@ -255,6 +275,7 @@ ChestPresenter >> makeChestContentsTableToolbar [
 
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
+
 	^ self newTable
 		  addColumn:
 			  ((SpStringTableColumn
@@ -269,7 +290,9 @@ ChestPresenter >> makeChestsTable [
 			  self updateChestContentTableForChest: selection selectedItem.
 			  chestContentsTable items ifNotEmpty: [ 
 					  chestContentsTable selectIndex: 1 ] ];
-		  sortingBlock: [ :chest1 :chest2 | chest1 id < chest2 id ]
+		  sortingBlock: [ :chest1 :chest2 | chest1 id < chest2 id ];
+		  beResizable;
+		  yourself
 ]
 
 { #category : #initialization }
@@ -318,6 +341,11 @@ ChestPresenter >> makeHelpButton [
 { #category : #'as yet unclassified' }
 ChestPresenter >> selectedChest [
 	^ chestsTable selection selectedItem
+]
+
+{ #category : #specs }
+ChestPresenter >> title [
+	^ 'Chests'
 ]
 
 { #category : #updating }
