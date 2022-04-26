@@ -35,8 +35,8 @@ ChestPresenter class >> debugWorldMenuOn: aBuilder [
 		icon: (Smalltalk ui icons iconNamed: #group).
 ]
 
-{ #category : #specs }
-ChestPresenter class >> defaultSpec [
+{ #category : #layout }
+ChestPresenter class >> defaultLayout [
 	| labelHeight topThirdHeight toolbarHeight helpButtonSize bottomRibbonHeight |
 	labelHeight := 20.
 	topThirdHeight := 200. "Height of playground and other elements on the same horizontal line"
@@ -79,11 +79,13 @@ ChestPresenter class >> initialExtent [
 
 { #category : #examples }
 ChestPresenter class >> open [
+
 	<example>
-	| a |
-	a := self new openWithSpec.
-	a window extent: self initialExtent.
-	^ a
+	| chestPresenter |
+	chestPresenter := self newApplication: StPharoApplication new.
+	chestPresenter open.
+	chestPresenter window extent: self initialExtent.
+	^ chestPresenter
 ]
 
 { #category : #specs }
@@ -170,7 +172,6 @@ ChestPresenter >> initialize [
 { #category : #initialization }
 ChestPresenter >> initializeWidgets [
 	playground := StPlayground new.
-	playground text autoAccept: true.
 	chestsTable := self makeChestsTable.
 	chestsTableToolbar := self makeChestsTableToolbar.
 	chestContentsTable := self makeChestContentsTable.
@@ -219,17 +220,17 @@ ChestPresenter >> makeChestContentsTable [
 				   title: 'Object'
 				   evaluated: [ :obj | obj asString ]);
 		  items: OrderedCollection new;
-		  whenSelectionChangedDo: [ :selection | "self insertChestAt: item selectedIndex inPlayground: playground."
+		  whenSelectionChangedDo: [ :selection |
 			  inspector model inspectedObject: selection selectedItem.
-			  inspector refresh.
-			  inspector initialize "Necessary hack for the inspector to actually refresh, until its #refresh method actually works" ]
+			  inspector updateList.
+]
 ]
 
 { #category : #initialization }
 ChestPresenter >> makeChestContentsTableToolbar [
 	| toolbar |
-	toolbar := self newToolBar.
-	toolbar addItem: (SpToolBarButton new
+	toolbar := self newToolbar.
+	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
@@ -242,7 +243,7 @@ ChestPresenter >> makeChestContentsTableToolbar [
 									 ifFalse: [ 
 										 chestContentsTable selectIndex:
 												 chestContentsTable selectedIndex - 1 ] ] ] ]).
-	toolbar addItem: (SpToolBarButton new
+	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ 
@@ -274,8 +275,8 @@ ChestPresenter >> makeChestsTable [
 { #category : #initialization }
 ChestPresenter >> makeChestsTableToolbar [
 	| toolbar |
-	toolbar := self newToolBar.
-	toolbar addItem: (SpToolBarButton new
+	toolbar := self newToolbar.
+	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
@@ -284,7 +285,7 @@ ChestPresenter >> makeChestsTableToolbar [
 								 (chestsTable itemAt: index) remove.
 								 chestsTable selectIndex:
 										 (1 max: chestsTable selectedIndex - 1) ] ] ]).
-	toolbar addItem: (SpToolBarButton new
+	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ chestsTable items copy do: [ :chest | chest remove ] ]).
