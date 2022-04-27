@@ -23,27 +23,16 @@ Class {
 	#instVars : [
 		'contents',
 		'name',
-		'id',
 		'lastUsedNumber'
 	],
 	#classVars : [
-		'IDToChestInstance',
-		'defaultInstance',
-		'nextAvailableID',
-		'subscribers'
+		'ChestDictionary',
+		'DefaultInstance',
+		'NextAvailableID',
+		'Subscribers'
 	],
 	#category : #Chest
 }
-
-{ #category : #accessing }
-Chest class >> IDToChestInstance [
-	^ IDToChestInstance
-]
-
-{ #category : #private }
-Chest class >> IDToChestInstance: aValue [
-	IDToChestInstance := aValue
-]
 
 { #category : #api }
 Chest class >> add: anObject [
@@ -52,7 +41,7 @@ Chest class >> add: anObject [
 
 { #category : #accessing }
 Chest class >> allChests [
-	^ self IDToChestInstance values
+	^ self chestDictionary values
 ]
 
 { #category : #api }
@@ -68,12 +57,17 @@ Chest class >> at: aKey put: anObject [
 { #category : #accessing }
 Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 
-	(self IDToChestInstance includesKey: aKey) ifTrue: [ 
+	(self chestDictionary includesKey: aKey) ifTrue: [ 
 		DuplicatedVariableError signal:
 			'You cannot create a chest named ' , aKey
 			, ' as it already exists' ].
 		aChest name: aKey.
-		self IDToChestInstance at: aKey put: aChest.
+		self chestDictionary at: aKey put: aChest.
+]
+
+{ #category : #accessing }
+Chest class >> chestDictionary [
+	^ ChestDictionary
 ]
 
 { #category : #api }
@@ -83,24 +77,24 @@ Chest class >> contents [
 
 { #category : #accessing }
 Chest class >> defaultInstance [
-	^ defaultInstance
+	^ DefaultInstance
 	
 ]
 
 { #category : #private }
 Chest class >> getNewID [
 	| newId |
-	newId := nextAvailableID.
-	nextAvailableID := nextAvailableID + 1.
+	newId := NextAvailableID.
+	NextAvailableID := NextAvailableID + 1.
 	^ newId
 ]
 
 { #category : #'class initialization' }
 Chest class >> initialize [
-	subscribers := OrderedCollection new.
-	IDToChestInstance := Dictionary new.
-	nextAvailableID := 1.
-	defaultInstance := DefaultChest new.
+	Subscribers := OrderedCollection new.
+	ChestDictionary := Dictionary new.
+	NextAvailableID := 1.
+	DefaultInstance := DefaultChest new.
 ]
 
 { #category : #'class initialization' }
@@ -108,7 +102,7 @@ Chest class >> named: aString [
 
 	"Returns the Chest whose name is aString"
 
-	^ self IDToChestInstance at: aString
+	^ self chestDictionary at: aString
 ]
 
 { #category : #api }
@@ -129,17 +123,17 @@ Chest class >> newNamed: aString [
 
 { #category : #'event system' }
 Chest class >> notifyChestRemoved: aChest [
-	subscribers do: [ :subscriber | subscriber event_chestRemoved: aChest]
+	Subscribers do: [ :subscriber | subscriber eventChestRemoved: aChest]
 ]
 
 { #category : #'event system' }
 Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
-	subscribers do: [ :subscriber | subscriber event_contentOfChest: aChest updatedTo: contents]
+	Subscribers do: [ :subscriber | subscriber eventContentOfChest: aChest updatedTo: contents]
 ]
 
 { #category : #'event system' }
 Chest class >> notifyNewChest: aChest [
-	subscribers do: [ :subscriber | subscriber event_newChest: aChest ].
+	Subscribers do: [ :subscriber | subscriber eventNewChest: aChest ].
 ]
 
 { #category : #api }
@@ -149,7 +143,7 @@ Chest class >> remove: anObject [
 
 { #category : #removing }
 Chest class >> removeChest: aChest [
-	self IDToChestInstance removeKey: aChest name.
+	self chestDictionary removeKey: aChest name.
 	self notifyChestRemoved: aChest.
 ]
 
@@ -161,7 +155,7 @@ Chest class >> removeObjectNamed: aString [
 { #category : #'event system' }
 Chest class >> subscribeToUpdates: subscriber [
 	"subscriber will be sent the #event_newChest: and #event_contentOfChest:updatedTo: and #event_chestRemoved: messages when these events happen"
-	subscribers add: subscriber
+	Subscribers add: subscriber
 ]
 
 { #category : #api }

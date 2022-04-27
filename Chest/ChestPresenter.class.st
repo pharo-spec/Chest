@@ -90,12 +90,12 @@ ChestPresenter >> defaultLayout [
 ]
 
 { #category : #initialization }
-ChestPresenter >> event_chestRemoved: aChest [
+ChestPresenter >> eventChestRemoved: aChest [
 	self updateChestsTable
 ]
 
 { #category : #initialization }
-ChestPresenter >> event_contentOfChest: aChest updatedTo: newContents [
+ChestPresenter >> eventContentOfChest: aChest updatedTo: newContents [
 	| currentlySelectedChest |
 	"currentlySelectedChest := chestsTable selectedItems
 		                          ifEmpty: [ ^ self ]
@@ -107,7 +107,7 @@ ChestPresenter >> event_contentOfChest: aChest updatedTo: newContents [
 ]
 
 { #category : #initialization }
-ChestPresenter >> event_newChest: aChest [
+ChestPresenter >> eventNewChest: aChest [
 	self updateChestsTable
 ]
 

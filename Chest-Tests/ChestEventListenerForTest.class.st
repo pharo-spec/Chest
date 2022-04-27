@@ -24,13 +24,13 @@ ChestEventListenerForTest >> contentOfChestUpdatedReceived [
 ]
 
 { #category : #initialization }
-ChestEventListenerForTest >> event_chestRemoved: aChest [
+ChestEventListenerForTest >> eventChestRemoved: aChest [
 	chestRemovedReceived := true.
 	removedChest := aChest
 ]
 
 { #category : #initialization }
-ChestEventListenerForTest >> event_contentOfChest: aChest updatedTo: contents [
+ChestEventListenerForTest >> eventContentOfChest: aChest updatedTo: contents [
 	contentOfChestUpdatedReceived := true.
 	updatedChest := aChest.
 	newContentsOfUpdatedChest := contents
@@ -38,7 +38,7 @@ ChestEventListenerForTest >> event_contentOfChest: aChest updatedTo: contents [
 ]
 
 { #category : #initialization }
-ChestEventListenerForTest >> event_newChest: aChest [
+ChestEventListenerForTest >> eventNewChest: aChest [
 	newChestReceived := true.
 	newChest := aChest
 ]
