@@ -23,7 +23,8 @@ Class {
 	#instVars : [
 		'contents',
 		'name',
-		'id'
+		'id',
+		'lastUsedNumber'
 	],
 	#classVars : [
 		'IDToChestInstance',
@@ -60,6 +61,22 @@ Chest class >> at: anIndex [
 ]
 
 { #category : #api }
+Chest class >> at: aKey put: anObject [
+	^ self defaultInstance at: aKey put: anObject
+]
+
+{ #category : #accessing }
+Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
+
+	(self IDToChestInstance includesKey: aKey) ifTrue: [ 
+		DuplicatedVariableError signal:
+			'You cannot create a chest named ' , aKey
+			, ' as it already exists' ].
+		aChest name: aKey.
+		self IDToChestInstance at: aKey put: aChest.
+]
+
+{ #category : #api }
 Chest class >> contents [
 	^ self defaultInstance contents
 ]
@@ -83,23 +100,31 @@ Chest class >> initialize [
 	subscribers := OrderedCollection new.
 	IDToChestInstance := Dictionary new.
 	nextAvailableID := 1.
-"	defaultInstance := self newNamed: 'Default'."
-	defaultInstance := DefaultChest newNamed: 'Default'
+	defaultInstance := DefaultChest new.
+]
+
+{ #category : #'class initialization' }
+Chest class >> named: aString [
+
+	"Returns the Chest whose name is aString"
+
+	^ self IDToChestInstance at: aString
 ]
 
 { #category : #api }
 Chest class >> new [
-	| chest |
-	chest := super new.
-	chest name: 'Unnamed'.
-	self IDToChestInstance at: chest id put: chest.
-	self notifyNewChest: chest.
-	^ chest.
+	
+	^ self newNamed: 'Unnamed' , self getNewID asString.
 ]
 
 { #category : #api }
 Chest class >> newNamed: aString [
-	^ self new name: aString; yourself
+
+	| chest |
+	chest := super new.
+	self at: aString putChestIfKeyIsAbsent: chest.
+	self notifyNewChest: chest.
+	^ chest
 ]
 
 { #category : #'event system' }
@@ -122,15 +147,15 @@ Chest class >> remove: anObject [
 	^ self defaultInstance remove: anObject
 ]
 
-{ #category : #api }
-Chest class >> removeAt: anIndex [
-	^ self defaultInstance removeAt: anIndex
-]
-
 { #category : #removing }
 Chest class >> removeChest: aChest [
-	self IDToChestInstance removeKey: aChest id.
+	self IDToChestInstance removeKey: aChest name.
 	self notifyChestRemoved: aChest.
+]
+
+{ #category : #api }
+Chest class >> removeObjectNamed: aString [
+	^ self defaultInstance removeObjectNamed: aString
 ]
 
 { #category : #'event system' }
@@ -139,24 +164,28 @@ Chest class >> subscribeToUpdates: subscriber [
 	subscribers add: subscriber
 ]
 
-{ #category : #'class initialization' }
-Chest class >> withID: anID [
-	"Returns the Chest whose id is @anID"
-	^ self IDToChestInstance at: anID
-]
-
 { #category : #api }
 Chest >> add: anObject [
 	"Adds an object to the chest. Returns the index at which it has been added."
 
-	self contentsPrivate add: anObject.
-	self contentsUpdated.
-	^ contents size
+	| nameForTheObject |
+	nameForTheObject := 'Unnamed', lastUsedNumber asString.
+	lastUsedNumber := lastUsedNumber + 1.
+	^ self at: nameForTheObject put: anObject
 ]
 
 { #category : #api }
-Chest >> at: anIndex [
-	^ self contentsPrivate at: anIndex
+Chest >> at: aString [
+	^ self contentsPrivate at: aString
+]
+
+{ #category : #api }
+Chest >> at: aString put: anObject [
+
+	(self contentsPrivate includesKey: aString) ifTrue: [ DuplicatedVariableError signal: 'You cannot put an object named ' , aString , ' as it already exist in this chest' ].
+	self contentsPrivate at: aString put: anObject.
+	self contentsUpdated.
+	^ aString
 ]
 
 { #category : #accessing }
@@ -180,36 +209,32 @@ Chest >> empty [
 	self contentsUpdated
 ]
 
-{ #category : #api }
-Chest >> id [
-	^ id
-]
-
 { #category : #initialization }
 Chest >> initialize [
-	id := self class getNewID.
+	lastUsedNumber := 1.
 	self initializeContents
 ]
 
 { #category : #initialization }
 Chest >> initializeContents [
-	contents := OrderedCollection new
+	contents := Dictionary new
 ]
 
 { #category : #accessing }
-Chest >> inspectAt: anIndex [
-	^ (self contentsPrivate at: anIndex) inspect
+Chest >> inspectAt: aString [
+	^ (self contentsPrivate at: aString) inspect
 ]
 
 { #category : #api }
 Chest >> name [
-	name ifNil: [ name := '' ].
+
 	^ name
 ]
 
-{ #category : #accessing }
-Chest >> name: anObject [
-	name := anObject
+{ #category : #api }
+Chest >> name: aString [
+
+	name := aString
 ]
 
 { #category : #removing }
@@ -221,12 +246,12 @@ Chest >> remove [
 
 { #category : #accessing }
 Chest >> remove: anObject [
-	contents remove: anObject.
+	(contents keyForIdentity: anObject) ifNotNil: [ :key | contents removeKey: key].
 	self contentsUpdated
 ]
 
 { #category : #accessing }
-Chest >> removeAt: anIndex [
-	self contentsPrivate removeAt: anIndex.
+Chest >> removeObjectNamed:  aString [
+	self contentsPrivate removeKey: aString.
 	self contentsUpdated
 ]

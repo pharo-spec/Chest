@@ -97,10 +97,11 @@ ChestPresenter >> event_chestRemoved: aChest [
 { #category : #initialization }
 ChestPresenter >> event_contentOfChest: aChest updatedTo: newContents [
 	| currentlySelectedChest |
-	currentlySelectedChest := chestsTable selectedItems
+	"currentlySelectedChest := chestsTable selectedItems
 		                          ifEmpty: [ ^ self ]
 		                          ifNotEmpty: [ :selectedItems | 
-		                          selectedItems first ].
+		                          selectedItems first ]."
+	currentlySelectedChest := chestsTable selectedItem.
 	currentlySelectedChest == aChest ifTrue: [ 
 		self updateChestContentTableForChest: aChest ]
 ]
@@ -115,7 +116,7 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
 	^ SpBoxLayout newHorizontal
 		  add: aString expand: false;
-		  add: aToolbar expand: false;
+		  addLast: aToolbar expand: false;
 		  yourself
 ]
 
@@ -213,32 +214,13 @@ ChestPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: self initialExtent
 ]
 
-{ #category : #accessing }
-ChestPresenter >> insertChestAt: anInteger inPlayground: anStPlayground [
-	| textLeftOfTheSelection textRightOfTheSelection textObject textToAdd selectionStart selectionStop |
-	textObject := anStPlayground text.
-	selectionStart := textObject getSelection instVarNamed: #start.
-	selectionStop := textObject getSelection instVarNamed: #stop.
-	textLeftOfTheSelection := textObject text first: selectionStart - 1.
-	textRightOfTheSelection := textObject text allButFirst: selectionStop.
-	textToAdd := '(Chest at: ' , anInteger asString , ')'.
-	textObject text:
-		textLeftOfTheSelection , textToAdd , textRightOfTheSelection.
-	textObject setSelection:
-		(textLeftOfTheSelection size + textToAdd size + 1 to:
-		 textLeftOfTheSelection size + textToAdd size)
-
-
-	"playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
-]
-
 { #category : #initialization }
 ChestPresenter >> makeChestContentsTable [
 	^ self newTable
-		  addColumn: ((SpIndexTableColumn title: 'Index') width: 40);
+		  addColumn: ((SpStringTableColumn title: 'Name' evaluated: [ :association | association key ] ) width: 40);
 		  addColumn: (SpStringTableColumn
 				   title: 'Object'
-				   evaluated: [ :obj | obj asString ]);
+				   evaluated: [ :association | association value asString ]);
 		  items: OrderedCollection new;
 		  whenSelectionChangedDo: [ :selection |
 			  inspector model inspectedObject: selection selectedItem.
@@ -254,44 +236,36 @@ ChestPresenter >> makeChestContentsTableToolbar [
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
-				 chestContentsTable selection selectedIndex ifNotNil: [ :index | 
-						 index ~= 0 ifTrue: [ 
-								 self selectedChest removeAt: index.
+				 chestContentsTable selectedItem ifNotNil: [ :assoc | 
+								 self selectedChest remove: assoc value.
 								 (chestContentsTable selection selectedIndex = 1 and: [ 
 										  chestContentsTable items isNotEmpty ])
 									 ifTrue: [ chestContentsTable selectIndex: 1 ]
 									 ifFalse: [ 
 										 chestContentsTable selectIndex:
-												 chestContentsTable selectedIndex - 1 ] ] ] ]).
+												 chestContentsTable selectedIndex - 1 ] ] ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ 
 				 chestContentsTable items ifNotEmpty: [ 
-						 chestContentsTable items size to: 1 by: -1 do: [ :index | 
-							 self selectedChest removeAt: index ] ] ]).
+						 chestContentsTable items do: [ :assoc | 
+							 self selectedChest remove: assoc value ] ] ]).
 	^ toolbar
 ]
 
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
 
-	^ self newTable
-		  addColumn:
-			  ((SpStringTableColumn
-				    title: 'ID'
-				    evaluated: [ :chest | chest id ]) width: 40);
-		  addColumn:
-			  (SpStringTableColumn
-				   title: 'Name'
-				   evaluated: [ :chest | chest name ]);
+	^ self newList
 		  items: Chest allChests;
-		  whenSelectionChangedDo: [ :selection | 
-			  self updateChestContentTableForChest: selection selectedItem.
-			  chestContentsTable items ifNotEmpty: [ 
-					  chestContentsTable selectIndex: 1 ] ];
-		  sortingBlock: [ :chest1 :chest2 | chest1 id < chest2 id ];
-		  beResizable;
+		  display: [ :chest | chest name ];
+		  transmitDo: [ :aChest | 
+			  aChest ifNotNil: [ 
+					  self updateChestContentTableForChest: aChest.
+					  chestContentsTable items ifNotEmpty: [ 
+							  chestContentsTable selectIndex: 1 ] ] ];
+		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
 		  yourself
 ]
 
@@ -303,7 +277,7 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
-				 chestsTable selection selectedIndex ifNotNil: [ :index | 
+				 chestsTable selection selectedItem ifNotNil: [ :index | 
 						 chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
 								 (chestsTable itemAt: index) remove.
 								 chestsTable selectIndex:
@@ -350,7 +324,7 @@ ChestPresenter >> title [
 
 { #category : #updating }
 ChestPresenter >> updateChestContentTableForChest: aChest [
-	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents ]
+	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents associations asOrderedCollection ]
 ]
 
 { #category : #updating }
