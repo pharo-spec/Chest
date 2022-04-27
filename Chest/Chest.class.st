@@ -61,7 +61,6 @@ Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 		ChestKeyAlreadyInUseError signal:
 			'You cannot create a chest named ' , aKey
 			, ' as it already exists' ].
-		aChest name: aKey.
 		ChestDictionary at: aKey put: aChest.
 ]
 
@@ -116,7 +115,7 @@ Chest class >> newNamed: aString [
 
 	| chest |
 	chest := super new.
-	self at: aString putChestIfKeyIsAbsent: chest.
+	chest name: aString.
 	self notifyNewChest: chest.
 	^ chest
 ]
@@ -145,6 +144,12 @@ Chest class >> remove: anObject [
 Chest class >> removeChest: aChest [
 	ChestDictionary removeKey: aChest name.
 	self notifyChestRemoved: aChest.
+]
+
+{ #category : #removing }
+Chest class >> removeChestNamed: aKey [
+
+	^ self removeChest: (self named: aKey)
 ]
 
 { #category : #api }
@@ -228,7 +233,11 @@ Chest >> name [
 { #category : #api }
 Chest >> name: aString [
 
-	name := aString
+	| oldName |
+	oldName := self name.
+	self class at: aString putChestIfKeyIsAbsent: self .
+	name := aString.
+	oldName ifNotNil: [ self class removeChestNamed: oldName ]
 ]
 
 { #category : #removing }
