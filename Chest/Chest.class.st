@@ -58,7 +58,7 @@ Chest class >> at: aKey put: anObject [
 Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 
 	(ChestDictionary includesKey: aKey) ifTrue: [ 
-		DuplicatedVariableError signal:
+		ChestKeyAlreadyInUseError signal:
 			'You cannot create a chest named ' , aKey
 			, ' as it already exists' ].
 		aChest name: aKey.
@@ -176,7 +176,7 @@ Chest >> at: aString [
 { #category : #api }
 Chest >> at: aString put: anObject [
 
-	(self contentsPrivate includesKey: aString) ifTrue: [ DuplicatedVariableError signal: 'You cannot put an object named ' , aString , ' as it already exist in this chest' ].
+	(self contentsPrivate includesKey: aString) ifTrue: [ ChestKeyAlreadyInUseError signal: 'You cannot put an object named ' , aString , ' as it already exist in this chest' ].
 	self contentsPrivate at: aString put: anObject.
 	self contentsUpdated.
 	^ aString
