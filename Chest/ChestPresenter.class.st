@@ -243,7 +243,7 @@ ChestPresenter >> makeChestContentsTableToolbar [
 									 ifTrue: [ chestContentsTable selectIndex: 1 ]
 									 ifFalse: [ 
 										 chestContentsTable selectIndex:
-												 chestContentsTable selectedIndex - 1 ] ] ]).
+												 chestContentsTable selection selectedIndex - 1 ] ] ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
@@ -277,11 +277,11 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
-				 chestsTable selection selectedItem ifNotNil: [ :index | 
+				 chestsTable selection selectedIndex ifNotNil: [ :index | 
 						 chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
 								 (chestsTable itemAt: index) remove.
 								 chestsTable selectIndex:
-										 (1 max: chestsTable selectedIndex - 1) ] ] ]).
+										 (1 max: chestsTable selection selectedIndex - 1) ] ] ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);

@@ -41,7 +41,7 @@ Chest class >> add: anObject [
 
 { #category : #accessing }
 Chest class >> allChests [
-	^ self chestDictionary values
+	^ ChestDictionary values
 ]
 
 { #category : #api }
@@ -57,17 +57,17 @@ Chest class >> at: aKey put: anObject [
 { #category : #accessing }
 Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 
-	(self chestDictionary includesKey: aKey) ifTrue: [ 
+	(ChestDictionary includesKey: aKey) ifTrue: [ 
 		DuplicatedVariableError signal:
 			'You cannot create a chest named ' , aKey
 			, ' as it already exists' ].
 		aChest name: aKey.
-		self chestDictionary at: aKey put: aChest.
+		ChestDictionary at: aKey put: aChest.
 ]
 
 { #category : #accessing }
 Chest class >> chestDictionary [
-	^ ChestDictionary
+	^ ChestDictionary copy
 ]
 
 { #category : #api }
@@ -102,7 +102,7 @@ Chest class >> named: aString [
 
 	"Returns the Chest whose name is aString"
 
-	^ self chestDictionary at: aString
+	^ ChestDictionary at: aString
 ]
 
 { #category : #api }
@@ -143,7 +143,7 @@ Chest class >> remove: anObject [
 
 { #category : #removing }
 Chest class >> removeChest: aChest [
-	self chestDictionary removeKey: aChest name.
+	ChestDictionary removeKey: aChest name.
 	self notifyChestRemoved: aChest.
 ]
 
