@@ -223,7 +223,7 @@ ChestPresenter >> makeChestContentsTable [
 				   evaluated: [ :association | association value asString ]);
 		  items: OrderedCollection new;
 		  whenSelectionChangedDo: [ :selection |
-			  inspector model inspectedObject: selection selectedItem.
+			  inspector model inspectedObject: (selection selectedItem ifNotNil: [ :association | association value ]).
 			  inspector updateList.
 ]
 ]
