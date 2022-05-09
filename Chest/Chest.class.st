@@ -142,14 +142,16 @@ Chest class >> remove: anObject [
 
 { #category : #removing }
 Chest class >> removeChest: aChest [
-	ChestDictionary removeKey: aChest name.
-	self notifyChestRemoved: aChest.
+	
+	^ self removeChestNamed: aChest name.
+	
 ]
 
 { #category : #removing }
 Chest class >> removeChestNamed: aKey [
-
-	^ self removeChest: (self named: aKey)
+	| removedChest |
+	removedChest := ChestDictionary removeKey: aKey.
+	self notifyChestRemoved: removedChest.
 ]
 
 { #category : #api }
