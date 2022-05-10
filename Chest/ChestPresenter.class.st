@@ -259,6 +259,7 @@ ChestPresenter >> makeChestsTable [
 
 	^ self newList
 		  items: Chest allChests;
+		  contextMenu: self makeContextMenu;
 		  display: [ :chest | chest name ];
 		  transmitDo: [ :aChest | 
 			  aChest ifNotNil: [ 
@@ -291,24 +292,23 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'add';
 			 icon: (self iconManager iconNamed: #add);
 			 action: [ 
-				 | newChestName |
-				 newChestName := UIManager default request:
-						                 'What name do you want to give to your chest?'.
-				 [ Chest newNamed: newChestName ]
-					 on: ChestKeyAlreadyInUseError
-					 do: [ 
-						 | chest |
-						 chest := Chest named: newChestName.
-						 ((UIManager default
-							   confirm: '`' , newChestName
-								   ,
-									   '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
-							   trueChoice: 'Yes'
-							   falseChoice: 'No') and: chest class ~= DefaultChest) 
-							 ifTrue: [ 
-								 chest remove.
-								 Chest newNamed: newChestName ] ] ]).
+				 self performWithChestNameErrorHandling: [ :newChestName | 
+						 Chest newNamed: newChestName ] ]).
 	^ toolbar
+]
+
+{ #category : #initialization }
+ChestPresenter >> makeContextMenu [
+
+	^ self newMenu
+		  title: 'Chests';
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Rename';
+				  description: 'Rename the selected chest';
+				  action: [ 
+					  self performWithChestNameErrorHandling: [ :newChestName | 
+							  chestsTable selectedItem name: newChestName ] ] ]
 ]
 
 { #category : #initialization }
@@ -334,6 +334,31 @@ ChestPresenter >> makeHelpButton [
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)."
 ]
 
+{ #category : #updating }
+ChestPresenter >> namingQuery [
+
+	^ 'What name do you want to give to your object?'
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> performWithChestNameErrorHandling: aBlock [
+
+	| newChestName |
+	newChestName := UIManager default request:
+		                self namingQuery.
+	[(aBlock value: newChestName)]
+		on: ChestKeyAlreadyInUseError
+		do: [ 
+			| chest |
+			chest := Chest named: newChestName.
+			((UIManager default
+				  confirm: (self warningNamingChest: newChestName)
+				  trueChoice: 'Yes'
+				  falseChoice: 'No') and: chest class ~= DefaultChest) ifTrue: [ 
+				chest remove.
+				aBlock value: newChestName ] ]
+]
+
 { #category : #'as yet unclassified' }
 ChestPresenter >> selectedChest [
 	^ chestsTable selection selectedItem
@@ -352,4 +377,12 @@ ChestPresenter >> updateChestContentTableForChest: aChest [
 { #category : #updating }
 ChestPresenter >> updateChestsTable [
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
+]
+
+{ #category : #updating }
+ChestPresenter >> warningNamingChest: newChestName [
+
+	^ '`' , newChestName
+	  ,
+	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
 ]
