@@ -215,17 +215,45 @@ ChestPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : #initialization }
+ChestPresenter >> makeChestContentTableContextMenu [
+
+	^ self newMenu
+		  title: 'Chest Contents';
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Rename';
+				  description: 'Rename the selected item in chest';
+				  action: [  ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Load';
+				  description:
+					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
+				  action: [  ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Load all';
+				  description:
+					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.' ]
+]
+
+{ #category : #initialization }
 ChestPresenter >> makeChestContentsTable [
+
 	^ self newTable
-		  addColumn: ((SpStringTableColumn title: 'Name' evaluated: [ :association | association key ] ) width: 40);
+		  addColumn: ((SpStringTableColumn
+				    title: 'Name'
+				    evaluated: [ :association | association key ]) width: 40);
 		  addColumn: (SpStringTableColumn
 				   title: 'Object'
 				   evaluated: [ :association | association value asString ]);
 		  items: OrderedCollection new;
-		  whenSelectionChangedDo: [ :selection |
-			  inspector model inspectedObject: (selection selectedItem ifNotNil: [ :association | association value ]).
-			  inspector updateList.
-]
+		  contextMenu: self makeChestContentTableContextMenu;
+		  whenSelectionChangedDo: [ :selection | 
+			  inspector model inspectedObject:
+					  (selection selectedItem ifNotNil: [ :association | 
+							   association value ]).
+			  inspector updateList ]
 ]
 
 { #category : #initialization }
@@ -255,11 +283,36 @@ ChestPresenter >> makeChestContentsTableToolbar [
 ]
 
 { #category : #initialization }
+ChestPresenter >> makeChestTableContextMenu [
+
+	^ self newMenu
+		  title: 'Chests';
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Rename';
+				  description: 'Rename the selected chest';
+				  action: [ 
+					  self performWithChestNameErrorHandling: [ :newChestName | 
+							  chestsTable selectedItem name: newChestName ] ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Load';
+				  description:
+					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
+				  action: [  ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Load all';
+				  description:
+					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest' ]
+]
+
+{ #category : #initialization }
 ChestPresenter >> makeChestsTable [
 
 	^ self newList
 		  items: Chest allChests;
-		  contextMenu: self makeContextMenu;
+		  contextMenu: self makeChestTableContextMenu;
 		  display: [ :chest | chest name ];
 		  transmitDo: [ :aChest | 
 			  aChest ifNotNil: [ 
@@ -295,20 +348,6 @@ ChestPresenter >> makeChestsTableToolbar [
 				 self performWithChestNameErrorHandling: [ :newChestName | 
 						 Chest newNamed: newChestName ] ]).
 	^ toolbar
-]
-
-{ #category : #initialization }
-ChestPresenter >> makeContextMenu [
-
-	^ self newMenu
-		  title: 'Chests';
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Rename';
-				  description: 'Rename the selected chest';
-				  action: [ 
-					  self performWithChestNameErrorHandling: [ :newChestName | 
-							  chestsTable selectedItem name: newChestName ] ] ]
 ]
 
 { #category : #initialization }
