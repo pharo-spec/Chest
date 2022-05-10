@@ -311,7 +311,7 @@ ChestPresenter >> makeChestTableContextMenu [
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
 				  shortcut: $o meta , $l meta;
 				  action: [ 
-					  playground firstPage interactionModel addLocalBindings:
+					  playground firstPage interactionModel addBindings:
 							  (chestsTable selectedItem contents associations collect: [ 
 									   :each | WorkspaceVariable key: each key value: each value ]) ] ];
 		  addItem: [ :anItem | 
@@ -321,7 +321,7 @@ ChestPresenter >> makeChestTableContextMenu [
 					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
 				  shortcut: $o meta shift , $l meta shift;
 				  action: [ 
-					  playground firstPage interactionModel addLocalBindings:
+					  playground firstPage interactionModel addBindings:
 							  (chestsTable items flatCollect: [ :each | 
 									   each contents associations collect: [ :eachAssoc | 
 											   WorkspaceVariable key: eachAssoc key value: eachAssoc value ] ]) ] ]
