@@ -46,6 +46,15 @@ ChestPresenter class >> open [
 	^ chestPresenter
 ]
 
+{ #category : #'ui requests' }
+ChestPresenter >> confirm: aWarning [
+
+	^ UIManager default
+		  confirm: aWarning
+		  trueChoice: 'Yes'
+		  falseChoice: 'No'
+]
+
 { #category : #layout }
 ChestPresenter >> defaultLayout [
 
@@ -223,7 +232,8 @@ ChestPresenter >> makeChestContentTableContextMenu [
 			  anItem
 				  name: 'Rename';
 				  description: 'Rename the selected item in chest';
-				  action: [  ] ];
+				  action: [ self performWithObjectNameErrorHandling: [ :newObjectName | 
+							  chestsTable selectedItem renameObject: chestContentsTable selectedItem value into: newObjectName ] ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
@@ -390,12 +400,24 @@ ChestPresenter >> performWithChestNameErrorHandling: aBlock [
 		do: [ 
 			| chest |
 			chest := Chest named: newChestName.
-			((UIManager default
-				  confirm: (self warningNamingChest: newChestName)
-				  trueChoice: 'Yes'
-				  falseChoice: 'No') and: chest class ~= DefaultChest) ifTrue: [ 
+			((self confirm: (self warningNamingChest: newChestName)) and: chest class ~= DefaultChest) ifTrue: [ 
 				chest remove.
 				aBlock value: newChestName ] ]
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> performWithObjectNameErrorHandling: aBlock [
+
+	| newObjectName chest |
+	chest := chestsTable selectedItem.
+	newObjectName := UIManager default request:
+		                self namingQuery.
+	[(aBlock value: newObjectName)]
+		on: ChestKeyAlreadyInUseError
+		do: [ 
+			(self confirm: (self warningNamingObjectInChest: newObjectName)) ifTrue: [ 
+				chest removeObjectNamed: newObjectName.
+				aBlock value: newObjectName ] ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -424,4 +446,12 @@ ChestPresenter >> warningNamingChest: newChestName [
 	^ '`' , newChestName
 	  ,
 	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> warningNamingObjectInChest: newObjectName [
+
+	^ '`' , newObjectName
+	  ,
+	  '` is the name of an object that already exists in this chest. If you proceed, this object in the existing chest will be removed and lost. Are you sure you want to proceed?'
 ]

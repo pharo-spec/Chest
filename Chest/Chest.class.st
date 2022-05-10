@@ -257,7 +257,20 @@ Chest >> remove: anObject [
 ]
 
 { #category : #accessing }
-Chest >> removeObjectNamed:  aString [
-	self contentsPrivate removeKey: aString.
+Chest >> removeObjectNamed: aString [
+
+	[ self contentsPrivate removeKey: aString ]
+		on: KeyNotFound
+		do: [ ObjectNotInChestError signal ].
+	self contentsUpdated
+]
+
+{ #category : #accessing }
+Chest >> renameObject: anObject into:  aString [
+	| oldKey |
+	
+	[oldKey := self contentsPrivate keyForIdentity: anObject] ifNil: [ ObjectNotInChestError signal ].
+	self at: aString put: anObject.
+	oldKey ifNotNil: [self contentsPrivate removeKey: oldKey].
 	self contentsUpdated
 ]
