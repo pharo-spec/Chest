@@ -309,12 +309,22 @@ ChestPresenter >> makeChestTableContextMenu [
 				  name: 'Load';
 				  description:
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
-				  action: [  ] ];
+				  shortcut: $o meta , $l meta;
+				  action: [ 
+					  playground firstPage interactionModel addLocalBindings:
+							  (chestsTable selectedItem contents associations collect: [ 
+									   :each | WorkspaceVariable key: each key value: each value ]) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
 				  description:
-					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest' ]
+					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
+				  shortcut: $o meta shift , $l meta shift;
+				  action: [ 
+					  playground firstPage interactionModel addLocalBindings:
+							  (chestsTable items flatCollect: [ :each | 
+									   each contents associations collect: [ :eachAssoc | 
+											   WorkspaceVariable key: eachAssoc key value: eachAssoc value ] ]) ] ]
 ]
 
 { #category : #initialization }
