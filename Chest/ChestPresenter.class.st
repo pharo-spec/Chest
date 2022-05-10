@@ -232,19 +232,32 @@ ChestPresenter >> makeChestContentTableContextMenu [
 			  anItem
 				  name: 'Rename';
 				  description: 'Rename the selected item in chest';
-				  action: [ self performWithObjectNameErrorHandling: [ :newObjectName | 
-							  chestsTable selectedItem renameObject: chestContentsTable selectedItem value into: newObjectName ] ] ];
+				  action: [ 
+					  self performWithObjectNameErrorHandling: [ :newObjectName | 
+							  chestsTable selectedItem
+								  renameObject: chestContentsTable selectedItem value
+								  into: newObjectName ] ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
 				  description:
 					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
-				  action: [  ] ];
+				  action: [ 
+					  playground firstPage interactionModel addBinding:
+							  (WorkspaceVariable
+								   key: chestContentsTable selectedItem key
+								   value: chestContentsTable selectedItem value) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
 				  description:
-					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.' ]
+					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
+				  action: [ 
+					  playground firstPage interactionModel addBindings:
+							  (chestContentsTable items collect: [ :eachAssoc | 
+									   WorkspaceVariable
+										   key: eachAssoc key
+										   value: eachAssoc value ]) ] ]
 ]
 
 { #category : #initialization }
