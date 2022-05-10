@@ -271,6 +271,7 @@ ChestPresenter >> makeChestsTable [
 
 { #category : #initialization }
 ChestPresenter >> makeChestsTableToolbar [
+
 	| toolbar |
 	toolbar := self newToolbar.
 	toolbar addItem: (self newToolbarButton
@@ -286,6 +287,27 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ chestsTable items copy do: [ :chest | chest remove ] ]).
+	toolbar addItem: (self newToolbarButton
+			 label: 'add';
+			 icon: (self iconManager iconNamed: #add);
+			 action: [ 
+				 | newChestName |
+				 newChestName := UIManager default request:
+						                 'What name do you want to give to your chest?'.
+				 [ Chest newNamed: newChestName ]
+					 on: ChestKeyAlreadyInUseError
+					 do: [ 
+						 | chest |
+						 chest := Chest named: newChestName.
+						 ((UIManager default
+							   confirm: '`' , newChestName
+								   ,
+									   '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
+							   trueChoice: 'Yes'
+							   falseChoice: 'No') and: chest class ~= DefaultChest) 
+							 ifTrue: [ 
+								 chest remove.
+								 Chest newNamed: newChestName ] ] ]).
 	^ toolbar
 ]
 
