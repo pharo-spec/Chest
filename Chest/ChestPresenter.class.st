@@ -18,9 +18,6 @@ Class {
 		'chestContentsTableToolbar',
 		'inspector'
 	],
-	#classVars : [
-		'contents'
-	],
 	#category : #Chest
 }
 
@@ -213,14 +210,6 @@ ChestPresenter >> initializePresenters [
 	leftSpacerForHelpTitleLabel := SpSpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpSpacerPresenter new.
 	helpText := self newText enabled: false; text: self helpText."
-]
-
-{ #category : #specs }
-ChestPresenter >> initializeWindow: aWindowPresenter [
-
-	aWindowPresenter
-		title: self title;
-		initialExtent: self initialExtent
 ]
 
 { #category : #initialization }
