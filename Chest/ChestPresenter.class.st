@@ -316,8 +316,14 @@ ChestPresenter >> makeChestTableContextMenu [
 				  name: 'Rename';
 				  description: 'Rename the selected chest';
 				  action: [ 
-					  self performWithChestNameErrorHandling: [ :newChestName | 
-							  chestsTable selectedItem name: newChestName ] ] ];
+					  | chest |
+					  chest := chestsTable selectedItem.
+					  (self namingChestDialog onAccept: [ :dialog | 
+							   self
+								   performWithChestNameErrorHandling: [ :newChestName | 
+									   chest name: newChestName ]
+								   withDialog: dialog presenter ]) openDialogWithParent:
+							  anItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
@@ -325,8 +331,8 @@ ChestPresenter >> makeChestTableContextMenu [
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
 				  shortcut: $o meta , $l meta;
 				  action: [ 
-					  self addBindingsInPlayground: 
-							  (self collectBindingsFromChest: chestsTable selectedItem ) ] ];
+					  self addBindingsInPlayground:
+							  (self collectBindingsFromChest: chestsTable selectedItem) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
@@ -418,22 +424,6 @@ ChestPresenter >> namingChestDialog [
 ChestPresenter >> namingQuery [
 
 	^ 'What name do you want to give to your object?'
-]
-
-{ #category : #'as yet unclassified' }
-ChestPresenter >> performWithChestNameErrorHandling: aBlock [
-
-	| newChestName |
-	newChestName := UIManager default request:
-		                self namingQuery.
-	[(aBlock value: newChestName)]
-		on: ChestKeyAlreadyInUseError
-		do: [ 
-			| chest |
-			chest := Chest named: newChestName.
-			((self confirm: (self warningNamingChest: newChestName)) and: chest class ~= DefaultChest) ifTrue: [ 
-				chest remove.
-				aBlock value: newChestName ] ]
 ]
 
 { #category : #'as yet unclassified' }
