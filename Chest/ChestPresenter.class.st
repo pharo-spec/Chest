@@ -65,10 +65,11 @@ ChestPresenter >> collectBindingsFromChest: aChest [
 { #category : #'ui requests' }
 ChestPresenter >> confirm: aWarning [
 
-	^ UIManager default
-		  confirm: aWarning
-		  trueChoice: 'Yes'
-		  falseChoice: 'No'
+	^ SpConfirmDialog new
+		  title: 'Warning !';
+		  label: aWarning;
+		  acceptLabel: 'Yes';
+		  cancelLabel: 'No'
 ]
 
 { #category : #'as yet unclassified' }
@@ -361,8 +362,7 @@ ChestPresenter >> makeChestsTableToolbar [
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-			 action: [ 
-				self removeSelectedChest ]).
+			 action: [ self removeSelectedChest ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
@@ -371,8 +371,12 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'add';
 			 icon: (self iconManager iconNamed: #add);
 			 action: [ 
-				 self performWithChestNameErrorHandling: [ :newChestName | 
-						 Chest newNamed: newChestName ] ]).
+				 (self namingChestDialog onAccept: [ :dialog | 
+						  self
+							  performWithChestNameErrorHandling: [ :newChestName | 
+								  Chest newNamed: newChestName ]
+							  withDialog: dialog presenter ]) openDialogWithParent: toolbar
+				  ]).
 	^ toolbar
 ]
 
@@ -399,6 +403,17 @@ ChestPresenter >> makeHelpButton [
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)."
 ]
 
+{ #category : #'as yet unclassified' }
+ChestPresenter >> namingChestDialog [
+
+	^ SpRequestTextDialog new
+		  title: 'Name Chest';
+		  label: self namingQuery;
+		  acceptLabel: 'Confirm';
+		  cancelLabel: 'Cancel'
+		  
+]
+
 { #category : #updating }
 ChestPresenter >> namingQuery [
 
@@ -419,6 +434,27 @@ ChestPresenter >> performWithChestNameErrorHandling: aBlock [
 			((self confirm: (self warningNamingChest: newChestName)) and: chest class ~= DefaultChest) ifTrue: [ 
 				chest remove.
 				aBlock value: newChestName ] ]
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> performWithChestNameErrorHandling: aBlock withDialog: aDialog [
+
+	| newChestName |
+	newChestName := aDialog text.
+	[ aBlock value: newChestName ]
+		on: ChestKeyAlreadyInUseError
+		do: [ 
+			| chest |
+			chest := Chest named: newChestName.
+			((self confirm: (self warningNamingChest: newChestName)) onAccept: [ 
+				 :dialog | 
+				 chest class ~= DefaultChest
+					 ifTrue: [ 
+						 chest remove.
+						 aBlock value: newChestName ]
+					 ifFalse: [ 
+					 dialog presenter inform: newChestName , ' could not be removed.' ] ]) 
+				openDialogWithParent: aDialog ]
 ]
 
 { #category : #'as yet unclassified' }
