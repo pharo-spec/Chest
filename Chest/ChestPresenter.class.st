@@ -248,10 +248,17 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  name: 'Rename';
 				  description: 'Rename the selected item in chest';
 				  action: [ 
-					  self performWithObjectNameErrorHandling: [ :newObjectName | 
-							  chestsTable selectedItem
-								  renameObject: chestContentsTable selectedItem value
-								  into: newObjectName ] ] ];
+					  | keyValueAssocForObject |
+					  keyValueAssocForObject := chestContentsTable selectedItem.
+					  (self namingDialog
+						   title: 'Rename object in chest';
+						   onAccept: [ :aDialog | 
+							   self
+								   performWithObjectNameErrorHandling: [ :newObjectName | 
+									   chestsTable selectedItem
+										   renameObject: keyValueAssocForObject value
+										   into: newObjectName ]
+								   withDialog: aDialog presenter ]) openDialogWithParent: anItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
@@ -318,12 +325,14 @@ ChestPresenter >> makeChestTableContextMenu [
 				  action: [ 
 					  | chest |
 					  chest := chestsTable selectedItem.
-					  (self namingChestDialog onAccept: [ :dialog | 
+					  (self namingDialog
+						   title: 'Name Chest';
+						   onAccept: [ :dialog | 
 							   self
 								   performWithChestNameErrorHandling: [ :newChestName | 
 									   chest name: newChestName ]
 								   withDialog: dialog presenter ]) openDialogWithParent:
-							  anItem ] ];
+						  anItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
@@ -377,12 +386,13 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'add';
 			 icon: (self iconManager iconNamed: #add);
 			 action: [ 
-				 (self namingChestDialog onAccept: [ :dialog | 
+				 (self namingDialog
+					  title: 'Name Chest';
+					  onAccept: [ :dialog | 
 						  self
 							  performWithChestNameErrorHandling: [ :newChestName | 
 								  Chest newNamed: newChestName ]
-							  withDialog: dialog presenter ]) openDialogWithParent: toolbar
-				  ]).
+							  withDialog: dialog presenter ]) openDialogWithParent: toolbar ]).
 	^ toolbar
 ]
 
@@ -410,14 +420,14 @@ ChestPresenter >> makeHelpButton [
 ]
 
 { #category : #'as yet unclassified' }
-ChestPresenter >> namingChestDialog [
+ChestPresenter >> namingDialog [
 
 	^ SpRequestTextDialog new
 		  title: 'Name Chest';
 		  label: self namingQuery;
 		  acceptLabel: 'Confirm';
+		  extent: 500 @ 160;
 		  cancelLabel: 'Cancel'
-		  
 ]
 
 { #category : #updating }
@@ -448,18 +458,17 @@ ChestPresenter >> performWithChestNameErrorHandling: aBlock withDialog: aDialog 
 ]
 
 { #category : #'as yet unclassified' }
-ChestPresenter >> performWithObjectNameErrorHandling: aBlock [
+ChestPresenter >> performWithObjectNameErrorHandling: aBlock withDialog: aDialog [
 
 	| newObjectName chest |
 	chest := chestsTable selectedItem.
-	newObjectName := UIManager default request:
-		                self namingQuery.
+	newObjectName := aDialog text.
 	[(aBlock value: newObjectName)]
 		on: ChestKeyAlreadyInUseError
 		do: [ 
-			(self confirm: (self warningNamingObjectInChest: newObjectName)) ifTrue: [ 
+			((self confirm: (self warningNamingObjectInChest: newObjectName)) onAccept: [ 
 				chest removeObjectNamed: newObjectName.
-				aBlock value: newObjectName ] ]
+				aBlock value: newObjectName ]) openDialogWithParent: chestContentsTable ]
 ]
 
 { #category : #removing }
