@@ -43,6 +43,25 @@ ChestPresenter class >> open [
 	^ chestPresenter
 ]
 
+{ #category : #adding }
+ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
+
+	playground firstPage interactionModel addBindings: aCollectionOfBindings 
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> collectBindingsFromAllChests [
+
+	^ chestsTable items flatCollect: [ :each | self collectBindingsFromChest: each ] 
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> collectBindingsFromChest: aChest [
+
+	^ aChest contents associations collect: [ :each | 
+		  self convertBindingIntoProperWorkspaceVariable: each ]
+]
+
 { #category : #'ui requests' }
 ChestPresenter >> confirm: aWarning [
 
@@ -50,6 +69,12 @@ ChestPresenter >> confirm: aWarning [
 		  confirm: aWarning
 		  trueChoice: 'Yes'
 		  falseChoice: 'No'
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> convertBindingIntoProperWorkspaceVariable: aBinding [
+
+	^ WorkspaceVariable key: aBinding key value: aBinding value
 ]
 
 { #category : #layout }
@@ -232,21 +257,17 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  description:
 					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
 				  action: [ 
-					  playground firstPage interactionModel addBinding:
-							  (WorkspaceVariable
-								   key: chestContentsTable selectedItem key
-								   value: chestContentsTable selectedItem value) ] ];
+					  self addBindingsInPlayground:
+							  { (self convertBindingIntoProperWorkspaceVariable:
+									   chestContentsTable selectedItem) } ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
 				  description:
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
 				  action: [ 
-					  playground firstPage interactionModel addBindings:
-							  (chestContentsTable items collect: [ :eachAssoc | 
-									   WorkspaceVariable
-										   key: eachAssoc key
-										   value: eachAssoc value ]) ] ]
+					  self addBindingsInPlayground:
+							  (self collectBindingsFromChest: chestsTable selectedChest) ] ]
 ]
 
 { #category : #initialization }
@@ -270,27 +291,17 @@ ChestPresenter >> makeChestContentsTable [
 
 { #category : #initialization }
 ChestPresenter >> makeChestContentsTableToolbar [
+
 	| toolbar |
 	toolbar := self newToolbar.
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-			 action: [ 
-				 chestContentsTable selectedItem ifNotNil: [ :assoc | 
-								 self selectedChest remove: assoc value.
-								 (chestContentsTable selection selectedIndex = 1 and: [ 
-										  chestContentsTable items isNotEmpty ])
-									 ifTrue: [ chestContentsTable selectIndex: 1 ]
-									 ifFalse: [ 
-										 chestContentsTable selectIndex:
-												 chestContentsTable selection selectedIndex - 1 ] ] ]).
+			 action: [ self removeSelectedItem ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
-			 action: [ 
-				 chestContentsTable items ifNotEmpty: [ 
-						 chestContentsTable items do: [ :assoc | 
-							 self selectedChest remove: assoc value ] ] ]).
+			 action: [ self removeAllItemsFromSelectedChest ]).
 	^ toolbar
 ]
 
@@ -313,9 +324,8 @@ ChestPresenter >> makeChestTableContextMenu [
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
 				  shortcut: $o meta , $l meta;
 				  action: [ 
-					  playground firstPage interactionModel addBindings:
-							  (chestsTable selectedItem contents associations collect: [ 
-									   :each | WorkspaceVariable key: each key value: each value ]) ] ];
+					  self addBindingsInPlayground: 
+							  (self collectBindingsFromChest: chestsTable selectedItem ) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
@@ -324,9 +334,7 @@ ChestPresenter >> makeChestTableContextMenu [
 				  shortcut: $o meta shift , $l meta shift;
 				  action: [ 
 					  playground firstPage interactionModel addBindings:
-							  (chestsTable items flatCollect: [ :each | 
-									   each contents associations collect: [ :eachAssoc | 
-											   WorkspaceVariable key: eachAssoc key value: eachAssoc value ] ]) ] ]
+							  self collectBindingsFromAllChests ] ]
 ]
 
 { #category : #initialization }
@@ -354,15 +362,11 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
 			 action: [ 
-				 chestsTable selection selectedIndex ifNotNil: [ :index | 
-						 chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
-								 (chestsTable itemAt: index) remove.
-								 chestsTable selectIndex:
-										 (1 max: chestsTable selection selectedIndex - 1) ] ] ]).
+				self removeSelectedChest ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
-			 action: [ chestsTable items copy do: [ :chest | chest remove ] ]).
+			 action: [ self removeAllChests ]).
 	toolbar addItem: (self newToolbarButton
 			 label: 'add';
 			 icon: (self iconManager iconNamed: #add);
@@ -430,6 +434,43 @@ ChestPresenter >> performWithObjectNameErrorHandling: aBlock [
 			(self confirm: (self warningNamingObjectInChest: newObjectName)) ifTrue: [ 
 				chest removeObjectNamed: newObjectName.
 				aBlock value: newObjectName ] ]
+]
+
+{ #category : #removing }
+ChestPresenter >> removeAllChests [
+
+	chestsTable items copy do: [ :chest | chest remove ]
+]
+
+{ #category : #removing }
+ChestPresenter >> removeAllItemsFromSelectedChest [
+
+	chestContentsTable items ifNotEmpty: [ 
+		chestContentsTable items do: [ :assoc | 
+			self selectedChest remove: assoc value ] ]
+]
+
+{ #category : #removing }
+ChestPresenter >> removeSelectedChest [
+
+	chestsTable selection selectedIndex ifNotNil: [ :index | 
+		chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
+			(chestsTable itemAt: index) remove.
+			chestsTable selectIndex:
+				(1 max: chestsTable selection selectedIndex - 1) ] ]
+]
+
+{ #category : #removing }
+ChestPresenter >> removeSelectedItem [
+
+	chestContentsTable selectedItem ifNotNil: [ :assoc | 
+		self selectedChest remove: assoc value.
+		(chestContentsTable selection selectedIndex = 1 and: [ 
+			 chestContentsTable items isNotEmpty ])
+			ifTrue: [ chestContentsTable selectIndex: 1 ]
+			ifFalse: [ 
+				chestContentsTable selectIndex:
+					chestContentsTable selection selectedIndex - 1 ] ]
 ]
 
 { #category : #'as yet unclassified' }
