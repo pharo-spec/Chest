@@ -31,6 +31,15 @@ ChestStoreObjectCommand class >> defaultShortcutKey [
 	^ $c meta, $s meta
 ]
 
+{ #category : #'as yet unclassified' }
+ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName [
+
+	^ [ objectName = chest nextDefaultNameForObject
+				ifTrue: [ self storeObject: result intoChest: chest ]
+				ifFalse: [ 
+				self storeObject: result intoChest: chest withName: objectName ] .  choicePresenter window close. ]
+]
+
 { #category : #initialization }
 ChestStoreObjectCommand >> buildChoicePresenter [
 
@@ -40,15 +49,21 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 		chest := choicePresenter chestsTable selectedItem.
 		objectName := choicePresenter inputField text.
 		self evaluateSelectionAndDo: [ :result | 
-			[ objectName = chest nextDefaultNameForObject
-				ifTrue: [ self storeObject: result intoChest: chest ]
-				ifFalse: [ 
-				self storeObject: result intoChest: chest withName: objectName ] .  choicePresenter window close. ]  on: ChestKeyAlreadyInUseError do: [ ((choicePresenter  confirm: (choicePresenter warningNamingObjectInChest: objectName)) onAccept: [ 
-				chest removeObjectNamed: objectName.
-				objectName = chest nextDefaultNameForObject
-				ifTrue: [ self storeObject: result intoChest: chest ]
-				ifFalse: [ 
-				self storeObject: result intoChest: chest withName: objectName ].  choicePresenter window close. ]) openDialogWithParent: choicePresenter chestContentTable  ] ] ] .
+			(self
+				 blockToEvaluateToStoreResult: result
+				 intoChest: chest
+				 withName: objectName)
+				on: ChestKeyAlreadyInUseError
+				do: [ 
+					((choicePresenter confirm:
+						  (choicePresenter warningNamingObjectInChest: objectName)) 
+						 onAccept: [ 
+							 chest removeObjectNamed: objectName.
+							 self
+								 blockToEvaluateToStoreResult: result
+								 intoChest: chest
+								 withName: objectName ]) openDialogWithParent:
+						choicePresenter chestContentTable ] ] ].
 	choicePresenter layout: choicePresenter commandLayout
 ]
 
@@ -64,13 +79,6 @@ ChestStoreObjectCommand >> initialize [
 	super initialize.
 	self buildChoicePresenter.
 	
-]
-
-{ #category : #execution }
-ChestStoreObjectCommand >> storeObject: result [
-	| chest |
-	chest := UIManager default chooseFrom: (Chest allChests collect: [ :each | each name ]) values: Chest allChests.
-	^ self storeObject: result intoChest: chest.
 ]
 
 { #category : #execution }
