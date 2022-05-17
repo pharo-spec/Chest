@@ -348,8 +348,7 @@ ChestPresenter >> makeChestTableContextMenu [
 					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
 				  shortcut: $o meta shift , $l meta shift;
 				  action: [ 
-					  playground firstPage interactionModel addBindings:
-							  self collectBindingsFromAllChests ] ]
+					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ]
 ]
 
 { #category : #initialization }
