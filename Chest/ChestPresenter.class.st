@@ -91,11 +91,7 @@ ChestPresenter >> collectBindingsFromChest: aChest [
 { #category : #'ui requests' }
 ChestPresenter >> confirm: aWarning [
 
-	^ SpConfirmDialog new
-		  title: 'Warning !';
-		  label: aWarning;
-		  acceptLabel: 'Yes';
-		  cancelLabel: 'No'
+	^ chestTableWithContent confirm: aWarning
 ]
 
 { #category : #'as yet unclassified' }
@@ -131,28 +127,6 @@ ChestPresenter >> defaultLayout [
 				   yourself)
 		  withConstraints: [ :c | c height: bottomRibbonHeight ];
 		  yourself
-]
-
-{ #category : #initialization }
-ChestPresenter >> eventChestRemoved: aChest [
-	self updateChestsTable
-]
-
-{ #category : #initialization }
-ChestPresenter >> eventContentOfChest: aChest updatedTo: newContents [
-	| currentlySelectedChest |
-	"currentlySelectedChest := chestsTable selectedItems
-		                          ifEmpty: [ ^ self ]
-		                          ifNotEmpty: [ :selectedItems | 
-		                          selectedItems first ]."
-	currentlySelectedChest := chestsTable selectedItem.
-	currentlySelectedChest == aChest ifTrue: [ 
-		self updateChestContentTableForChest: aChest ]
-]
-
-{ #category : #initialization }
-ChestPresenter >> eventNewChest: aChest [
-	self updateChestsTable
 ]
 
 { #category : #'as yet unclassified' }
@@ -221,7 +195,6 @@ ChestPresenter >> initialExtent [
 ChestPresenter >> initialize [
 	super initialize.
 	helpExpanded := false.
-	Chest subscribeToUpdates: self
 ]
 
 { #category : #initialization }
@@ -514,16 +487,6 @@ ChestPresenter >> selectedChest [
 { #category : #specs }
 ChestPresenter >> title [
 	^ 'Chests'
-]
-
-{ #category : #updating }
-ChestPresenter >> updateChestContentTableForChest: aChest [
-	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents associations asOrderedCollection ]
-]
-
-{ #category : #updating }
-ChestPresenter >> updateChestsTable [
-	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 
 { #category : #updating }
