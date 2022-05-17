@@ -16,7 +16,8 @@ Class {
 		'chestsTableToolbar',
 		'chestContentsTable',
 		'chestContentsTableToolbar',
-		'inspector'
+		'inspector',
+		'chestTableWithContent'
 	],
 	#category : #Chest
 }
@@ -87,6 +88,7 @@ ChestPresenter >> defaultLayout [
 	toolbarHeight := 35.
 	helpButtonSize := 35.
 	bottomRibbonHeight := 35.
+	
 	^ SpBoxLayout newVertical
 		  add: (SpPanedLayout newHorizontal
 				   add: (SpPanedLayout newHorizontal
@@ -214,16 +216,20 @@ ChestPresenter >> initialize [
 
 { #category : #initialization }
 ChestPresenter >> initializePresenters [
+
 	playground := StPlayground new.
-	chestsTable := self makeChestsTable.
+	chestTableWithContent := ChestTableWithContentPresenter new.
+	chestsTable := chestTableWithContent chestsTable.
+	self makeChestsTable.
 	chestsTableToolbar := self makeChestsTableToolbar.
-	chestContentsTable := self makeChestContentsTable.
+	chestContentsTable := chestTableWithContent chestContentTable.
+	self makeChestContentsTable.
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 	inspector := StInspector on: (StInspectorModel on: nil).
 	helpButton := self makeHelpButton.
 	chestsTable selectIndex: 1.
-	
-	self layout: self defaultLayout 
+
+	self layout: self defaultLayout
 
 	"objectTable := self makeObjectTable.
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
@@ -281,14 +287,7 @@ ChestPresenter >> makeChestContentTableContextMenu [
 { #category : #initialization }
 ChestPresenter >> makeChestContentsTable [
 
-	^ self newTable
-		  addColumn: ((SpStringTableColumn
-				    title: 'Name'
-				    evaluated: [ :association | association key ]) width: 40);
-		  addColumn: (SpStringTableColumn
-				   title: 'Object'
-				   evaluated: [ :association | association value asString ]);
-		  items: OrderedCollection new;
+	^ chestContentsTable
 		  contextMenu: self makeChestContentTableContextMenu;
 		  whenSelectionChangedDo: [ :selection | 
 			  inspector model inspectedObject:
@@ -356,17 +355,7 @@ ChestPresenter >> makeChestTableContextMenu [
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
 
-	^ self newList
-		  items: Chest allChests;
-		  contextMenu: self makeChestTableContextMenu;
-		  display: [ :chest | chest name ];
-		  transmitDo: [ :aChest | 
-			  aChest ifNotNil: [ 
-					  self updateChestContentTableForChest: aChest.
-					  chestContentsTable items ifNotEmpty: [ 
-							  chestContentsTable selectIndex: 1 ] ] ];
-		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
-		  yourself
+	chestsTable contextMenu: self makeChestTableContextMenu 
 ]
 
 { #category : #initialization }
