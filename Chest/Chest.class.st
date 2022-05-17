@@ -170,7 +170,7 @@ Chest >> add: anObject [
 	"Adds an object to the chest. Returns the index at which it has been added."
 
 	| nameForTheObject |
-	nameForTheObject := 'Unnamed', lastUsedNumber asString.
+	nameForTheObject := self nextDefaultNameForObject.
 	lastUsedNumber := lastUsedNumber + 1.
 	^ self at: nameForTheObject put: anObject
 ]
@@ -241,6 +241,12 @@ Chest >> name: aString [
 	self class at: aString putChestIfKeyIsAbsent: self .
 	name := aString.
 	oldName ifNotNil: [ self class removeChestNamed: oldName ]
+]
+
+{ #category : #accessing }
+Chest >> nextDefaultNameForObject [
+
+	^ self name, '_' , lastUsedNumber asString
 ]
 
 { #category : #removing }

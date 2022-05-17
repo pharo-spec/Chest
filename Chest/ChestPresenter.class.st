@@ -51,6 +51,31 @@ ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 ]
 
 { #category : #'as yet unclassified' }
+ChestPresenter >> buildChestContentTableContainerLayout [
+
+	chestTableWithContent chestContentTableContainer
+		removeAll;
+		add: (self
+				 headerLayoutWithTitle: 'Chest Contents'
+				 withToolbar: chestContentsTableToolbar)
+		withConstraints: [ :cstr | cstr height: 35 ];
+		add: #chestContentsTable
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> buildChestTableContainerLayout [
+
+	chestTableWithContent chestTableContainer
+		removeAll;
+		add:
+			(self
+				 headerLayoutWithTitle: 'Chests'
+				 withToolbar: chestsTableToolbar)
+		withConstraints: [ :cstr | cstr height: 35 ];
+		add: chestTableWithContent chestsTable
+]
+
+{ #category : #'as yet unclassified' }
 ChestPresenter >> collectBindingsFromAllChests [
 
 	^ chestsTable items flatCollect: [ :each | self collectBindingsFromChest: each ] 
@@ -88,26 +113,11 @@ ChestPresenter >> defaultLayout [
 	toolbarHeight := 35.
 	helpButtonSize := 35.
 	bottomRibbonHeight := 35.
+	self buildChestTableContainerLayout; buildChestContentTableContainerLayout.
 	
 	^ SpBoxLayout newVertical
 		  add: (SpPanedLayout newHorizontal
-				   add: (SpPanedLayout newHorizontal
-						    add: (SpBoxLayout newVertical
-								     add:
-									     (self
-										      headerLayoutWithTitle: 'Chests'
-										      withToolbar: #chestsTableToolbar)
-								     withConstraints: [ :cstr | cstr height: toolbarHeight ];
-								     add: #chestsTable;
-								     yourself);
-						    add: (SpBoxLayout newVertical
-								     add: (self
-										      headerLayoutWithTitle: 'Chest Contents'
-										      withToolbar: #chestContentsTableToolbar)
-								     withConstraints: [ :cstr | cstr height: toolbarHeight ];
-								     add: #chestContentsTable;
-								     yourself);
-						    yourself);
+				   add: #chestTableWithContent;
 				   add: #playground;
 				   yourself)
 		  withConstraints: [ :cstr | cstr height: topThirdHeight ];

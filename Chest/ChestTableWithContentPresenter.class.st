@@ -3,15 +3,37 @@ Class {
 	#superclass : #SpPresenter,
 	#instVars : [
 		'chestsTable',
-		'chestContentsTable'
+		'chestContentsTable',
+		'inputField',
+		'confirmActionBar',
+		'chestTableContainer',
+		'chestContentTableContainer'
 	],
 	#category : #Chest
 }
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> cancelButton [
+
+	^ self confirmActionBar presenters last
+]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> chestContentTable [
 
 	^ chestContentsTable
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> chestContentTableContainer [
+
+	^ chestContentTableContainer 
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> chestTableContainer [
+
+	^ chestTableContainer 
 ]
 
 { #category : #updating }
@@ -20,16 +42,43 @@ ChestTableWithContentPresenter >> chestsTable [
 	^ chestsTable
 ]
 
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> commandLayout [
+
+	self chestTableContainer removeAll; add: inputField; add: #chestsTable.
+	self chestContentTableContainer removeAll; add: #chestContentsTable.
+	
+	^ SpBoxLayout newVertical add: self defaultLayout; add: #confirmActionBar; yourself
+]
+
+{ #category : #'ui requests' }
+ChestTableWithContentPresenter >> confirm: aWarning [
+
+	^ SpConfirmDialog new
+		  title: 'Warning !';
+		  label: aWarning;
+		  acceptLabel: 'Yes';
+		  cancelLabel: 'No'
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> confirmActionBar [
+
+	^ confirmActionBar
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> confirmButton [
+	
+	^ self confirmActionBar presenters first.
+]
+
 { #category : #updating }
 ChestTableWithContentPresenter >> defaultLayout [
 	
 	^ (SpPanedLayout newHorizontal
-						    add: (SpBoxLayout newVertical
-								     add: #chestsTable;
-								     yourself);
-						    add: (SpBoxLayout newVertical
-								     add: #chestContentsTable;
-								     yourself);
+						    add: chestTableContainer;
+						    add: chestContentTableContainer;
 						    yourself)
 ]
 
@@ -59,11 +108,26 @@ ChestTableWithContentPresenter >> initialize [
 
 { #category : #initialization }
 ChestTableWithContentPresenter >> initializePresenters [
+
 	chestsTable := self makeChestsTable.
+	chestTableContainer := SpBoxLayout newVertical
+		                       add: self chestsTable;
+		                       yourself.
 	chestContentsTable := self makeChestContentsTable.
+	chestContentTableContainer := SpBoxLayout newVertical
+		                              add: self chestContentTable ;
+		                              yourself.
 	chestsTable selectIndex: 1.
-	
-	self layout: self defaultLayout 
+	inputField := self makeInputField.
+	confirmActionBar := self makeConfirmActionBar.
+
+	self layout: self defaultLayout
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> inputField [
+
+	^ inputField
 ]
 
 { #category : #initialization }
@@ -95,6 +159,36 @@ ChestTableWithContentPresenter >> makeChestsTable [
 		  yourself
 ]
 
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> makeConfirmActionBar [
+
+	^ self newActionBar
+		  add: (self newButton
+				   label: 'Confirm';
+				   yourself);
+		  add: (self newButton
+				   label: 'Cancel';
+					action: [ self window close ];
+				   yourself);
+		  yourself
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> makeInputField [
+
+	^ self newTextInput
+		  placeholder: 'Choose a name for your object';
+		  text:
+			  (chestsTable selectedItem nextDefaultNameForObject ifNil: [ '' ]);
+		  yourself
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> title [
+
+	^ 'Choose a variable name for your object'
+]
+
 { #category : #initialization }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents associations asOrderedCollection ]
@@ -103,4 +197,12 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 { #category : #updating }
 ChestTableWithContentPresenter >> updateChestsTable [
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> warningNamingObjectInChest: newObjectName [
+
+	^ '`' , newObjectName
+	  ,
+	  '` is the name of an object that already exists in this chest. If you proceed, this object in the existing chest will be removed and lost. Are you sure you want to proceed?'
 ]

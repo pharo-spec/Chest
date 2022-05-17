@@ -1,6 +1,9 @@
 Class {
 	#name : #ChestStoreObjectCommand,
 	#superclass : #SpCodeSelectionCommand,
+	#instVars : [
+		'choicePresenter'
+	],
 	#category : #'Chest-Commands'
 }
 
@@ -28,10 +31,39 @@ ChestStoreObjectCommand class >> defaultShortcutKey [
 	^ $c meta, $s meta
 ]
 
+{ #category : #initialization }
+ChestStoreObjectCommand >> buildChoicePresenter [
+
+	choicePresenter := ChestTableWithContentPresenter new.
+	choicePresenter confirmButton action: [ 
+		| chest objectName |
+		chest := choicePresenter chestsTable selectedItem.
+		objectName := choicePresenter inputField text.
+		self evaluateSelectionAndDo: [ :result | 
+			[ objectName = chest nextDefaultNameForObject
+				ifTrue: [ self storeObject: result intoChest: chest ]
+				ifFalse: [ 
+				self storeObject: result intoChest: chest withName: objectName ] .  choicePresenter window close. ]  on: ChestKeyAlreadyInUseError do: [ ((choicePresenter  confirm: (choicePresenter warningNamingObjectInChest: objectName)) onAccept: [ 
+				chest removeObjectNamed: objectName.
+				objectName = chest nextDefaultNameForObject
+				ifTrue: [ self storeObject: result intoChest: chest ]
+				ifFalse: [ 
+				self storeObject: result intoChest: chest withName: objectName ].  choicePresenter window close. ]) openDialogWithParent: choicePresenter chestContentTable  ] ] ] .
+	choicePresenter layout: choicePresenter commandLayout
+]
+
 { #category : #execution }
 ChestStoreObjectCommand >> execute [
 
-	self evaluateSelectionAndDo: [ :result | self storeObject: result ]
+	"self evaluateSelectionAndDo: [ :result | self storeObject: result   ]."
+	choicePresenter open
+]
+
+{ #category : #initialization }
+ChestStoreObjectCommand >> initialize [
+	super initialize.
+	self buildChoicePresenter.
+	
 ]
 
 { #category : #execution }
@@ -45,4 +77,10 @@ ChestStoreObjectCommand >> storeObject: result [
 ChestStoreObjectCommand >> storeObject: result intoChest: chest [
 
 	chest ifNotNil: [ chest add: result ]
+]
+
+{ #category : #execution }
+ChestStoreObjectCommand >> storeObject: result intoChest: chest withName: objectName [
+
+	chest ifNotNil: [ chest at: objectName put: result ]
 ]
