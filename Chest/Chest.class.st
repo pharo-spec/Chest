@@ -183,8 +183,12 @@ Chest >> at: aString [
 { #category : #api }
 Chest >> at: aString put: anObject [
 
-	(self contentsPrivate includesKey: aString) ifTrue: [ ChestKeyAlreadyInUseError signal: 'You cannot put an object named ' , aString , ' as it already exist in this chest' ].
-	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key | self contentsPrivate removeKey: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
+	(self contentsPrivate includesKey: aString) ifTrue: [ 
+		ChestKeyAlreadyInUseError signal:
+			'You cannot put an object named ' , aString
+			, ' as it already exist in this chest' ].
+	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key | 
+		self contentsPrivate removeKey: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
 	self contentsPrivate at: aString put: anObject.
 	self contentsUpdated.
 	^ aString

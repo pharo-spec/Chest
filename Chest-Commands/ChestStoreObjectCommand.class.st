@@ -70,7 +70,6 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 { #category : #execution }
 ChestStoreObjectCommand >> execute [
 
-	"self evaluateSelectionAndDo: [ :result | self storeObject: result   ]."
 	choicePresenter open
 ]
 
