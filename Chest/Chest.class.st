@@ -46,6 +46,12 @@ Chest class >> allChests [
 	^ ChestDictionary values
 ]
 
+{ #category : #accessing }
+Chest class >> announcer [
+
+	^ announcer ifNil: [ announcer := ChestAnnouncer uniqueInstance]. 
+]
+
 { #category : #api }
 Chest class >> at: anIndex [
 	^ self defaultInstance at: anIndex
@@ -92,7 +98,6 @@ Chest class >> getNewID [
 
 { #category : #'class initialization' }
 Chest class >> initialize [
-	Subscribers := OrderedCollection new.
 	ChestDictionary := Dictionary new.
 	NextAvailableID := 1.
 	DefaultInstance := DefaultChest new.
@@ -124,17 +129,20 @@ Chest class >> newNamed: aString [
 
 { #category : #'event system' }
 Chest class >> notifyChestRemoved: aChest [
-	Subscribers do: [ :subscriber | subscriber eventChestRemoved: aChest]
+	"Subscribers do: [ :subscriber | subscriber eventChestRemoved: aChest]"
+	self announcer notifyChestRemoved: aChest
 ]
 
 { #category : #'event system' }
 Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
-	Subscribers do: [ :subscriber | subscriber eventContentOfChest: aChest updatedTo: contents]
+	"Subscribers do: [ :subscriber | subscriber eventContentOfChest: aChest updatedTo: contents]"
+	self announcer notifyContentsOfChest: aChest updatedTo: contents
 ]
 
 { #category : #'event system' }
 Chest class >> notifyNewChest: aChest [
-	Subscribers do: [ :subscriber | subscriber eventNewChest: aChest ].
+	"Subscribers do: [ :subscriber | subscriber eventNewChest: aChest ]."
+	self announcer notifyNewChest: aChest
 ]
 
 { #category : #api }
@@ -164,7 +172,13 @@ Chest class >> removeObjectNamed: aString [
 { #category : #'event system' }
 Chest class >> subscribeToUpdates: subscriber [
 	"subscriber will be sent the #event_newChest: and #event_contentOfChest:updatedTo: and #event_chestRemoved: messages when these events happen"
-	Subscribers add: subscriber
+	"Subscribers add: subscriber"
+]
+
+{ #category : #subscription }
+Chest class >> unsubscribe: subscriber [
+
+	self announcer unsubscribe: subscriber
 ]
 
 { #category : #api }
