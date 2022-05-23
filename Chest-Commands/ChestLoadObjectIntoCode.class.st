@@ -52,7 +52,8 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 				objectsAssociations do: [ :assoc | 
 					self loadIntoContextObject: assoc value named: assoc key ] ].
 		choicePresenter window close ].
-	choicePresenter layout: choicePresenter commandLayout
+	choicePresenter layout: choicePresenter commandLayout.
+	^ choicePresenter
 ]
 
 { #category : #execution }
