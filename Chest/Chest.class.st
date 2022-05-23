@@ -114,7 +114,7 @@ Chest class >> named: aString [
 { #category : #api }
 Chest class >> new [
 	
-	^ self newNamed: 'Unnamed' , self getNewID asString.
+	^ self newNamed: 'Chest_' , self getNewID asString.
 ]
 
 { #category : #api }
