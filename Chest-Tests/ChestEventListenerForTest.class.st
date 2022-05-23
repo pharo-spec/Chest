@@ -30,14 +30,6 @@ ChestEventListenerForTest >> eventChestRemoved: aChestRemovedAnnouncement [
 ]
 
 { #category : #initialization }
-ChestEventListenerForTest >> eventContentOfChest: aChest updatedTo: contents [
-	contentOfChestUpdatedReceived := true.
-	updatedChest := aChest.
-	newContentsOfUpdatedChest := contents
-
-]
-
-{ #category : #initialization }
 ChestEventListenerForTest >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
 	contentOfChestUpdatedReceived := true.
 	updatedChest := aChestUpdatedAnnouncement updatedChest .
@@ -76,6 +68,16 @@ ChestEventListenerForTest >> newContentsOfUpdatedChest [
 { #category : #accessing }
 ChestEventListenerForTest >> removedChest [
 	^ removedChest
+]
+
+{ #category : #updating }
+ChestEventListenerForTest >> subscribeToChestAnnouncer [
+
+	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self.
+	Chest announcer weak when: ChestUpdated send: #eventContentOfChestUpdated: to: self.
+	Chest announcer weak when: ChestRemoved send: #eventChestRemoved: to: self.
+	
+	
 ]
 
 { #category : #accessing }

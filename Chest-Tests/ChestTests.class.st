@@ -94,7 +94,7 @@ ChestTests >> testNotifications [
 	"Tests that the Chest class does indeed send the notifications it is supposed to"
 	| l c o |
 	l := ChestEventListenerForTest new.
-	Chest subscribeToUpdates: l.
+	l subscribeToChestAnnouncer.
 	"Tests that no event has been received so far"
 	self assert: l newChestReceived not.
 	self assert: l contentOfChestUpdatedReceived not.
