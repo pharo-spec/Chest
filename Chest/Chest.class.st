@@ -28,8 +28,10 @@ Class {
 	#classVars : [
 		'ChestDictionary',
 		'DefaultInstance',
-		'NextAvailableID',
-		'Subscribers'
+		'NextAvailableID'
+	],
+	#classInstVars : [
+		'announcer'
 	],
 	#category : #Chest
 }
