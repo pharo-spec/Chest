@@ -1,9 +1,6 @@
 Class {
 	#name : #ChestLoadObjectIntoCode,
 	#superclass : #CmCommand,
-	#instVars : [
-		'choicePresenter'
-	],
 	#category : #'Chest-Commands'
 }
 
@@ -34,6 +31,7 @@ ChestLoadObjectIntoCode class >> defaultShortcutKey [
 { #category : #initialization }
 ChestLoadObjectIntoCode >> buildChoicePresenter [
 
+	| choicePresenter |
 	choicePresenter := ChestTableWithContentPresenter new.
 	choicePresenter chestContentTable beMultipleSelection.
 	choicePresenter confirmButton action: [ 
@@ -49,7 +47,8 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 					named: objectName ]
 			ifFalse: [ 
 				objectsAssociations isEmpty ifTrue: [ 
-					objectsAssociations := chest contents associations asOrderedCollection ].
+					objectsAssociations := chest contents associations
+						                       asOrderedCollection ].
 				objectsAssociations do: [ :assoc | 
 					self loadIntoContextObject: assoc value named: assoc key ] ].
 		choicePresenter window close ].
@@ -59,14 +58,9 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 { #category : #execution }
 ChestLoadObjectIntoCode >> execute [
 
+	| choicePresenter |
+	choicePresenter := self buildChoicePresenter.
 	choicePresenter open
-]
-
-{ #category : #initialization }
-ChestLoadObjectIntoCode >> initialize [
-
-	super initialize.
-	self buildChoicePresenter 
 ]
 
 { #category : #testing }

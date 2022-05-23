@@ -1,9 +1,6 @@
 Class {
 	#name : #ChestStoreObjectCommand,
 	#superclass : #SpCodeSelectionCommand,
-	#instVars : [
-		'choicePresenter'
-	],
 	#category : #'Chest-Commands'
 }
 
@@ -32,7 +29,7 @@ ChestStoreObjectCommand class >> defaultShortcutKey [
 ]
 
 { #category : #'as yet unclassified' }
-ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName [
+ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName withPresenter: choicePresenter [
 
 	^ [ objectName = chest nextDefaultNameForObject
 				ifTrue: [ self storeObject: result intoChest: chest ]
@@ -43,6 +40,7 @@ ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest
 { #category : #initialization }
 ChestStoreObjectCommand >> buildChoicePresenter [
 
+	| choicePresenter |
 	choicePresenter := ChestTableWithContentPresenter new.
 	choicePresenter confirmButton action: [ 
 		| chest objectName |
@@ -52,7 +50,8 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 			(self
 				 blockToEvaluateToStoreResult: result
 				 intoChest: chest
-				 withName: objectName)
+				 withName: objectName
+				 withPresenter: choicePresenter)
 				on: ChestKeyAlreadyInUseError
 				do: [ 
 					((choicePresenter confirm:
@@ -62,22 +61,18 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 							 self
 								 blockToEvaluateToStoreResult: result
 								 intoChest: chest
-								 withName: objectName ]) openDialogWithParent:
+								 withName: objectName
+								 withPresenter: choicePresenter ]) openDialogWithParent:
 						choicePresenter chestContentTable ] ] ].
-	choicePresenter layout: choicePresenter commandLayout
+	choicePresenter layout: choicePresenter commandLayout.
+	^ choicePresenter
 ]
 
 { #category : #execution }
 ChestStoreObjectCommand >> execute [
-
+	| choicePresenter |
+	choicePresenter := self buildChoicePresenter.
 	choicePresenter open
-]
-
-{ #category : #initialization }
-ChestStoreObjectCommand >> initialize [
-	super initialize.
-	self buildChoicePresenter.
-	
 ]
 
 { #category : #execution }
