@@ -50,6 +50,14 @@ ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 	playground firstPage interactionModel addBindings: aCollectionOfBindings 
 ]
 
+{ #category : #adding }
+ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBlock [
+
+	|dialogLayout|
+	dialogLayout := aDialogPresenter layout.
+	dialogLayout add: (SpButtonPresenter new label: 'Confirm'; action: aBlock; yourself)
+]
+
 { #category : #'as yet unclassified' }
 ChestPresenter >> buildChestContentTableContainerLayout [
 
@@ -86,12 +94,6 @@ ChestPresenter >> collectBindingsFromChest: aChest [
 
 	^ aChest contents associations collect: [ :each | 
 		  self convertBindingIntoProperWorkspaceVariable: each ]
-]
-
-{ #category : #'ui requests' }
-ChestPresenter >> confirm: aWarning [
-
-	^ chestTableWithContent confirm: aWarning
 ]
 
 { #category : #'as yet unclassified' }
@@ -237,17 +239,10 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  name: 'Rename';
 				  description: 'Rename the selected item in chest';
 				  action: [ 
-					  | keyValueAssocForObject |
-					  keyValueAssocForObject := chestContentsTable selectedItem.
-					  (self namingDialog
-						   title: 'Rename object in chest';
-						   onAccept: [ :aDialog | 
-							   self
-								   performWithObjectNameErrorHandling: [ :newObjectName | 
-									   chestsTable selectedItem
-										   renameObject: keyValueAssocForObject value
-										   into: newObjectName ]
-								   withDialog: aDialog presenter ]) openDialogWithParent: anItem ] ];
+					  self
+						  requestRenameObjectFromChest:
+							  chestContentsTable selectedItem value
+						  fromContextMenuItem: anItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
@@ -305,23 +300,16 @@ ChestPresenter >> makeChestTableContextMenu [
 				  name: 'Rename';
 				  description: 'Rename the selected chest';
 				  action: [ 
-					  | chest |
-					  chest := chestsTable selectedItem.
-					  (self namingDialog
-						   title: 'Name Chest';
-						   onAccept: [ :dialog | 
-							   self
-								   performWithChestNameErrorHandling: [ :newChestName | 
-									   chest name: newChestName ]
-								   withDialog: dialog presenter ]) openDialogWithParent:
-						  anItem ] ];
+					  self
+						  requestRenameChest: chestsTable selectedItem
+						  fromContextMenuItem: anItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
 				  description:
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
-				  shortcut: $o meta , $l meta;
-				  action: [ 
+				  shortcut: $f meta;
+				  action: [ "$o meta , $l meta"
 					  self addBindingsInPlayground:
 							  (self collectBindingsFromChest: chestsTable selectedItem) ] ];
 		  addItem: [ :anItem | 
@@ -356,14 +344,7 @@ ChestPresenter >> makeChestsTableToolbar [
 	toolbar addItem: (self newToolbarButton
 			 label: 'add';
 			 icon: (self iconManager iconNamed: #add);
-			 action: [ 
-				 (self namingDialog
-					  title: 'Name Chest';
-					  onAccept: [ :dialog | 
-						  self
-							  performWithChestNameErrorHandling: [ :newChestName | 
-								  Chest newNamed: newChestName ]
-							  withDialog: dialog presenter ]) openDialogWithParent: toolbar ]).
+			 action: [ self requestNameNewChestFromToolbar: toolbar ]).
 	^ toolbar
 ]
 
@@ -393,12 +374,19 @@ ChestPresenter >> makeHelpButton [
 { #category : #'as yet unclassified' }
 ChestPresenter >> namingDialog [
 
-	^ SpRequestTextDialog new
-		  title: 'Name Chest';
-		  label: self namingQuery;
-		  acceptLabel: 'Confirm';
-		  extent: 500 @ 160;
-		  cancelLabel: 'Cancel'
+	| dialog dialogLayout |
+	
+	dialog := SpRequestTextDialog new
+		          title: 'Name Chest';
+		          label: self namingQuery;
+		          acceptLabel: 'Confirm';
+		          extent: 500 @ 160;
+		          cancelLabel: 'Cancel';
+		          yourself.
+	dialogLayout := dialog layout.
+	SpDialogWindowPresenter new buttons do: [ :each | dialogLayout add: each ].
+	dialog layout: dialogLayout.
+	^ dialog
 ]
 
 { #category : #updating }
@@ -429,17 +417,59 @@ ChestPresenter >> performWithChestNameErrorHandling: aBlock withDialog: aDialog 
 ]
 
 { #category : #'as yet unclassified' }
-ChestPresenter >> performWithObjectNameErrorHandling: aBlock withDialog: aDialog [
+ChestPresenter >> presenterToNameNewChest [
 
-	| newObjectName chest |
-	chest := chestsTable selectedItem.
-	newObjectName := aDialog text.
-	[(aBlock value: newObjectName)]
-		on: ChestKeyAlreadyInUseError
-		do: [ 
-			((self confirm: (self warningNamingObjectInChest: newObjectName)) onAccept: [ 
-				chest removeObjectNamed: newObjectName.
-				aBlock value: newObjectName ]) openDialogWithParent: chestContentsTable ]
+	^ ChestRequestDialogPresenter
+		  request: self namingQuery
+		  onAccept: [ :newChestName | 
+			  [ Chest newNamed: newChestName ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  | chest |
+					  chest := Chest named: newChestName.
+					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
+						   chest ~= Chest defaultInstance ])
+						  ifTrue: [ 
+							  chest remove.
+							  Chest newNamed: newChestName ]
+						  ifFalse: [ 
+						  UIManager default inform:
+							  newChestName , ' could not be removed.' ] ] ]
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> presenterToRenameChest: chest [
+
+	^ ChestRequestDialogPresenter
+		  request: self namingQuery
+		  onAccept: [ :newChestName | 
+			  [ chest name: newChestName ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  | chestBlockingRenaming |
+					  chestBlockingRenaming := Chest named: newChestName.
+					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
+						   chestBlockingRenaming ~= Chest defaultInstance ])
+						  ifTrue: [ 
+							  chestBlockingRenaming remove.
+							  chest name: newChestName ]
+						  ifFalse: [ 
+						  UIManager default inform:
+							  newChestName , ' could not be removed.' ] ] ]
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> presenterToRenameObject: object inChest: chest [
+
+	^ ChestRequestDialogPresenter
+		request: self namingQuery
+		onAccept: [ :name | 
+			[ chest renameObject: object into: name ]
+				on: ChestKeyAlreadyInUseError
+				do: [ 
+					(self confirm: (self warningNamingObjectInChest: name)) ifTrue: [ 
+						chest removeObjectNamed: name.
+						chest renameObject: object into: name ] ] ]
 ]
 
 { #category : #removing }
@@ -479,6 +509,45 @@ ChestPresenter >> removeSelectedItem [
 					chestContentsTable selection selectedIndex - 1 ] ]
 ]
 
+{ #category : #initialization }
+ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
+
+	| requestPresenter |
+	requestPresenter := self presenterToNameNewChest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: toolbar;
+		 bePositionRight;
+		 yourself) popup
+]
+
+{ #category : #initialization }
+ChestPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
+
+	| requestPresenter |
+	requestPresenter := self presenterToRenameChest: chest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
+]
+
+{ #category : #initialization }
+ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anItem [
+
+	| chest requestPresenter |
+	chest := chestsTable selectedItem.
+	requestPresenter := self
+		                    presenterToRenameObject: object
+		                    inChest: chest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
+]
+
 { #category : #'as yet unclassified' }
 ChestPresenter >> selectedChest [
 	^ chestsTable selection selectedItem
@@ -502,5 +571,5 @@ ChestPresenter >> warningNamingObjectInChest: newObjectName [
 
 	^ '`' , newObjectName
 	  ,
-	  '` is the name of an object that already exists in this chest. If you proceed, this object in the existing chest will be removed and lost. Are you sure you want to proceed?'
+	  '` already exists in this chest. Do you want to replace it?'
 ]
