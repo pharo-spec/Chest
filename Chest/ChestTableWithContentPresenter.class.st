@@ -83,27 +83,29 @@ ChestTableWithContentPresenter >> defaultLayout [
 ]
 
 { #category : #updating }
-ChestTableWithContentPresenter >> eventChestRemoved: aChest [
+ChestTableWithContentPresenter >> eventChestRemoved: aChestRemovedAnnouncement [
 	self updateChestsTable
 ]
 
 { #category : #updating }
-ChestTableWithContentPresenter >> eventContentOfChest: aChest updatedTo: newContents [
-	| currentlySelectedChest |
+ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
+	| currentlySelectedChest updatedChest |
+	updatedChest := aChestUpdatedAnnouncement updatedChest.
 	currentlySelectedChest := chestsTable selectedItem.
-	currentlySelectedChest == aChest ifTrue: [ 
-		self updateChestContentTableForChest: aChest ]
+	currentlySelectedChest == updatedChest ifTrue: [ 
+		self updateChestContentTableForChest: updatedChest ]
 ]
 
 { #category : #updating }
-ChestTableWithContentPresenter >> eventNewChest: aChest [
+ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
 	self updateChestsTable
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> initialize [
 	super initialize.
-	Chest subscribeToUpdates: self
+	"Chest subscribeToUpdates: self"
+	self subscribeToChestAnnouncer
 ]
 
 { #category : #initialization }
@@ -183,10 +185,43 @@ ChestTableWithContentPresenter >> makeInputField [
 		  yourself
 ]
 
+{ #category : #updating }
+ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
+
+	self
+		subscribeToChestCreatedAnnouncement;
+		subscribeToChestUpdatedAnnouncement;
+		subscribeToChestRemovedAnnouncement
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
+
+	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
+
+	Chest announcer weak when: ChestRemoved send: #eventChestRemoved: to: self
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
+
+	Chest announcer weak when: ChestUpdated send: #eventContentOfChestUpdated: to: self
+]
+
 { #category : #accessing }
 ChestTableWithContentPresenter >> title [
 
 	^ 'Choose a variable name for your object'
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
+
+	Chest unsubscribe: self
 ]
 
 { #category : #initialization }
