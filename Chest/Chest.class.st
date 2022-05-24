@@ -1,21 +1,99 @@
 "
-Represent a collection of ChestObject
+Chest is an object manager that allows to store objects in chests. The objects that are stored in a chest have a name, which is a unique key in their chest. A chest itself also has a name, which is a unique key in the `ChestDictionary` in `Chest class`.
 
-# Instance Variables
-	- contents: OrderedCollection<ChestObject>
-		The objects contained in this Chest instance
-	- name: String
-		Name of this Chest instance
-	- id: Integer
-		Unique id of this Chest instance
-		
-# Class Variables
-	- defaultInstance: Chest
-		The default Chest instance
-	- nextAvailableID: Integer
-		The next id that is not used by any Chest. To be given to the next Chest that is created.
-	- IDToChestInstance: Dictionary<Integer, Chest>
-		Maps chest ids to chest instances
+Chest is very defensive: it won't allow you to create or to rename a chest or an object in a chest if it would cause the deletion of another chest or another object in a chest.
+Chest has a default instance that is the only chest that can't be deleted. Most of `Chest API` can be used on `Chest class`, which actually calls the corresponding method on its default instance.
+
+In `SpCodePresenter` instances with `SpCodeScriptingInteractionModel`, you can select objects to store them in the chest of your choice; or load any object from any chest into this presenter.
+
+# Public API and Key Messages
+
+## `Chest` API
+
+- `Chest>>#add:` : adds the object in argument to the chest with a default name that is in the form of 'chestName_autoIncrementedNumber'
+- `Chest>>#at: ` : gives the object in the chest whose name is the string in argument if it exists, else `KeyNotFound`
+- `Chest>>#at:put:` : adds the object in second argument to the chest with the name in first argument if no other object is already named so, else `ChestKeyAlreadyInUseError`
+- `Chest>>#contents` : gives a copy of a chest's contents as a dictionary
+- `Chest>>#remove:` : removes the object in argument from a chest if it is there, else `KeyNotFound`
+- `Chest>>#removeObjectNamed:` : removes the object whose name is in argument if it is there, else `ObjectNotInChestError`
+The 6 messages above can be sent to `Chest class` unlike the ones below:
+- `Chest>>#empty`: empties a chest.
+- `Chest>>#remove` : completely deletes this chest
+- `Chest>>#name` : gives this chest's name
+- `Chest>>#name:` : renames this chest as the string in argument if no other chest is already named so, else `ChestKeyAlreadyInUseError`
+- `Chest>>#renameObject:into:` : renames the object (first argument) in a chest as the string in second argument; if the object is in the chest else `ObjectNotInChestError` and if no other object is already named so else `ChestKeyAlreadyInUseError`
+- `Chest>>#inspectAt` : inspect in a chest the object whose name is in argument
+
+## `Chest class` API
+
+- `Chest class>>#allChests` : gives an ordered collection that contains all chests
+- `Chest class>>#chestDictionary` : gives all chests with their names as a dictionary
+- `Chest class>>#named:` : gives the chest that is named as the string in argument
+- `Chest class>>#defaultInstance` : gives the default chest that is used when you use `Chest` API on `Chest class`
+- `Chest class>>#announcer` : helper that gives the unique instance of `ChestAnnouncer`
+- `Chest class>>#unsubscribe:` : helper that unsubscribes its argument from the unique instance of `ChestAnnouncer`
+
+### How to create instances 
+- `Chest class>>#new` : creates a chest with a default name that is in the form of 'Chest_autoIncrementedNumber'
+- `Chest class>>#newNamed:` : creates a chest with the name given in parameter if no other chest is already named so, else `ChestKeyAlreadyInUseError`
+
+#### Example
+
+```language=Pharo
+	Chest new. ""its name is 'Chest_1' if no other chest have been created before""
+	Chest new. ""its name is 'Chest_2' if no other chest have been created before""
+	Chest newNamed: 'toto'. ""its name is 'toto'""
+	Chest newNamed: 'toto'. ""ChestKeyAlreadyInUseError as a chest named 'toto' already exists""
+	
+	(Chest named: 'toto') add: 42.
+	""42 has the key 'toto_1' in the chest named 'toto'""
+	
+	(Chest named: 'toto') at: 'toto' put: 42.
+	(Chest named: 'toto') at: 'toto'. ""returns 42""
+	""42 has the key 'toto' and not 'toto_1' anymore as an object has a unique key in a chest.""
+	
+	(Chest named: 'toto') at: 'toto' put: 72.
+	""72 is not put in the chest: a ChestKeyAlreadyInUseError is raised as 42 already has the key 'toto'""
+	
+	(Chest named: 'toto') renameObject: 42 into: 'tata' .
+	""42 has now the key 'tata' in the chest named 'toto'""
+	
+	(Chest named: 'toto') removeObjectNamed: 'tata'.
+	""42 is removed as it had the key 'tata'""
+	
+	(Chest named: 'toto') at: 'toto' put: 72.
+	(Chest named: 'toto') remove: 72. 
+	""72 is not in the chest anymore""
+	
+	(Chest named: 'toto') remove: 72. ""KeyNotFound""
+	(Chest named: 'toto') renameObject: 72 into: 'toto'. ""ObjectNotInChestError""
+	(Chest named: 'toto') removeObjectNamed: 'toto'. ""ObjectNotInChestError""
+	
+	(Chest named: 'toto') 	at: 'toto' put: 42;
+									at: 'tata' put: 72;
+									renameObject: 42 into: 'tata'. ""ChestKeyAlreadyInUseError""
+	
+	(Chest named: 'toto') contents at: 'tata' ""returns 72""
+							
+	Chest defaultInstance	name: 'toto' ""ChestKeyAlreadyInUseError""					
+	
+	(Chest named: 'toto') remove.
+	""deletes the chest named 'toto', and all objects inside""
+	
+	Chest named: 'toto'. ""KeyNotFound""
+	Chest defaultInstance name: 'toto'. ""the default chest is now named 'toto'""
+	
+	Chest defaultInstance remvove. ""the default chest is still there as it can't be removed""
+	
+	Chest add: 42. ""adds 42 to the default chest""
+```
+ 
+# Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	contents:		<Dictionary<Object>>
+	lastUsedNumber:	 used to generate default names that aren't already used	<Integer>
+	name:		<String>
 "
 Class {
 	#name : #Chest,
