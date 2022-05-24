@@ -159,9 +159,11 @@ Chest class >> removeChest: aChest [
 
 { #category : #removing }
 Chest class >> removeChestNamed: aKey [
+
 	| removedChest |
+	aKey = DefaultInstance name ifTrue: [ ^ self ].
 	removedChest := ChestDictionary removeKey: aKey.
-	self notifyChestRemoved: removedChest.
+	self notifyChestRemoved: removedChest
 ]
 
 { #category : #api }
@@ -292,11 +294,11 @@ Chest >> removeObjectNamed: aString [
 ]
 
 { #category : #accessing }
-Chest >> renameObject: anObject into:  aString [
+Chest >> renameObject: anObject into: aString [
+
 	| oldKey |
-	
-	[oldKey := self contentsPrivate keyForIdentity: anObject] ifNil: [ ObjectNotInChestError signal ].
+	(oldKey := self contentsPrivate keyForIdentity: anObject) ifNil: [ 
+		ObjectNotInChestError signal ].
 	self at: aString put: anObject.
-	oldKey ifNotNil: [self contentsPrivate removeKey: oldKey].
 	self contentsUpdated
 ]

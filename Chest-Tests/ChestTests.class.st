@@ -70,6 +70,22 @@ ChestTests >> testAddRemoveToDefaultChest [
 ]
 
 { #category : #tests }
+ChestTests >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKeyForThisObject [
+
+	| chest object oldName newName |
+	chest := Chest new.
+	object := Object new.
+	oldName := chest add: object.
+
+	self assert: (chest at: oldName) identicalTo: object.
+
+	newName := chest add: object.
+
+	self assert: (chest at: newName) identicalTo: object.
+	self should: [ chest at: oldName ] raise: KeyNotFound
+]
+
+{ #category : #tests }
 ChestTests >> testAlwaysGiveFreshIDToNewChests [
 	| c1 c2 c3 idList c4 |
 	c1 := Chest new.
@@ -190,6 +206,27 @@ ChestTests >> testDefaultInstance [
 ]
 
 { #category : #tests }
+ChestTests >> testEmpty [
+
+	| chest |
+	chest := Chest new.
+	chest
+		at: 'toto' put: 'toto';
+		at: 'tata' put: 'tata';
+		at: 'titi' put: 'titi'.
+
+	self assert: (chest at: 'toto') equals: 'toto'.
+	self assert: (chest at: 'tata') equals: 'tata'.
+	self assert: (chest at: 'titi') equals: 'titi'.
+
+	chest empty.
+
+	self should: [ chest at: 'toto' ] raise: KeyNotFound.
+	self should: [ chest at: 'tata' ] raise: KeyNotFound.
+	self should: [ chest at: 'titi' ] raise: KeyNotFound
+]
+
+{ #category : #tests }
 ChestTests >> testEmptyChest [
 
 	| chest |
@@ -248,6 +285,45 @@ ChestTests >> testNotifications [
 ]
 
 { #category : #tests }
+ChestTests >> testRemove [
+
+	| chest |
+	chest := Chest new.
+
+	self assert: (Chest named: chest name) identicalTo: chest.
+
+	chest remove.
+
+	self should: [ Chest named: chest name ] raise: KeyNotFound
+]
+
+{ #category : #tests }
+ChestTests >> testRemoveChestNamed [
+
+	| chest |
+	chest := Chest new.
+
+	self assert: (Chest named: chest name) identicalTo: chest.
+
+	Chest removeChestNamed: chest name.
+
+	self should: [ Chest named: chest name ] raise: KeyNotFound
+]
+
+{ #category : #tests }
+ChestTests >> testRemoveChestNamedWithDefaultInstance [
+
+	| chest |
+	chest := Chest defaultInstance.
+
+	self assert: (Chest named: chest name) identicalTo: chest.
+
+	Chest removeChestNamed: chest name.
+
+	self assert: (Chest named: chest name) identicalTo: chest
+]
+
+{ #category : #tests }
 ChestTests >> testRemoveObjectNamedWithExistingObject [
 
 	| chest |
@@ -279,4 +355,114 @@ ChestTests >> testRemoveObjectNamedWithObjectThatDoesNotExist [
 	self
 		should: [ chest removeObjectNamed: 'toto' ]
 		raise: ObjectNotInChestError
+]
+
+{ #category : #tests }
+ChestTests >> testRemoveWithDefaultInstance [
+
+	| chest |
+	chest := Chest defaultInstance.
+
+	self assert: (Chest named: chest name) identicalTo: chest.
+
+	chest remove.
+
+	self assert: (Chest named: chest name) identicalTo: chest
+]
+
+{ #category : #tests }
+ChestTests >> testRenameObjectInto [
+
+	| chest object |
+	chest := Chest new.
+	object := Object new.
+	chest at: 'toto' put: object.
+
+	self assert: (chest at: 'toto') identicalTo: object.
+
+	chest renameObject: object into: 'tata'.
+
+	self assert: (chest at: 'tata') identicalTo: object.
+	self should: [ chest at: 'toto' ] raise: KeyNotFound
+]
+
+{ #category : #tests }
+ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
+
+	| chest objectToBeRenamed objectInChest |
+	chest := Chest new.
+	objectToBeRenamed := Object new.
+	objectInChest := Object new.
+	chest at: 'tata' put: objectInChest.
+
+	self
+		shouldnt: [ chest renameObject: objectInChest into: 'toto' ]
+		raise: [ ObjectNotInChestError ].
+
+	self
+		should: [ chest renameObject: objectToBeRenamed into: 'titi' ]
+		raise: ObjectNotInChestError.
+
+	self assert: (chest at: 'toto') identicalTo: objectInChest.
+	self should: [ chest at: 'titi' ] raise: KeyNotFound
+]
+
+{ #category : #tests }
+ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
+
+	| chest objectToBeRenamed objectAlreadyHavingNewName |
+	chest := Chest new.
+	objectToBeRenamed := Object new.
+	objectAlreadyHavingNewName := Object new.
+	chest at: 'tata' put: objectAlreadyHavingNewName.
+	chest at: 'toto' put: objectToBeRenamed.
+
+	self
+		assert: (chest at: 'tata')
+		identicalTo: objectAlreadyHavingNewName.
+	self assert: (chest at: 'toto') identicalTo: objectToBeRenamed.
+
+	self
+		should: [ chest renameObject: objectToBeRenamed into: 'tata' ]
+		raise: ChestKeyAlreadyInUseError.
+
+	self
+		assert: (chest at: 'tata')
+		identicalTo: objectAlreadyHavingNewName.
+	self assert: (chest at: 'toto') identicalTo: objectToBeRenamed
+]
+
+{ #category : #tests }
+ChestTests >> testRenamingChestChangesItsKeyInDictionary [
+
+	| chest firstNameAvailable oldName |
+	chest := Chest new.
+	oldName := chest name.
+	firstNameAvailable := self firstChestNameAvailable.
+
+	chest name: firstNameAvailable.
+
+	self assert: chest name equals: firstNameAvailable.
+	self assert: (Chest named: firstNameAvailable) identicalTo: chest.
+	self should: [ Chest named: oldName ] raise: KeyNotFound
+]
+
+{ #category : #tests }
+ChestTests >> testRenamingChestRaisesErrorWhenChestOfSameNameAlreadyExists [
+
+	| chestToBeRenamed firstNameAvailable oldName chestAlreadyHavingNewName |
+	chestToBeRenamed := Chest new.
+	oldName := chestToBeRenamed name.
+	firstNameAvailable := self firstChestNameAvailable.
+	chestAlreadyHavingNewName := Chest newNamed: firstNameAvailable.
+
+	self
+		should: [ chestToBeRenamed name: firstNameAvailable ]
+		raise: ChestKeyAlreadyInUseError.
+
+	self assert: chestToBeRenamed name equals: oldName.
+	self
+		assert: (Chest named: firstNameAvailable)
+		identicalTo: chestAlreadyHavingNewName.
+	self assert: (Chest named: oldName) identicalTo: chestToBeRenamed
 ]
