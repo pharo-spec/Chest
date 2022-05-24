@@ -11,8 +11,8 @@ Class {
 ChestCreated class >> new: newChest [
 
 	^ self new
-		createdChest: newChest;
-		yourself
+		  createdChest: newChest;
+		  yourself
 ]
 
 { #category : #accessing }

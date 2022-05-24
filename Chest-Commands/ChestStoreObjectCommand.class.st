@@ -25,16 +25,18 @@ ChestStoreObjectCommand class >> defaultName [
 { #category : #'accessing - defaults' }
 ChestStoreObjectCommand class >> defaultShortcutKey [
 
-	^ $c meta, $s meta
+	^ $c meta , $s meta
 ]
 
 { #category : #'as yet unclassified' }
 ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName withPresenter: choicePresenter [
 
-	^ [ objectName = chest nextDefaultNameForObject
-				ifTrue: [ self storeObject: result intoChest: chest ]
-				ifFalse: [ 
-				self storeObject: result intoChest: chest withName: objectName ] .  choicePresenter window close. ]
+	^ [ 
+	  objectName = chest nextDefaultNameForObject
+		  ifTrue: [ self storeObject: result intoChest: chest ]
+		  ifFalse: [ 
+		  self storeObject: result intoChest: chest withName: objectName ].
+	  choicePresenter window close ]
 ]
 
 { #category : #initialization }
@@ -70,6 +72,7 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 
 { #category : #execution }
 ChestStoreObjectCommand >> execute [
+
 	| choicePresenter |
 	choicePresenter := self buildChoicePresenter.
 	choicePresenter open

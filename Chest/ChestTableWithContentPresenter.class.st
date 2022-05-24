@@ -27,13 +27,13 @@ ChestTableWithContentPresenter >> chestContentTable [
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> chestContentTableContainer [
 
-	^ chestContentTableContainer 
+	^ chestContentTableContainer
 ]
 
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> chestTableContainer [
 
-	^ chestTableContainer 
+	^ chestTableContainer
 ]
 
 { #category : #updating }
@@ -45,10 +45,18 @@ ChestTableWithContentPresenter >> chestsTable [
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> commandLayout [
 
-	self chestTableContainer removeAll; add: inputField; add: #chestsTable.
-	self chestContentTableContainer removeAll; add: #chestContentsTable.
-	
-	^ SpBoxLayout newVertical add: self defaultLayout; add: #confirmActionBar; yourself
+	self chestTableContainer
+		removeAll;
+		add: inputField;
+		add: #chestsTable.
+	self chestContentTableContainer
+		removeAll;
+		add: #chestContentsTable.
+
+	^ SpBoxLayout newVertical
+		  add: self defaultLayout;
+		  add: #confirmActionBar;
+		  yourself
 ]
 
 { #category : #'ui requests' }
@@ -69,26 +77,28 @@ ChestTableWithContentPresenter >> confirmActionBar [
 
 { #category : #accessing }
 ChestTableWithContentPresenter >> confirmButton [
-	
-	^ self confirmActionBar presenters first.
+
+	^ self confirmActionBar presenters first
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> defaultLayout [
-	
-	^ (SpPanedLayout newHorizontal
-						    add: chestTableContainer;
-						    add: chestContentTableContainer;
-						    yourself)
+
+	^ SpPanedLayout newHorizontal
+		  add: chestTableContainer;
+		  add: chestContentTableContainer;
+		  yourself
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> eventChestRemoved: aChestRemovedAnnouncement [
+
 	self updateChestsTable
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
+
 	| currentlySelectedChest updatedChest |
 	updatedChest := aChestUpdatedAnnouncement updatedChest.
 	currentlySelectedChest := chestsTable selectedItem.
@@ -98,11 +108,13 @@ ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnou
 
 { #category : #updating }
 ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
+
 	self updateChestsTable
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> initialize [
+
 	super initialize.
 	self subscribeToChestAnnouncer
 ]
@@ -116,7 +128,7 @@ ChestTableWithContentPresenter >> initializePresenters [
 		                       yourself.
 	chestContentsTable := self makeChestContentsTable.
 	chestContentTableContainer := SpBoxLayout newVertical
-		                              add: self chestContentTable ;
+		                              add: self chestContentTable;
 		                              yourself.
 	chestsTable selectIndex: 1.
 	inputField := self makeInputField.
@@ -148,7 +160,6 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 		  addColumn: (SpStringTableColumn
 				   title: 'Object'
 				   evaluated: [ :association | association value asString ]);
-"		  enableSearch;"
 		  items: OrderedCollection new
 ]
 
@@ -178,7 +189,7 @@ ChestTableWithContentPresenter >> makeConfirmActionBar [
 				   yourself);
 		  add: (self newButton
 				   label: 'Cancel';
-					action: [ self window close ];
+				   action: [ self window close ];
 				   yourself);
 		  yourself
 ]
@@ -205,19 +216,28 @@ ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 
-	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self
+	Chest announcer weak
+		when: ChestCreated
+		send: #eventNewChest:
+		to: self
 ]
 
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 
-	Chest announcer weak when: ChestRemoved send: #eventChestRemoved: to: self
+	Chest announcer weak
+		when: ChestRemoved
+		send: #eventChestRemoved:
+		to: self
 ]
 
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
 
-	Chest announcer weak when: ChestUpdated send: #eventContentOfChestUpdated: to: self
+	Chest announcer weak
+		when: ChestUpdated
+		send: #eventContentOfChestUpdated:
+		to: self
 ]
 
 { #category : #accessing }
@@ -234,11 +254,14 @@ ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
 
 { #category : #initialization }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
-	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents associations asOrderedCollection ]
+
+	chestContentsTable ifNotNil: [ :lst | 
+		lst items: aChest contents associations asOrderedCollection ]
 ]
 
 { #category : #updating }
 ChestTableWithContentPresenter >> updateChestsTable [
+
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 

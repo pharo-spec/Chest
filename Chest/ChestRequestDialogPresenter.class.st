@@ -36,7 +36,7 @@ ChestRequestDialogPresenter class >> request: requestText onAccept: aBlock [
 { #category : #accessing }
 ChestRequestDialogPresenter >> acceptBlock [
 
-	^ acceptBlock ifNil: [ acceptBlock := [:text| ] ]
+	^ acceptBlock ifNil: [ acceptBlock := [ :textContent |  ] ]
 ]
 
 { #category : #accessing }
@@ -82,35 +82,35 @@ ChestRequestDialogPresenter >> cancelBlock: anObject [
 
 { #category : #layout }
 ChestRequestDialogPresenter >> defaultLayout [
-	
+
 	^ SpBoxLayout newTopToBottom
-		borderWidth: 5;
-		spacing: 5;
-		add: (SpBoxLayout newLeftToRight
-				vAlignCenter;
-				spacing: 5;
-				add: #image expand: false;
-				add: #titleLabel;
-				yourself)
-			expand: false;
-		add: #text;
-		add: #actionBar;
-		yourself
+		  borderWidth: 5;
+		  spacing: 5;
+		  add: (SpBoxLayout newLeftToRight
+				   vAlignCenter;
+				   spacing: 5;
+				   add: #image expand: false;
+				   add: #titleLabel;
+				   yourself)
+		  expand: false;
+		  add: #text;
+		  add: #actionBar;
+		  yourself
 ]
 
 { #category : #configuration }
 ChestRequestDialogPresenter >> disableText [
+
 	text beNotEditable
 ]
 
 { #category : #layout }
 ChestRequestDialogPresenter >> initializePresenters [
-	
+
 	actionBar := self buildActionBar.
 
 	text := self newText.
-	image := self newImage image: (self application iconNamed: #question).
-
+	image := self newImage image: (self application iconNamed: #question)
 ]
 
 { #category : #accessing }

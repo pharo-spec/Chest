@@ -10,7 +10,7 @@ Class {
 { #category : #initialization }
 ChestAnnouncer class >> initialize [
 
-	uniqueInstance := self new.
+	uniqueInstance := self new
 ]
 
 { #category : #initialization }

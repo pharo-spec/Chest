@@ -11,17 +11,19 @@ Class {
 { #category : #accessing }
 ChestCommandTreeBuilder class >> buildCommandsGroupWith: aCodePresenter forRoot: aRootCommandGroup [
 
-	self new buildCommandsGroupWith: aCodePresenter forRoot: aRootCommandGroup 
+	self new
+		buildCommandsGroupWith: aCodePresenter
+		forRoot: aRootCommandGroup
 ]
 
 { #category : #accessing }
-ChestCommandTreeBuilder class >> displayStrategy [ 
+ChestCommandTreeBuilder class >> displayStrategy [
 
-	^ CmUIDisplayAsSubMenu 
+	^ CmUIDisplayAsSubMenu
 ]
 
 { #category : #accessing }
-ChestCommandTreeBuilder class >> groupDescription [ 
+ChestCommandTreeBuilder class >> groupDescription [
 
 	^ 'Actions interacting with Chest'
 ]
@@ -34,6 +36,7 @@ ChestCommandTreeBuilder class >> groupName [
 
 { #category : #building }
 ChestCommandTreeBuilder >> buildAndRegisterGroup [
+
 	"builds the group that will register under the provided root command group"
 
 	| group |
@@ -70,7 +73,7 @@ ChestCommandTreeBuilder >> buildSpecCommand: commandClass forContext: aContext [
 { #category : #building }
 ChestCommandTreeBuilder >> chestCommandClasses [
 
-	^ { ChestLoadObjectIntoCode   }
+	^ { ChestLoadObjectIntoCode }
 ]
 
 { #category : #accessing }
@@ -81,9 +84,10 @@ ChestCommandTreeBuilder >> displayStrategy [
 
 { #category : #accessing }
 ChestCommandTreeBuilder >> group [
+
 	^ rootCommandGroup
-		commandOrGroupNamed: self groupName
-		ifNone: [ self buildAndRegisterGroup ]
+		  commandOrGroupNamed: self groupName
+		  ifNone: [ self buildAndRegisterGroup ]
 ]
 
 { #category : #accessing }

@@ -25,7 +25,7 @@ ChestLoadObjectIntoCode class >> defaultName [
 { #category : #default }
 ChestLoadObjectIntoCode class >> defaultShortcutKey [
 
-	^ $c meta, $l meta
+	^ $c meta , $l meta
 ]
 
 { #category : #initialization }
@@ -67,7 +67,9 @@ ChestLoadObjectIntoCode >> execute [
 { #category : #testing }
 ChestLoadObjectIntoCode >> isVisibleForContext: aCodePresenter [
 
-	^ aCodePresenter interactionModel isNotNil and: [ aCodePresenter interactionModel allSelectors indexOf: #addBinding: > 0 ]
+	^ aCodePresenter interactionModel isNotNil and: [ 
+		  aCodePresenter interactionModel allSelectors indexOf:
+			  #addBinding: > 0 ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -75,7 +77,8 @@ ChestLoadObjectIntoCode >> loadIntoContextObject: anObject named: objectName [
 
 	| metalink interactionModel |
 	interactionModel := self context interactionModel.
-	interactionModel addBinding: (WorkspaceVariable key: objectName value: anObject)
+	interactionModel addBinding:
+		(WorkspaceVariable key: objectName value: anObject)
 	"metalink := MetaLink new.
 	metalink arguments: #(receiver arguments).
 	metalink metaObject: [:receiver :arguments|  ]."

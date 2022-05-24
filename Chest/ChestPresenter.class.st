@@ -24,13 +24,15 @@ Class {
 
 { #category : #'menu-entry' }
 ChestPresenter class >> debugWorldMenuOn: aBuilder [
+
 	<worldMenu>
 	(aBuilder item: #'Open Chests')
 		parent: #Debugging;
 		order: 0;
-		help: 'Store objects from anywhere to keep them around, check equality...';
+		help:
+			'Store objects from anywhere to keep them around, check equality...';
 		action: [ self open ];
-		icon: (Smalltalk ui icons iconNamed: #group).
+		icon: (Smalltalk ui icons iconNamed: #group)
 ]
 
 { #category : #examples }
@@ -47,15 +49,19 @@ ChestPresenter class >> open [
 { #category : #adding }
 ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 
-	playground firstPage interactionModel addBindings: aCollectionOfBindings 
+	playground firstPage interactionModel addBindings:
+		aCollectionOfBindings
 ]
 
 { #category : #adding }
 ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBlock [
 
-	|dialogLayout|
+	| dialogLayout |
 	dialogLayout := aDialogPresenter layout.
-	dialogLayout add: (SpButtonPresenter new label: 'Confirm'; action: aBlock; yourself)
+	dialogLayout add: (SpButtonPresenter new
+			 label: 'Confirm';
+			 action: aBlock;
+			 yourself)
 ]
 
 { #category : #'as yet unclassified' }
@@ -86,7 +92,8 @@ ChestPresenter >> buildChestTableContainerLayout [
 { #category : #'as yet unclassified' }
 ChestPresenter >> collectBindingsFromAllChests [
 
-	^ chestsTable items flatCollect: [ :each | self collectBindingsFromChest: each ] 
+	^ chestsTable items flatCollect: [ :each | 
+		  self collectBindingsFromChest: each ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -111,8 +118,10 @@ ChestPresenter >> defaultLayout [
 	toolbarHeight := 35.
 	helpButtonSize := 35.
 	bottomRibbonHeight := 35.
-	self buildChestTableContainerLayout; buildChestContentTableContainerLayout.
-	
+	self
+		buildChestTableContainerLayout;
+		buildChestContentTableContainerLayout.
+
 	^ SpBoxLayout newVertical
 		  add: (SpPanedLayout newHorizontal
 				   add: #chestTableWithContent;
@@ -142,6 +151,7 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
 { #category : #updating }
 ChestPresenter >> helpText [
+
 	^ 'THIS IS THE HELP FOR CHESTS' , Character cr asString
 	  , Character cr asString , 'ID' , Character cr asString
 	  ,
@@ -185,18 +195,21 @@ ChestPresenter >> helpText [
 
 { #category : #'as yet unclassified' }
 ChestPresenter >> iconManager [
+
 	^ Smalltalk ui icons
 ]
 
 { #category : #specs }
 ChestPresenter >> initialExtent [
-	^ 800@600
+
+	^ 800 @ 600
 ]
 
 { #category : #initialization }
 ChestPresenter >> initialize [
+
 	super initialize.
-	helpExpanded := false.
+	helpExpanded := false
 ]
 
 { #category : #initialization }
@@ -215,18 +228,6 @@ ChestPresenter >> initializePresenters [
 	chestsTable selectIndex: 1.
 
 	self layout: self defaultLayout
-
-	"objectTable := self makeObjectTable.
-	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
-	helpButton := self makeHelpButton.
-	emptyButton := self newButton
-		action: [ ChestPresenter empty ];
-		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16);
-		yourself.
-	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
-	leftSpacerForHelpTitleLabel := SpSpacerPresenter new.
-	rightSpacerForHelpTitleLabel := SpSpacerPresenter new.
-	helpText := self newText enabled: false; text: self helpText."
 ]
 
 { #category : #initialization }
@@ -332,7 +333,7 @@ ChestPresenter >> makeChestTableContextMenu [
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
 
-	chestsTable contextMenu: self makeChestTableContextMenu 
+	chestsTable contextMenu: self makeChestTableContextMenu
 ]
 
 { #category : #initialization }
@@ -357,70 +358,16 @@ ChestPresenter >> makeChestsTableToolbar [
 
 { #category : #initialization }
 ChestPresenter >> makeHelpButton [
+
 	^ self newButton
 		  action: [ UIManager default notify: self helpText ];
 		  icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)
-
-	"	^ self newButton
-		action: [
-			helpExpanded ifFalse: [
-				helpExpanded := true.
-				extent := self window window extent.
-				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
-				self window extent: (extent + (0@(self class helpPanelHeight))).
-				helpButton state: true.]
-			ifTrue: [
-				helpExpanded := false.
-				extent := self window window extent.
-				self window rebuildWithSpecLayout: self class defaultSpec.
-				self window extent: (extent - (0@(self class helpPanelHeight))).
-				helpButton state: false]];
-		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)."
-]
-
-{ #category : #'as yet unclassified' }
-ChestPresenter >> namingDialog [
-
-	| dialog dialogLayout |
-	
-	dialog := SpRequestTextDialog new
-		          title: 'Name Chest';
-		          label: self namingQuery;
-		          acceptLabel: 'Confirm';
-		          extent: 500 @ 160;
-		          cancelLabel: 'Cancel';
-		          yourself.
-	dialogLayout := dialog layout.
-	SpDialogWindowPresenter new buttons do: [ :each | dialogLayout add: each ].
-	dialog layout: dialogLayout.
-	^ dialog
 ]
 
 { #category : #updating }
 ChestPresenter >> namingQuery [
 
 	^ 'What name do you want to give to your object?'
-]
-
-{ #category : #'as yet unclassified' }
-ChestPresenter >> performWithChestNameErrorHandling: aBlock withDialog: aDialog [
-
-	| newChestName |
-	newChestName := aDialog text.
-	[ aBlock value: newChestName ]
-		on: ChestKeyAlreadyInUseError
-		do: [ 
-			| chest |
-			chest := Chest named: newChestName.
-			((self confirm: (self warningNamingChest: newChestName)) onAccept: [ 
-				 :dialog | 
-				 chest ~= Chest defaultInstance
-					 ifTrue: [ 
-						 chest remove.
-						 aBlock value: newChestName ]
-					 ifFalse: [ 
-					 dialog presenter inform: newChestName , ' could not be removed.' ] ]) 
-				openDialogWithParent: aDialog ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -469,14 +416,15 @@ ChestPresenter >> presenterToRenameChest: chest [
 ChestPresenter >> presenterToRenameObject: object inChest: chest [
 
 	^ ChestRequestDialogPresenter
-		request: self namingQuery
-		onAccept: [ :name | 
-			[ chest renameObject: object into: name ]
-				on: ChestKeyAlreadyInUseError
-				do: [ 
-					(self confirm: (self warningNamingObjectInChest: name)) ifTrue: [ 
-						chest removeObjectNamed: name.
-						chest renameObject: object into: name ] ] ]
+		  request: self namingQuery
+		  onAccept: [ :name | 
+			  [ chest renameObject: object into: name ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  (self confirm: (self warningNamingObjectInChest: name)) 
+						  ifTrue: [ 
+							  chest removeObjectNamed: name.
+							  chest renameObject: object into: name ] ] ]
 ]
 
 { #category : #removing }
@@ -557,11 +505,13 @@ ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anIt
 
 { #category : #'as yet unclassified' }
 ChestPresenter >> selectedChest [
+
 	^ chestsTable selection selectedItem
 ]
 
 { #category : #specs }
 ChestPresenter >> title [
+
 	^ 'Chests'
 ]
 
@@ -577,6 +527,5 @@ ChestPresenter >> warningNamingChest: newChestName [
 ChestPresenter >> warningNamingObjectInChest: newObjectName [
 
 	^ '`' , newObjectName
-	  ,
-	  '` already exists in this chest. Do you want to replace it?'
+	  , '` already exists in this chest. Do you want to replace it?'
 ]
