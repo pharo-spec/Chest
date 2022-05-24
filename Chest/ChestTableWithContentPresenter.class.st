@@ -153,10 +153,12 @@ ChestTableWithContentPresenter >> makeChestsTable [
 		  items: Chest allChests;
 		  display: [ :chest | chest name ];
 		  transmitDo: [ :aChest | 
-			  aChest ifNotNil: [ 
+			  aChest
+				  ifNotNil: [ 
 					  self updateChestContentTableForChest: aChest.
 					  chestContentsTable items ifNotEmpty: [ 
-							  chestContentsTable selectIndex: 1 ] ] ];
+							  chestContentsTable selectIndex: 1 ] ]
+				  ifNil: [ chestContentsTable items: {  } asOrderedCollection ] ];
 		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
 		  yourself
 ]
