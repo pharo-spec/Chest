@@ -104,7 +104,6 @@ ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
 { #category : #updating }
 ChestTableWithContentPresenter >> initialize [
 	super initialize.
-	"Chest subscribeToUpdates: self"
 	self subscribeToChestAnnouncer
 ]
 
@@ -124,6 +123,13 @@ ChestTableWithContentPresenter >> initializePresenters [
 	confirmActionBar := self makeConfirmActionBar.
 
 	self layout: self defaultLayout
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	aWindowPresenter whenClosedDo: [ self unsubscribeFromChestAnnouncer ]
 ]
 
 { #category : #accessing }

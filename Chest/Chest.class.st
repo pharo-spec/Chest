@@ -129,19 +129,19 @@ Chest class >> newNamed: aString [
 
 { #category : #'event system' }
 Chest class >> notifyChestRemoved: aChest [
-	"Subscribers do: [ :subscriber | subscriber eventChestRemoved: aChest]"
+	
 	self announcer notifyChestRemoved: aChest
 ]
 
 { #category : #'event system' }
 Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
-	"Subscribers do: [ :subscriber | subscriber eventContentOfChest: aChest updatedTo: contents]"
+	
 	self announcer notifyContentsOfChest: aChest updatedTo: contents
 ]
 
 { #category : #'event system' }
 Chest class >> notifyNewChest: aChest [
-	"Subscribers do: [ :subscriber | subscriber eventNewChest: aChest ]."
+	
 	self announcer notifyNewChest: aChest
 ]
 
@@ -169,12 +169,6 @@ Chest class >> removeChestNamed: aKey [
 { #category : #api }
 Chest class >> removeObjectNamed: aString [
 	^ self defaultInstance removeObjectNamed: aString
-]
-
-{ #category : #'event system' }
-Chest class >> subscribeToUpdates: subscriber [
-	"subscriber will be sent the #event_newChest: and #event_contentOfChest:updatedTo: and #event_chestRemoved: messages when these events happen"
-	"Subscribers add: subscriber"
 ]
 
 { #category : #subscription }

@@ -230,6 +230,13 @@ ChestPresenter >> initializePresenters [
 ]
 
 { #category : #initialization }
+ChestPresenter >> initializeWindow: aWindowPresenter [
+
+	chestTableWithContent initializeWindow: aWindowPresenter.
+	super initializeWindow: aWindowPresenter
+]
+
+{ #category : #initialization }
 ChestPresenter >> makeChestContentTableContextMenu [
 
 	^ self newMenu
