@@ -100,7 +100,7 @@ Chest class >> getNewID [
 Chest class >> initialize [
 	ChestDictionary := Dictionary new.
 	NextAvailableID := 1.
-	DefaultInstance := DefaultChest new.
+	DefaultInstance := Chest newNamed: 'Default'.
 ]
 
 { #category : #'class initialization' }

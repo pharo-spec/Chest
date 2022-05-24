@@ -414,7 +414,7 @@ ChestPresenter >> performWithChestNameErrorHandling: aBlock withDialog: aDialog 
 			chest := Chest named: newChestName.
 			((self confirm: (self warningNamingChest: newChestName)) onAccept: [ 
 				 :dialog | 
-				 chest class ~= DefaultChest
+				 chest ~= Chest defaultInstance
 					 ifTrue: [ 
 						 chest remove.
 						 aBlock value: newChestName ]
