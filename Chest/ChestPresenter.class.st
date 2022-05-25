@@ -1,3 +1,6 @@
+"
+Presenter used to visualize chests and their contents. This is also a debugger extension.
+"
 Class {
 	#name : #ChestPresenter,
 	#superclass : #SpPresenter,

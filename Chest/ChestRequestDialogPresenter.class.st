@@ -1,3 +1,6 @@
+"
+Request dialog used by `ChestPresenter` to ask users to name/rename a chest or an object in a chest.
+"
 Class {
 	#name : #ChestRequestDialogPresenter,
 	#superclass : #SpPresenter,

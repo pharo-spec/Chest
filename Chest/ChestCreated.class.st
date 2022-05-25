@@ -1,3 +1,6 @@
+"
+Announcement made by a `ChestAnnouncer` when a new chest has been created
+"
 Class {
 	#name : #ChestCreated,
 	#superclass : #Announcement,

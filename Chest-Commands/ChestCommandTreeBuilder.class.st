@@ -1,3 +1,6 @@
+"
+Class that builds the group of Chest commands for the `SpCodePresenter` context menu.
+"
 Class {
 	#name : #ChestCommandTreeBuilder,
 	#superclass : #Object,

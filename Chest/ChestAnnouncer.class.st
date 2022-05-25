@@ -1,3 +1,10 @@
+"
+Announcer for `Chest` that announces to its subscribers when:
+
+- a new chest has been created
+- a chest has been removed
+- the content of a chest has been modified
+"
 Class {
 	#name : #ChestAnnouncer,
 	#superclass : #Announcer,

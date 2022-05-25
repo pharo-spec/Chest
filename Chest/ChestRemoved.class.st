@@ -1,3 +1,6 @@
+"
+Announcement made by a `ChestAnnouncer` when a chest has been removed.
+"
 Class {
 	#name : #ChestRemoved,
 	#superclass : #Announcement,

@@ -1,3 +1,6 @@
+"
+Command that allows to load an object or several objects from a chest into a code presenter in a playground or in a debugger.
+"
 Class {
 	#name : #ChestLoadObjectIntoCode,
 	#superclass : #CmCommand,

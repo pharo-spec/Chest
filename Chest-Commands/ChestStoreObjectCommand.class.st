@@ -1,3 +1,6 @@
+"
+Command that allows to store the result of the evaluation of the selected expression in a `SpCodePresenter` into a chest.
+"
 Class {
 	#name : #ChestStoreObjectCommand,
 	#superclass : #SpCodeSelectionCommand,

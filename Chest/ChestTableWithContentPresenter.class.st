@@ -1,3 +1,6 @@
+"
+Minimal subpresenter used by `ChestPresenter` and some commands in the `Chest-Commands` package, that displays all chests with their contents, and a text input field to name different entities according to the context.
+"
 Class {
 	#name : #ChestTableWithContentPresenter,
 	#superclass : #SpPresenter,
