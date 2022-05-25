@@ -267,7 +267,12 @@ ChestPresenter >> makeChestContentTableContextMenu [
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
 				  action: [ 
 					  self addBindingsInPlayground:
-							  (self collectBindingsFromChest: chestsTable selectedChest) ] ]
+							  (self collectBindingsFromChest: chestsTable selectedChest) ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Inspect';
+				  shortcut: $i meta;
+				  action: [ chestContentsTable selectedItem value inspect ] ]
 ]
 
 { #category : #initialization }
