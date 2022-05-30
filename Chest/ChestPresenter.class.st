@@ -4,6 +4,8 @@ Presenter used to visualize chests and their contents. This is also a debugger e
 Class {
 	#name : #ChestPresenter,
 	#superclass : #SpPresenter,
+	#traits : 'TStDebuggerExtension',
+	#classTraits : 'TStDebuggerExtension classTrait',
 	#instVars : [
 		'playground',
 		'helpButton',
@@ -76,7 +78,7 @@ ChestPresenter >> buildChestContentTableContainerLayout [
 				 headerLayoutWithTitle: 'Chest Contents'
 				 withToolbar: chestContentsTableToolbar)
 		withConstraints: [ :cstr | cstr height: 35 ];
-		add: #chestContentsTable
+		add: chestTableWithContent chestContentTable
 ]
 
 { #category : #'as yet unclassified' }
@@ -110,6 +112,25 @@ ChestPresenter >> collectBindingsFromChest: aChest [
 ChestPresenter >> convertBindingIntoProperWorkspaceVariable: aBinding [
 
 	^ WorkspaceVariable key: aBinding key value: aBinding value
+]
+
+{ #category : #'debugger extension' }
+ChestPresenter >> debuggerExtensionToolName [
+
+	^ 'Chest'
+]
+
+{ #category : #'as yet unclassified' }
+ChestPresenter >> debuggerLayout [
+
+	self
+		buildChestTableContainerLayout;
+		buildChestContentTableContainerLayout.
+
+	^ SpBoxLayout newVertical
+		  add: chestTableWithContent;
+		  add: playground;
+		  yourself
 ]
 
 { #category : #layout }
