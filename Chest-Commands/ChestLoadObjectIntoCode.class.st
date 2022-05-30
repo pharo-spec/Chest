@@ -22,7 +22,7 @@ ChestLoadObjectIntoCode class >> defaultIconName [
 { #category : #'accessing - defaults' }
 ChestLoadObjectIntoCode class >> defaultName [
 
-	^ 'Load object from a chest into a code'
+	^ 'Load object from chest'
 ]
 
 { #category : #default }

@@ -278,6 +278,7 @@ ChestPresenter >> makeChestContentTableContextMenu [
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
+				  shortcut: $l meta;
 				  description:
 					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
 				  action: [ 
@@ -289,9 +290,10 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  name: 'Load all';
 				  description:
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
+				  shortcut: $l shift meta;
 				  action: [ 
 					  self addBindingsInPlayground:
-							  (self collectBindingsFromChest: chestsTable selectedChest) ] ];
+							  (self collectBindingsFromChest: self selectedChest) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Inspect';
@@ -308,7 +310,9 @@ ChestPresenter >> makeChestContentsTable [
 			  inspector model inspectedObject:
 					  (selection selectedItem ifNotNil: [ :association | 
 							   association value ]).
-			  inspector updateList ]
+			  inspector updateList ];
+		  applyKeyBindingsFromMenu: chestContentsTable contextMenu;
+		  yourself
 ]
 
 { #category : #initialization }
@@ -335,6 +339,7 @@ ChestPresenter >> makeChestTableContextMenu [
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Rename';
+				  shortcut: $r meta;
 				  description: 'Rename the selected chest';
 				  action: [ 
 					  self
@@ -343,18 +348,18 @@ ChestPresenter >> makeChestTableContextMenu [
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
+				  shortcut: $l meta;
 				  description:
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
-				  shortcut: $f meta;
 				  action: [ "$o meta , $l meta"
 					  self addBindingsInPlayground:
 							  (self collectBindingsFromChest: chestsTable selectedItem) ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
+				  shortcut: $l shift meta;
 				  description:
 					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
-				  shortcut: $o meta shift , $l meta shift;
 				  action: [ 
 					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ]
 ]
@@ -362,7 +367,10 @@ ChestPresenter >> makeChestTableContextMenu [
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
 
-	chestsTable contextMenu: self makeChestTableContextMenu
+	^ chestsTable
+		  contextMenu: self makeChestTableContextMenu;
+		  applyKeyBindingsFromMenu: chestsTable contextMenu;
+		  yourself
 ]
 
 { #category : #initialization }
