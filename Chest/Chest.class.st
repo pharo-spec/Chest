@@ -186,6 +186,17 @@ Chest class >> getNewID [
 	^ newId
 ]
 
+{ #category : #api }
+Chest class >> inChest: aChestName at: aKey put: anObject [
+
+	| chest |
+	[ chest := self named: aChestName ]
+		on: KeyNotFound
+		do: [ chest newNamed: aChestName ].
+
+	^ chest at: aKey put: anObject
+]
+
 { #category : #'class initialization' }
 Chest class >> initialize [
 
