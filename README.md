@@ -5,12 +5,6 @@ Chest allows you to store objects from anywhere, to keep them around to check eq
   
 ![ChestPicture2](https://user-images.githubusercontent.com/32486709/62878741-f9934d80-bd29-11e9-93dd-5969fbf6de72.png)
 
-## Open your Chest
-Chest is available in the **world menu** of Pharo.
-![image](https://user-images.githubusercontent.com/32486709/59115077-cce94100-8948-11e9-85c6-903d459b89ae.png)
-
-You can also enable it as a debugger extension in the debugging settings of Pharo.
-
 ## Install Chest
 ```smalltalk
 Metacello new
@@ -20,6 +14,12 @@ Metacello new
 ```
 *Will load [Spec](https://github.com/pharo-spec/Spec) and [New Tools](https://github.com/pharo-spec/NewTools)*
 
+## Open Chest
+Chest is available in the **world menu** of Pharo.
+![image](https://user-images.githubusercontent.com/32486709/59115077-cce94100-8948-11e9-85c6-903d459b89ae.png)
+
+You can also enable it as a debugger extension in the debugging settings of Pharo.
+
 ## More Details
 ### Name (= ID)
 Each Chest instance has an ID (String). These IDs are unique. Two chests cannot have the same ID.
@@ -28,6 +28,12 @@ Each Chest instance has an ID (String). These IDs are unique. Two chests cannot 
 This is an instance of Chest can be interacted with in the same way as any other Chest by sending the messages to the Chest class.
 
 ### Commands in context
+
+If you right-click on a code presenter with an `SpCodeInteractionModel` (e.g: playground, inspector pane, etc.), you can evaluate an expression and store the result in the chest of your choice, with the name of your choice.
+
+It's also possible to load objects from a chest into these code presenters.
+
+It will soon be possible to do the same in the debugger code presenter.
 
 ### API
 
@@ -80,3 +86,57 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 
 - `Chest class>>#newNamed:` : creates a chest with the name given in parameter if no other chest is already named so, else `ChestKeyAlreadyInUseError`
 
+### Example
+
+```smalltalk
+	Chest new. "its name is 'Chest_1' if no other chest have been created before"
+	Chest new. "its name is 'Chest_2' if no other chest have been created before"
+	Chest newNamed: 'toto'. "its name is 'toto'"
+	Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
+	
+	(Chest named: 'toto') add: 42.
+	"42 has the key 'toto_1' in the chest named 'toto'"
+	
+	(Chest named: 'toto') at: 'toto' put: 42.
+	(Chest named: 'toto') at: 'toto'. "returns 42"
+	"42 has the key 'toto' and not 'toto_1' anymore as an object has a unique key in a chest."
+	
+	(Chest named: 'toto') at: 'toto' put: 72.
+	"72 is not put in the chest: a ChestKeyAlreadyInUseError is raised as 42 already has the key 'toto'"
+	
+	(Chest named: 'toto') renameObject: 42 into: 'tata' .
+	"42 has now the key 'tata' in the chest named 'toto'"
+	
+	(Chest named: 'toto') removeObjectNamed: 'tata'.
+	"42 is removed as it had the key 'tata'"
+	
+	(Chest named: 'toto') at: 'toto' put: 72.
+	(Chest named: 'toto') remove: 72. 
+	"72 is not in the chest anymore"
+	
+	(Chest named: 'toto') remove: 72. "KeyNotFound"
+	(Chest named: 'toto') renameObject: 72 into: 'toto'. "ObjectNotInChestError"
+	(Chest named: 'toto') removeObjectNamed: 'toto'. "ObjectNotInChestError"
+	
+	(Chest named: 'toto') 	at: 'toto' put: 42;
+									at: 'tata' put: 72;
+									renameObject: 42 into: 'tata'. "ChestKeyAlreadyInUseError"
+	
+	(Chest named: 'toto') contents at: 'tata' "returns 72"
+							
+	Chest defaultInstance	name: 'toto' "ChestKeyAlreadyInUseError"					
+	
+	(Chest named: 'toto') remove.
+	"deletes the chest named 'toto', and all objects inside"
+	
+	Chest named: 'toto'. "KeyNotFound"
+	Chest defaultInstance name: 'toto'. "the default chest is now named 'toto'"
+	
+	Chest defaultInstance remvove. "the default chest is still there as it can't be removed"
+	
+	Chest add: 42. "adds 42 to the default chest"
+	
+	Chest inChest: 'titi' at: 'tata' put: 42 "creates the chest named 'titi' as it doesn't exist, and put 42 in it with the name 'tata' "
+	
+	Chest inChest: 'titi' at: 'toto' put: 43 "puts 43 in the chest named 'titi' with the name 'toto'"
+```
