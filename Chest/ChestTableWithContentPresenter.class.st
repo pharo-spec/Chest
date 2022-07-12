@@ -202,8 +202,10 @@ ChestTableWithContentPresenter >> makeInputField [
 
 	^ self newTextInput
 		  placeholder: 'Choose a name for your object';
-		  text:
-			  (chestsTable selectedItem nextDefaultNameForObject ifNil: [ '' ]);
+		  text: (chestsTable selectedItem
+				   ifNotNil: [ :selectedChest | 
+					   selectedChest nextDefaultNameForObject ]
+				   ifNil: [ '' ]);
 		  yourself
 ]
 

@@ -29,7 +29,8 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 - `Chest class>>#allChests` : gives an ordered collection that contains all chests
 - `Chest class>>#chestDictionary` : gives all chests with their names as a dictionary
 - `Chest class>>#named:` : gives the chest that is named as the string in argument
-- `Chest class>>#defaultInstance` : gives the default chest that is used when you use `Chest` API on `Chest class`
+- `Chest class>>#defaultInstance` ( or `Chest class>>#default`) : gives the default chest that is used when you use `Chest` API on `Chest class`
+- `Chest class>>#inChest:at:put:` : puts an object with a given name in a chest of a given name that is created it it doesn;t exist yet.
 - `Chest class>>#announcer` : helper that gives the unique instance of `ChestAnnouncer`
 - `Chest class>>#unsubscribe:` : helper that unsubscribes its argument from the unique instance of `ChestAnnouncer`
 
@@ -86,6 +87,10 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 	Chest defaultInstance remvove. ""the default chest is still there as it can't be removed""
 	
 	Chest add: 42. ""adds 42 to the default chest""
+	
+	Chest inChest: 'titi' at: 'tata' put: 42 ""creates the chest named 'titi' as it doesn't exist, and put 42 in it with the name 'tata' ""
+	
+	Chest inChest: 'titi' at: 'toto' put: 43 ""puts 43 in the chest named 'titi' with the name 'toto'""
 ```
  
 # Internal Representation and Key Implementation Points.
@@ -174,7 +179,7 @@ Chest class >> default [
 { #category : #accessing }
 Chest class >> defaultInstance [
 
-	^ DefaultInstance
+	^ DefaultInstance ifNil: [ DefaultInstance := self newNamed: 'Default' ]
 ]
 
 { #category : #private }
@@ -202,7 +207,7 @@ Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
 	NextAvailableID := 1.
-	DefaultInstance := self newNamed: 'Default'
+	DefaultInstance := nil
 ]
 
 { #category : #'class initialization' }
@@ -263,8 +268,8 @@ Chest class >> removeChest: aChest [
 Chest class >> removeChestNamed: aKey [
 
 	| removedChest |
-	aKey = DefaultInstance name ifTrue: [ ^ self ].
 	removedChest := ChestDictionary removeKey: aKey.
+	removedChest == DefaultInstance ifTrue: [ DefaultInstance := nil ].
 	self notifyChestRemoved: removedChest
 ]
 

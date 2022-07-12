@@ -320,7 +320,8 @@ ChestTests >> testRemoveChestNamedWithDefaultInstance [
 
 	Chest removeChestNamed: chest name.
 
-	self assert: (Chest named: chest name) identicalTo: chest
+	self should: [Chest named: chest name] raise: KeyNotFound.
+	self assert: (Chest defaultInstance == chest) not
 ]
 
 { #category : #tests }
@@ -367,7 +368,8 @@ ChestTests >> testRemoveWithDefaultInstance [
 
 	chest remove.
 
-	self assert: (Chest named: chest name) identicalTo: chest
+	self should: [Chest named: chest name] raise: KeyNotFound.
+	self assert: (Chest defaultInstance == chest) not
 ]
 
 { #category : #tests }
