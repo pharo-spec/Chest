@@ -1,6 +1,6 @@
 # Chest
 
-![ChestOverview](image.png)
+image.png
   
 ![ChestPicture2](https://user-images.githubusercontent.com/32486709/62878741-f9934d80-bd29-11e9-93dd-5969fbf6de72.png)
 
