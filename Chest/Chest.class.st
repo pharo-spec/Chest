@@ -166,6 +166,12 @@ Chest class >> contents [
 ]
 
 { #category : #accessing }
+Chest class >> default [
+
+	^ self defaultInstance 
+]
+
+{ #category : #accessing }
 Chest class >> defaultInstance [
 
 	^ DefaultInstance
