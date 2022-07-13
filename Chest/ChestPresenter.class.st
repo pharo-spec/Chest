@@ -146,21 +146,12 @@ ChestPresenter >> defaultLayout [
 		buildChestTableContainerLayout;
 		buildChestContentTableContainerLayout.
 
-	^ SpBoxLayout newVertical
-		  add: (SpPanedLayout newHorizontal
+	^ SpPanedLayout newHorizontal
+		  add: (SpPanedLayout newVertical
 				   add: #chestTableWithContent;
 				   add: #playground;
-				   yourself)
-		  withConstraints: [ :cstr | cstr height: topThirdHeight ];
+				   yourself);
 		  add: #inspector;
-		  add: (SpBoxLayout newHorizontal
-				   add: 'Use Chests to store and access objects from anywhere';
-				   add: #helpButton withConstraints: [ :c | 
-					   c
-						   height: helpButtonSize;
-						   width: helpButtonSize ];
-				   yourself)
-		  withConstraints: [ :c | c height: bottomRibbonHeight ];
 		  yourself
 ]
 
