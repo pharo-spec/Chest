@@ -57,7 +57,7 @@ ChestRequestDialogPresenter >> buildActionBar [
 				   icon: (self iconNamed: #smallOk);
 				   help: 'Add.';
 				   action: [ 
-					   self acceptBlock value: text text.
+					   self acceptBlock cull: text text.
 					   owner dismiss ];
 				   yourself);
 		  add: (self newButton
@@ -65,7 +65,7 @@ ChestRequestDialogPresenter >> buildActionBar [
 				   icon: (self iconNamed: #smallCancel);
 				   help: 'Remove.';
 				   action: [ 
-					   self cancelBlock value: text text.
+					   self cancelBlock cull: text text.
 					   owner dismiss ];
 				   yourself);
 		  yourself

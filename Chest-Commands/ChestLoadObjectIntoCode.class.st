@@ -45,15 +45,27 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 			                       selectedItems.
 		objectsAssociations size = 1
 			ifTrue: [ 
-				self
-					loadIntoContextObject: objectsAssociations first value
-					named: objectName ]
+				(context interactionModel hasBindingOf: objectName)
+					ifTrue: [ 
+						self
+							warnUserWhenDeletingBindingWithKey: objectName
+							withNewValue: objectsAssociations first value ]
+					ifFalse: [ 
+						self
+							loadIntoContextObject: objectsAssociations first value
+							named: objectName ] ]
 			ifFalse: [ 
 				objectsAssociations isEmpty ifTrue: [ 
 					objectsAssociations := chest contents associations
 						                       asOrderedCollection ].
 				objectsAssociations do: [ :assoc | 
-					self loadIntoContextObject: assoc value named: assoc key ] ].
+					(context interactionModel hasBindingOf: assoc key)
+						ifTrue: [ 
+							self
+								warnUserWhenDeletingBindingWithKey: assoc key
+								withNewValue: assoc value ]
+						ifFalse: [ 
+						self loadIntoContextObject: assoc value named: assoc key ] ] ].
 		choicePresenter window close ].
 	choicePresenter layout: choicePresenter commandLayout.
 	^ choicePresenter
@@ -85,4 +97,23 @@ ChestLoadObjectIntoCode >> loadIntoContextObject: anObject named: objectName [
 	"metalink := MetaLink new.
 	metalink arguments: #(receiver arguments).
 	metalink metaObject: [:receiver :arguments|  ]."
+]
+
+{ #category : #'as yet unclassified' }
+ChestLoadObjectIntoCode >> warnUserWhenDeletingBindingWithKey: key withNewValue: newValue [
+
+	| presenter |
+	presenter := ChestRequestDialogPresenter
+		             confirm: 'A binding for a variable named "' , key
+			             ,
+			             '" already exists. Are you sure you want to proceed ?'
+		             onAccept: [ 
+		             self loadIntoContextObject: newValue named: key ]
+		             onCancel: [ "On cancel, we don't load anything" ].
+
+	(context newPopover
+		 presenter: presenter;
+		 relativeTo: context;
+		 bePositionRight;
+		 yourself) popup
 ]
