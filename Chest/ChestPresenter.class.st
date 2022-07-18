@@ -230,7 +230,7 @@ ChestPresenter >> initialize [
 { #category : #initialization }
 ChestPresenter >> initializePresenters [
 
-	playground := StPlayground new.
+	playground := self makePlayground.
 	chestTableWithContent := ChestTableWithContentPresenter new.
 	chestsTable := chestTableWithContent chestsTable.
 	self makeChestsTable.
@@ -392,6 +392,19 @@ ChestPresenter >> makeHelpButton [
 		  icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)
 ]
 
+{ #category : #'as yet unclassified' }
+ChestPresenter >> makePlayground [
+
+	| newPlayground |
+	newPlayground := StPlayground new.
+
+	debugger ifNotNil: [ "newPlayground firstPage text interactionModel"
+		newPlayground firstPage text interactionModel:
+			(ChestCodeScriptingInteractionModel debugger: debugger) ].
+
+	^ newPlayground
+]
+
 { #category : #updating }
 ChestPresenter >> namingQuery [
 
@@ -535,6 +548,12 @@ ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anIt
 ChestPresenter >> selectedChest [
 
 	^ chestsTable selection selectedItem
+]
+
+{ #category : #initialization }
+ChestPresenter >> setModelBeforeInitialization: aStDebugger [
+
+	debugger := aStDebugger
 ]
 
 { #category : #specs }
