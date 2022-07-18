@@ -45,23 +45,6 @@ ChestTableWithContentPresenter >> chestsTable [
 	^ chestsTable
 ]
 
-{ #category : #'as yet unclassified' }
-ChestTableWithContentPresenter >> commandLayout [
-
-	self chestTableContainer
-		removeAll;
-		add: inputField;
-		add: #chestsTable.
-	self chestContentTableContainer
-		removeAll;
-		add: #chestContentsTable.
-
-	^ SpBoxLayout newVertical
-		  add: self defaultLayout;
-		  add: #confirmActionBar;
-		  yourself
-]
-
 { #category : #'ui requests' }
 ChestTableWithContentPresenter >> confirm: aWarning [
 
@@ -82,6 +65,23 @@ ChestTableWithContentPresenter >> confirmActionBar [
 ChestTableWithContentPresenter >> confirmButton [
 
 	^ self confirmActionBar presenters first
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> connectPresenters [
+
+	chestsTable
+		transmitDo: [ :aChest | 
+			aChest
+				ifNotNil: [ 
+					self updateChestContentTableForChest: aChest.
+					chestContentsTable items ifNotEmpty: [ 
+							chestContentsTable selectIndex: 1 ].
+					inputField text: aChest nextDefaultNameForObject ]
+				ifNil: [ 
+					chestContentsTable items: {  } asOrderedCollection.
+					inputField text: '' ] ];
+		selectFirst
 ]
 
 { #category : #updating }
@@ -163,7 +163,7 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 		  addColumn: (SpStringTableColumn
 				   title: 'Object'
 				   evaluated: [ :association | association value asString ]);
-		  items: OrderedCollection new
+		  items: #(  ) asOrderedCollection
 ]
 
 { #category : #initialization }
@@ -172,13 +172,7 @@ ChestTableWithContentPresenter >> makeChestsTable [
 	^ self newList
 		  items: Chest allChests;
 		  display: [ :chest | chest name ];
-		  transmitDo: [ :aChest | 
-			  aChest
-				  ifNotNil: [ 
-					  self updateChestContentTableForChest: aChest.
-					  chestContentsTable items ifNotEmpty: [ 
-							  chestContentsTable selectIndex: 1 ] ]
-				  ifNil: [ chestContentsTable items: {  } asOrderedCollection ] ];
+		  
 		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
 		  yourself
 ]
@@ -206,6 +200,23 @@ ChestTableWithContentPresenter >> makeInputField [
 				   ifNotNil: [ :selectedChest | 
 					   selectedChest nextDefaultNameForObject ]
 				   ifNil: [ '' ]);
+		  yourself
+]
+
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> storeCommandLayout [
+
+	self chestTableContainer
+		removeAll;
+		add: inputField;
+		add: #chestsTable.
+	self chestContentTableContainer
+		removeAll;
+		add: #chestContentsTable.
+
+	^ SpBoxLayout newVertical
+		  add: self defaultLayout;
+		  add: #confirmActionBar;
 		  yourself
 ]
 

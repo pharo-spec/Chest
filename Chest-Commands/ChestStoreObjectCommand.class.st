@@ -69,7 +69,7 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 								  withName: objectName
 								  withPresenter: choicePresenter) value ]) 
 						openDialogWithParent: choicePresenter chestContentTable ] ] ].
-	choicePresenter layout: choicePresenter commandLayout.
+	choicePresenter layout: choicePresenter storeCommandLayout.
 	^ choicePresenter
 ]
 
