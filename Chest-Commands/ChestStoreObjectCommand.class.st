@@ -63,12 +63,12 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 						  (choicePresenter warningNamingObjectInChest: objectName)) 
 						 onAccept: [ 
 							 chest removeObjectNamed: objectName.
-							 self
-								 blockToEvaluateToStoreResult: result
-								 intoChest: chest
-								 withName: objectName
-								 withPresenter: choicePresenter ]) openDialogWithParent:
-						choicePresenter chestContentTable ] ] ].
+							 (self
+								  blockToEvaluateToStoreResult: result
+								  intoChest: chest
+								  withName: objectName
+								  withPresenter: choicePresenter) value ]) 
+						openDialogWithParent: choicePresenter chestContentTable ] ] ].
 	choicePresenter layout: choicePresenter commandLayout.
 	^ choicePresenter
 ]
