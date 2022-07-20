@@ -153,6 +153,23 @@ ChestTableWithContentPresenter >> inputField [
 	^ inputField
 ]
 
+{ #category : #'as yet unclassified' }
+ChestTableWithContentPresenter >> loadCommandLayout [
+
+	self chestTableContainer
+		removeAll;
+		add: inputField;
+		add: #chestsTable.
+	self chestContentTableContainer
+		removeAll;
+		add: #chestContentsTable.
+
+	^ SpBoxLayout newVertical
+		  add: self defaultLayout;
+		  add: #confirmActionBar;
+		  yourself
+]
+
 { #category : #initialization }
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
