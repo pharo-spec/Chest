@@ -31,6 +31,12 @@ ChestLoadObjectIntoCode class >> defaultShortcutKey [
 	^ $c meta , $l meta
 ]
 
+{ #category : #accessing }
+ChestLoadObjectIntoCode class >> variableTag [
+
+	^ 'comesFromChest'
+]
+
 { #category : #initialization }
 ChestLoadObjectIntoCode >> buildChoicePresenter [
 
@@ -93,10 +99,18 @@ ChestLoadObjectIntoCode >> loadIntoContextObject: anObject named: objectName [
 	| metalink interactionModel |
 	interactionModel := self context interactionModel.
 	interactionModel addBinding:
-		(WorkspaceVariable key: objectName value: anObject)
+		((WorkspaceVariable key: objectName value: anObject)
+			 propertyAt: self variableTag put: true;
+			 yourself)
 	"metalink := MetaLink new.
 	metalink arguments: #(receiver arguments).
 	metalink metaObject: [:receiver :arguments|  ]."
+]
+
+{ #category : #accessing }
+ChestLoadObjectIntoCode >> variableTag [ 
+
+	^ self class variableTag
 ]
 
 { #category : #'as yet unclassified' }
