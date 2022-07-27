@@ -51,6 +51,12 @@ ChestPresenter class >> open [
 	^ chestPresenter
 ]
 
+{ #category : #visiting }
+ChestPresenter >> accept: aVisitor [
+
+	^ aVisitor visitChest: self
+]
+
 { #category : #adding }
 ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 
