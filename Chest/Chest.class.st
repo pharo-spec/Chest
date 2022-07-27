@@ -149,6 +149,12 @@ Chest class >> at: aKey put: anObject [
 	^ self defaultInstance at: aKey put: anObject
 ]
 
+{ #category : #api }
+Chest class >> at: aKey put: anObject ifPresent: aBlock [
+
+	^ self defaultInstance at: aKey put: anObject ifPresent: aBlock
+]
+
 { #category : #accessing }
 Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 
@@ -314,6 +320,14 @@ Chest >> at: aString put: anObject [
 	self contentsPrivate at: aString put: anObject.
 	self contentsUpdated.
 	^ aString
+]
+
+{ #category : #accessing }
+Chest >> at: aString put: anObject ifPresent: aBlock [
+
+	[ self at: aString put: anObject ]
+		on: ChestKeyAlreadyInUseError
+		do: aBlock
 ]
 
 { #category : #accessing }
