@@ -1,9 +1,12 @@
 # Chest
 Chest allows you to store objects from anywhere, to keep them around to check equality...   
 
-![ChestOverview](https://user-images.githubusercontent.com/32486709/62879133-bf767b80-bd2a-11e9-94a2-4fb00a986740.png)
+<img width="798" alt="ChestOverview" src="https://user-images.githubusercontent.com/97704417/196198740-9df10993-b338-4c1d-862b-fe9dd7b188fb.png">
   
-![ChestPicture2](https://user-images.githubusercontent.com/32486709/62878741-f9934d80-bd29-11e9-93dd-5969fbf6de72.png)
+
+## Original repository
+
+[Link to original repository](https://github.com/dupriezt/Chest)
 
 ## Install Chest
 ```smalltalk
@@ -12,13 +15,24 @@ Metacello new
     repository: 'github://adri09070/Chest';
     load.
 ```
-*Will load [Spec](https://github.com/pharo-spec/Spec) and [New Tools](https://github.com/pharo-spec/NewTools)*
+
+To see Chest variables in the debugger inspector, as long as the associated PR in NewTools (https://github.com/pharo-spec/NewTools/pull/402) is not merged, you should also load my branch of NewTools that allows me to see Chest variables in the debugger inspector:
+
+```smalltalk
+Metacello new
+    baseline: 'NewTools';
+    repository: 'github://adri09070/NewTools:adding-debugger-visitor-to-display-variables-from-extensions';
+    load.
+```
 
 ## Open Chest
 Chest is available in the **world menu** of Pharo.
-![image](https://user-images.githubusercontent.com/32486709/59115077-cce94100-8948-11e9-85c6-903d459b89ae.png)
+![image](https://user-images.githubusercontent.com/97704417/196199178-587bbd99-6da8-404c-a953-81310f9993d7.png)
 
-You can also enable it as a debugger extension in the debugging settings of Pharo.
+
+You can also enable it as a debugger extension in the debugging settings of Pharo:
+
+![image](https://user-images.githubusercontent.com/97704417/196199391-8c3d3013-c57b-47dd-99f9-4d52ae0e9611.png)
 
 ## More Details
 ### Name (= ID)
@@ -29,11 +43,27 @@ This is an instance of Chest can be interacted with in the same way as any other
 
 ### Commands in context
 
-If you right-click on a code presenter with an `SpCodeInteractionModel` (e.g: playground, inspector pane, etc.), you can evaluate an expression and store the result in the chest of your choice, with the name of your choice.
+If you right-click on a code presenter with an `SpCodeInteractionModel` or `StDebuggerContextInteractionModel` (e.g: playground, inspector pane, debugger etc.), you can evaluate an expression and store the result in the chest of your choice, with the name of your choice:
 
-It's also possible to load objects from a chest into these code presenters.
+![image](https://user-images.githubusercontent.com/97704417/196201016-6dfc0721-f9bc-4ce8-b35d-a3d4531ed425.png)
 
-It will soon be possible to do the same in the debugger code presenter.
+![image](https://user-images.githubusercontent.com/97704417/196201179-9abdabde-2eec-486d-aeb4-35f588cb6147.png)
+
+![image](https://user-images.githubusercontent.com/97704417/196201295-ebccd118-4043-4e22-acd5-56d4dde0b0a9.png)
+
+It's also possible to load objects from a chest into these code presenters:
+
+![image](https://user-images.githubusercontent.com/97704417/196200344-bd410180-d7df-42c2-8f24-a09a9f0e9559.png)
+
+![image](https://user-images.githubusercontent.com/97704417/196200215-5ab6e326-c2ef-4ce3-811f-b2e00303927e.png)
+
+![image](https://user-images.githubusercontent.com/97704417/196200487-cda36d03-2d33-4b97-8d9d-212e103aed67.png).
+
+And then variables can be seen from any other context if it has been loaded in a debugger and these variables can be seen in the debugger inspector:
+
+![image](https://user-images.githubusercontent.com/97704417/196200800-a496e3fc-13c0-4329-b7d6-5036698e1f72.png)
+
+Chest, as a debugger extension, provides a playground. All bindings between this playground and the debugger selected context are shared. So: all variables defined in this playground are recognized by the debugger and all variables from the debugger's selected context or loaded from Chest into the debugger are recognized by the playground. However, only the variables loaded from Chest are displayed in the debugger inspector.
 
 ### API
 
