@@ -343,7 +343,7 @@ ChestPresenter >> namingQuery [
 	^ 'What name do you want to give to your object?'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> presenterToNameNewChest [
 
 	^ ChestRequestDialogPresenter
@@ -354,8 +354,7 @@ ChestPresenter >> presenterToNameNewChest [
 				  do: [ 
 					  | chest |
 					  chest := Chest named: newChestName.
-					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
-						   chest ~= Chest defaultInstance ])
+					  (self confirm: (self warningNamingChest: newChestName))
 						  ifTrue: [ 
 							  chest remove.
 							  Chest newNamed: newChestName ]
@@ -364,7 +363,7 @@ ChestPresenter >> presenterToNameNewChest [
 							  newChestName , ' could not be removed.' ] ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> presenterToRenameChest: chest [
 
 	^ ChestRequestDialogPresenter
@@ -375,8 +374,7 @@ ChestPresenter >> presenterToRenameChest: chest [
 				  do: [ 
 					  | chestBlockingRenaming |
 					  chestBlockingRenaming := Chest named: newChestName.
-					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
-						   chestBlockingRenaming ~= Chest defaultInstance ])
+					  (self confirm: (self warningNamingChest: newChestName))
 						  ifTrue: [ 
 							  chestBlockingRenaming remove.
 							  chest name: newChestName ]
