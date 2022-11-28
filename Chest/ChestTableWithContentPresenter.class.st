@@ -39,6 +39,21 @@ ChestTableWithContentPresenter >> chestTableContainer [
 	^ chestTableContainer
 ]
 
+{ #category : #accessing }
+ChestTableWithContentPresenter >> chestTableTransmitBlock [
+
+	^ [ :aChest | 
+	  aChest
+		  ifNotNil: [ 
+			  self updateChestContentTableForChest: aChest.
+			  chestContentsTable items ifNotEmpty: [ 
+				  chestContentsTable selectIndex: 1 ].
+			  inputField text: aChest nextDefaultNameForObject ]
+		  ifNil: [ 
+			  chestContentsTable items: {  } asOrderedCollection.
+			  inputField text: '' ] ]
+]
+
 { #category : #updating }
 ChestTableWithContentPresenter >> chestsTable [
 
@@ -71,16 +86,7 @@ ChestTableWithContentPresenter >> confirmButton [
 ChestTableWithContentPresenter >> connectPresenters [
 
 	chestsTable
-		transmitDo: [ :aChest | 
-			aChest
-				ifNotNil: [ 
-					self updateChestContentTableForChest: aChest.
-					chestContentsTable items ifNotEmpty: [ 
-							chestContentsTable selectIndex: 1 ].
-					inputField text: aChest nextDefaultNameForObject ]
-				ifNil: [ 
-					chestContentsTable items: {  } asOrderedCollection.
-					inputField text: '' ] ];
+		transmitDo: self chestTableTransmitBlock;
 		selectFirst
 ]
 
