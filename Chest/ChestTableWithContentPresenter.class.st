@@ -9,6 +9,8 @@ Class {
 		'chestContentsTable',
 		'inputField',
 		'confirmActionBar',
+		'confirmButton',
+		'cancelButton',
 		'chestTableContainer',
 		'chestContentTableContainer'
 	],
@@ -18,7 +20,7 @@ Class {
 { #category : #accessing }
 ChestTableWithContentPresenter >> cancelButton [
 
-	^ self confirmActionBar presenters last
+	^ cancelButton
 ]
 
 { #category : #updating }
@@ -79,7 +81,7 @@ ChestTableWithContentPresenter >> confirmActionBar [
 { #category : #accessing }
 ChestTableWithContentPresenter >> confirmButton [
 
-	^ self confirmActionBar presenters first
+	^ confirmButton
 ]
 
 { #category : #initialization }
@@ -200,17 +202,21 @@ ChestTableWithContentPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #initialization }
 ChestTableWithContentPresenter >> makeConfirmActionBar [
 
+	confirmButton := self newButton
+		                 label: 'Confirm';
+		                 yourself.
+
+	cancelButton := self newButton
+		                label: 'Cancel';
+		                action: [ self window close ];
+		                yourself.
+
 	^ self newActionBar
-		  add: (self newButton
-				   label: 'Confirm';
-				   yourself);
-		  add: (self newButton
-				   label: 'Cancel';
-				   action: [ self window close ];
-				   yourself);
+		  add: confirmButton;
+		  add: cancelButton;
 		  yourself
 ]
 
