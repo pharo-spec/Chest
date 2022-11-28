@@ -368,12 +368,6 @@ Chest >> initializeContents [
 	contents := Dictionary new
 ]
 
-{ #category : #accessing }
-Chest >> inspectAt: aString [
-
-	^ (self contentsPrivate at: aString) inspect
-]
-
 { #category : #api }
 Chest >> name [
 

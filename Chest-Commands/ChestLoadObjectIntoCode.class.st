@@ -73,7 +73,7 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 						ifFalse: [ 
 						self loadIntoContextObject: assoc value named: assoc key ] ] ].
 		choicePresenter window close ].
-	choicePresenter layout: choicePresenter storeCommandLayout.
+	choicePresenter layout: choicePresenter loadCommandLayout.
 	^ choicePresenter
 ]
 
@@ -83,14 +83,6 @@ ChestLoadObjectIntoCode >> execute [
 	| choicePresenter |
 	choicePresenter := self buildChoicePresenter.
 	choicePresenter open
-]
-
-{ #category : #testing }
-ChestLoadObjectIntoCode >> isVisibleForContext: aCodePresenter [
-
-	^ aCodePresenter interactionModel isNotNil and: [ 
-		  aCodePresenter interactionModel allSelectors indexOf:
-			  #addBinding: > 0 ]
 ]
 
 { #category : #'as yet unclassified' }

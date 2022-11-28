@@ -8,15 +8,6 @@ Class {
 	#classTraits : 'TStDebuggerExtension classTrait',
 	#instVars : [
 		'playground',
-		'helpButton',
-		'emptyButton',
-		'helpExpanded',
-		'descriptionLabel',
-		'helpTitleLabel',
-		'leftSpacerForHelpTitleLabel',
-		'rightSpacerForHelpTitleLabel',
-		'helpText',
-		'objectTable',
 		'chestsTable',
 		'chestsTableToolbar',
 		'chestContentsTable',
@@ -62,17 +53,6 @@ ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 
 	playground firstPage interactionModel addBindings:
 		aCollectionOfBindings
-]
-
-{ #category : #adding }
-ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBlock [
-
-	| dialogLayout |
-	dialogLayout := aDialogPresenter layout.
-	dialogLayout add: (SpButtonPresenter new
-			 label: 'Confirm';
-			 action: aBlock;
-			 yourself)
 ]
 
 { #category : #'as yet unclassified' }
@@ -170,50 +150,6 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 		  yourself
 ]
 
-{ #category : #updating }
-ChestPresenter >> helpText [
-
-	^ 'THIS IS THE HELP FOR CHESTS' , Character cr asString
-	  , Character cr asString , 'ID' , Character cr asString
-	  ,
-	  '	Each Chest instance has an ID (Integer). These IDs are unique. No two Chest can ever have the same ID (unless of course one re-initialize the Chest class).'
-	  , Character cr asString , Character cr asString , 'Default Chest'
-	  , Character cr asString
-	  ,
-	  '	This is an instance of Chest that always exists, always has ID = 1, and can be interacted with in the same way as any other Chest by sending the messages to the Chest class.'
-	  , Character cr asString , Character cr asString , 'API'
-	  , Character cr asString , '	Chest class' , Character cr asString
-	  , '		#new' , Character cr asString
-	  , '			Create and return a new Chest' , Character cr asString
-	  , '		#newNamed: aString' , Character cr asString
-	  , '			Create and return a new Chest, with the provided name'
-	  , Character cr asString , '		#withId: anInteger'
-	  , Character cr asString
-	  , '			Return the Chest whose ID is @anInteger'
-	  , Character cr asString , Character cr asString , '	Chest instance'
-	  , Character cr asString , '		#add: anObject'
-	  , Character cr asString , '			Add anObject to this Chest'
-	  , Character cr asString , '		#at: anInteger'
-	  , Character cr asString
-	  , '			Gets the object stored in this Chest at index @anInteger'
-	  , Character cr asString , '		#contents' , Character cr asString
-	  ,
-	  '			Gets an OrderedCollection with the content of this Chest. This collection is a copy so editing it directly does not affect this Chest.'
-	  , Character cr asString , '		#empty' , Character cr asString
-	  , '			Removes all objects from this Chest' , Character cr asString
-	  , '		#name' , Character cr asString
-	  , '			Gets the name of this Chest' , Character cr asString
-	  , '		#id' , Character cr asString , '			Gets the ID of this Chest'
-	  , Character cr asString , '		#remove' , Character cr asString
-	  ,
-	  '			Destroy this Chest (it will no longer appear in the Chest UI)'
-	  , Character cr asString , '		#remove: anObject'
-	  , Character cr asString , '			Remove @anObject from this Chest'
-	  , Character cr asString , '		#removeAt: anInteger'
-	  , Character cr asString
-	  , '			Remove the object ar index @anInteger from this Chest'
-]
-
 { #category : #'as yet unclassified' }
 ChestPresenter >> iconManager [
 
@@ -229,8 +165,7 @@ ChestPresenter >> initialExtent [
 { #category : #initialization }
 ChestPresenter >> initialize [
 
-	super initialize.
-	helpExpanded := false
+	super initialize
 ]
 
 { #category : #initialization }
@@ -245,7 +180,6 @@ ChestPresenter >> initializePresenters [
 	self makeChestContentsTable.
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 	inspector := StInspector on: (StInspectorModel on: nil).
-	helpButton := self makeHelpButton.
 	chestsTable selectIndex: 1.
 
 	self layout: self defaultLayout
@@ -388,14 +322,6 @@ ChestPresenter >> makeChestsTableToolbar [
 			 icon: (self iconManager iconNamed: #add);
 			 action: [ self requestNameNewChestFromToolbar: toolbar ]).
 	^ toolbar
-]
-
-{ #category : #initialization }
-ChestPresenter >> makeHelpButton [
-
-	^ self newButton
-		  action: [ UIManager default notify: self helpText ];
-		  icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)
 ]
 
 { #category : #'as yet unclassified' }
