@@ -76,7 +76,7 @@ ChestCommandTreeBuilder >> buildSpecCommand: commandClass forContext: aContext [
 { #category : #building }
 ChestCommandTreeBuilder >> chestCommandClasses [
 
-	^ { ChestLoadObjectIntoCode }
+	^ { ChestLoadObjectIntoCodeCommand }
 ]
 
 { #category : #accessing }
