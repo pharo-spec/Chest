@@ -170,6 +170,12 @@ Chest class >> chestDictionary [
 	^ ChestDictionary copy
 ]
 
+{ #category : #'accessing - tags' }
+Chest class >> comesFromChestVariableTag [
+
+	^ #comesFromChest
+]
+
 { #category : #api }
 Chest class >> contents [
 

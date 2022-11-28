@@ -34,7 +34,7 @@ ChestLoadObjectIntoCodeCommand class >> defaultShortcutKey [
 { #category : #accessing }
 ChestLoadObjectIntoCodeCommand class >> variableTag [
 
-	^ #comesFromChest
+	^ Chest comesFromChestVariableTag
 ]
 
 { #category : #initialization }
