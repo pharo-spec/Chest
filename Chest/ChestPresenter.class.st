@@ -343,6 +343,16 @@ ChestPresenter >> namingQuery [
 	^ 'What name do you want to give to your object?'
 ]
 
+{ #category : #'ui - requests' }
+ChestPresenter >> popupWithPresenter: requestPresenter onRightTo: anItem [
+
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
+]
+
 { #category : #'presenter building' }
 ChestPresenter >> presenterToNameNewChest [
 
@@ -440,11 +450,7 @@ ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
 
 	| requestPresenter |
 	requestPresenter := self presenterToNameNewChest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: toolbar;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: toolbar
 ]
 
 { #category : #initialization }
@@ -452,11 +458,7 @@ ChestPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
 
 	| requestPresenter |
 	requestPresenter := self presenterToRenameChest: chest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: anItem;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
 { #category : #initialization }
@@ -467,11 +469,7 @@ ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anIt
 	requestPresenter := self
 		                    presenterToRenameObject: object
 		                    inChest: chest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: anItem;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
 { #category : #'as yet unclassified' }
