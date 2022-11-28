@@ -15,19 +15,19 @@ ChestCodeScriptingInteractionModel class >> debugger: aStDebugger [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : #binding }
 ChestCodeScriptingInteractionModel >> addBinding: aBinding [
 
 	super addBinding: aBinding.
 	
-	debugger ifNotNil: [ debugger code interactionModel addBinding: aBinding ]
+	debugger ifNotNil: [ debugger interactionModel addBinding: aBinding ]
 ]
 
-{ #category : #accessing }
+{ #category : #'private - bindings' }
 ChestCodeScriptingInteractionModel >> addSelfAndThisContextBindings [
 
 	| debuggerInteractionModel |
-	debuggerInteractionModel := debugger code interactionModel.
+	debuggerInteractionModel := debugger interactionModel.
 
 	super
 		addBinding: (WorkspaceVariable
@@ -50,8 +50,8 @@ ChestCodeScriptingInteractionModel >> bindingOf: aString [
 		^ self sharedBindings associationAt: key ].
 	"Look in debugger code interaction model"
 	(debugger isNotNil and: [ 
-		 debugger code interactionModel hasBindingOf: aString ]) ifTrue: [ 
-		^ debugger code interactionModel bindingOf: aString ].
+		 debugger interactionModel hasBindingOf: aString ]) ifTrue: [ 
+		^ debugger interactionModel bindingOf: aString ].
 	"if there is no binding, I will include a key"
 	(self localBindings includesKey: key) ifFalse: [ 
 		self addBinding: (WorkspaceVariable key: key) ].
@@ -73,7 +73,7 @@ ChestCodeScriptingInteractionModel >> bindings [
 	joinedBindings := self application sharedBindings copy.
 
 	debugger ifNotNil: [ 
-		debugger code interactionModel bindings associations do: [ :each | 
+		debugger bindings associations do: [ :each | 
 			joinedBindings add: each ].
 		^ joinedBindings ].
 
@@ -95,10 +95,10 @@ ChestCodeScriptingInteractionModel >> debugger: aStDebugger [
 { #category : #binding }
 ChestCodeScriptingInteractionModel >> hasBindingOf: aString [
 
-	^ ((self sharedBindings includesKey: aString asSymbol) or: [ 
-		   self localBindings includesKey: aString asSymbol ]) or: [ 
-		  debugger isNotNil and: [ 
-			  debugger code interactionModel hasBindingOf: aString ] ]
+	^ (self sharedBindings includesKey: aString asSymbol) or: [ 
+		  (self localBindings includesKey: aString asSymbol) or: [ 
+			  debugger isNotNil and: [ 
+				  debugger interactionModel hasBindingOf: aString ] ] ]
 ]
 
 { #category : #accessing }
@@ -107,5 +107,5 @@ ChestCodeScriptingInteractionModel >> removeBinding: aBinding [
 	self bindings removeKey: aBinding key.
 
 	debugger ifNotNil: [ 
-		debugger code interactionModel bindings removeKey: aBinding key ]
+		debugger bindings removeKey: aBinding key ]
 ]

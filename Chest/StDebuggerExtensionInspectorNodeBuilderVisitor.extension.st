@@ -4,8 +4,7 @@ Extension { #name : #StDebuggerExtensionInspectorNodeBuilderVisitor }
 StDebuggerExtensionInspectorNodeBuilderVisitor >> visitChest: aChestExtension [
 
 	| debuggerInteractionModel |
-	debuggerInteractionModel := aChestExtension debugger code
-		                            interactionModel.
+	debuggerInteractionModel := aChestExtension debugger interactionModel.
 	result := debuggerInteractionModel bindings associations
 		          select: [ :aBinding | 
 			          aBinding propertyAt: #comesFromChest ifAbsent: [ false ] ]
