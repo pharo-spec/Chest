@@ -490,7 +490,7 @@ ChestPresenter >> title [
 	^ 'Chests'
 ]
 
-{ #category : #updating }
+{ #category : #'ui - dialogs' }
 ChestPresenter >> warningNamingChest: newChestName [
 
 	^ '`' , newChestName
@@ -498,9 +498,8 @@ ChestPresenter >> warningNamingChest: newChestName [
 	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ui - dialogs' }
 ChestPresenter >> warningNamingObjectInChest: newObjectName [
 
-	^ '`' , newObjectName
-	  , '` already exists in this chest. Do you want to replace it?'
+	^ chestTableWithContent warningNamingObjectInChest: newObjectName
 ]
