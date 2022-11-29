@@ -91,10 +91,10 @@ ChestLoadObjectIntoCodeCommand >> execute [
 	choicePresenter open
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'private - commands' }
 ChestLoadObjectIntoCodeCommand >> loadIntoContextObject: anObject named: objectName [
 
-	| metalink interactionModel |
+	| "metalink" interactionModel |
 	interactionModel := self context interactionModel.
 	interactionModel addBinding:
 		((WorkspaceVariable key: objectName value: anObject)
@@ -111,7 +111,7 @@ ChestLoadObjectIntoCodeCommand >> variableTag [
 	^ self class variableTag
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'private - commands' }
 ChestLoadObjectIntoCodeCommand >> warnUserWhenDeletingBindingWithKey: key withNewValue: newValue [
 
 	| presenter |

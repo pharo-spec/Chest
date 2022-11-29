@@ -1,5 +1,5 @@
 Class {
-	#name : #ChestTests,
+	#name : #ChestTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'initialChests'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #accessing }
-ChestTests >> firstChestNameAvailable [
+ChestTest >> firstChestNameAvailable [
 
 	"provides a name of a chest that doesn't already exists"
 
@@ -25,26 +25,34 @@ ChestTests >> firstChestNameAvailable [
 ]
 
 { #category : #running }
-ChestTests >> setUp [
+ChestTest >> setUp [
+
 	"Hooks that subclasses may override to define the fixture of test."
-	initialChests := Chest allChests copy. "Keep a copy of all the chests that currently exist"
+
+	super setUp.
+	initialChests := Chest allChests copy "Keep a copy of all the chests that currently exist"
 ]
 
 { #category : #running }
-ChestTests >> tearDown [
+ChestTest >> tearDown [
+
 	| nowChests |
 	nowChests := Chest allChests copy.
 	"Removing chests that currently exist but did not exist before the test execution"
-	nowChests do: [ :aChest | (initialChests includes: aChest) ifFalse: [ Chest removeChest: aChest ] ].
+	nowChests do: [ :aChest | 
+		(initialChests includes: aChest) ifFalse: [ 
+			Chest removeChest: aChest ] ].
+
+	super tearDown
 ]
 
 { #category : #tests }
-ChestTests >> testAddRemoveToChest [
+ChestTest >> testAddRemoveToChest [
 	self testAddRemoveToChest: Chest new.
 ]
 
 { #category : #tests }
-ChestTests >> testAddRemoveToChest: aChest [
+ChestTest >> testAddRemoveToChest: aChest [
 	| c o1 o2 initialChestSize o1Name o2Name |
 	c := aChest.
 	o1 := Object new.
@@ -64,13 +72,13 @@ ChestTests >> testAddRemoveToChest: aChest [
 ]
 
 { #category : #tests }
-ChestTests >> testAddRemoveToDefaultChest [
+ChestTest >> testAddRemoveToDefaultChest [
 	"Tests that the Chest class itself works as a chest"
 	self testAddRemoveToChest: Chest.
 ]
 
 { #category : #tests }
-ChestTests >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKeyForThisObject [
+ChestTest >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKeyForThisObject [
 
 	| chest object oldName newName |
 	chest := Chest new.
@@ -86,7 +94,7 @@ ChestTests >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKe
 ]
 
 { #category : #tests }
-ChestTests >> testAlwaysGiveFreshIDToNewChests [
+ChestTest >> testAlwaysGiveFreshIDToNewChests [
 	| c1 c2 c3 idList c4 |
 	c1 := Chest new.
 	c2 := Chest new.
@@ -104,7 +112,7 @@ ChestTests >> testAlwaysGiveFreshIDToNewChests [
 ]
 
 { #category : #tests }
-ChestTests >> testAtPutAddsObjectToChestWithCorrectName [
+ChestTest >> testAtPutAddsObjectToChestWithCorrectName [
 
 	| chest object |
 	chest := Chest new.
@@ -118,7 +126,7 @@ ChestTests >> testAtPutAddsObjectToChestWithCorrectName [
 ]
 
 { #category : #tests }
-ChestTests >> testChestCreationWithCustomName [
+ChestTest >> testChestCreationWithCustomName [
 
 	| firstNameAvailable chestWithCustomName |
 	firstNameAvailable := self firstChestNameAvailable.
@@ -134,7 +142,7 @@ ChestTests >> testChestCreationWithCustomName [
 ]
 
 { #category : #tests }
-ChestTests >> testChestCreationWithDefaultName [
+ChestTest >> testChestCreationWithDefaultName [
 
 	| chestWithDefaultName1 chestWithDefaultName2 |
 	chestWithDefaultName1 := Chest new.
@@ -154,7 +162,7 @@ ChestTests >> testChestCreationWithDefaultName [
 ]
 
 { #category : #tests }
-ChestTests >> testChestCreationWithNameThatAlreadyExistsRaisesAnError [
+ChestTest >> testChestCreationWithNameThatAlreadyExistsRaisesAnError [
 
 	| firstNameAvailable |
 	firstNameAvailable := self firstChestNameAvailable.
@@ -169,7 +177,7 @@ ChestTests >> testChestCreationWithNameThatAlreadyExistsRaisesAnError [
 ]
 
 { #category : #tests }
-ChestTests >> testChestDictionaryProvidesCopyOfAllChests [
+ChestTest >> testChestDictionaryProvidesCopyOfAllChests [
 
 	| chestDictionary firstNameAvailable |
 	chestDictionary := Chest chestDictionary.
@@ -183,7 +191,7 @@ ChestTests >> testChestDictionaryProvidesCopyOfAllChests [
 ]
 
 { #category : #tests }
-ChestTests >> testContentsProvidesCopyOfChestContent [
+ChestTest >> testContentsProvidesCopyOfChestContent [
 
 	| chest object contents objectInCopy |
 	chest := Chest new.
@@ -200,13 +208,13 @@ ChestTests >> testContentsProvidesCopyOfChestContent [
 ]
 
 { #category : #tests }
-ChestTests >> testDefaultInstance [
+ChestTest >> testDefaultInstance [
 	"Tests that the default instance of the Chest class does exist"
 	self assert: (Chest defaultInstance isKindOf: Chest).
 ]
 
 { #category : #tests }
-ChestTests >> testEmpty [
+ChestTest >> testEmpty [
 
 	| chest |
 	chest := Chest new.
@@ -227,7 +235,7 @@ ChestTests >> testEmpty [
 ]
 
 { #category : #tests }
-ChestTests >> testEmptyChest [
+ChestTest >> testEmptyChest [
 
 	| chest |
 	chest := Chest new.
@@ -243,7 +251,7 @@ ChestTests >> testEmptyChest [
 ]
 
 { #category : #tests }
-ChestTests >> testGettingChestFromID [
+ChestTest >> testGettingChestFromID [
 	"Tests that retrieving chests by their id works"
 	| c1 c2 |
 	c1 := Chest new.
@@ -256,7 +264,7 @@ ChestTests >> testGettingChestFromID [
 ]
 
 { #category : #tests }
-ChestTests >> testNotifications [
+ChestTest >> testNotifications [
 	"Tests that the Chest class does indeed send the notifications it is supposed to"
 	| l c o |
 	l := ChestEventListenerForTest new.
@@ -285,7 +293,7 @@ ChestTests >> testNotifications [
 ]
 
 { #category : #tests }
-ChestTests >> testRemove [
+ChestTest >> testRemove [
 
 	| chest |
 	chest := Chest new.
@@ -298,7 +306,7 @@ ChestTests >> testRemove [
 ]
 
 { #category : #tests }
-ChestTests >> testRemoveChestNamed [
+ChestTest >> testRemoveChestNamed [
 
 	| chest |
 	chest := Chest new.
@@ -311,7 +319,7 @@ ChestTests >> testRemoveChestNamed [
 ]
 
 { #category : #tests }
-ChestTests >> testRemoveChestNamedWithDefaultInstance [
+ChestTest >> testRemoveChestNamedWithDefaultInstance [
 
 	| chest |
 	chest := Chest defaultInstance.
@@ -320,12 +328,12 @@ ChestTests >> testRemoveChestNamedWithDefaultInstance [
 
 	Chest removeChestNamed: chest name.
 
-	self should: [Chest named: chest name] raise: KeyNotFound.
-	self assert: (Chest defaultInstance == chest) not
+	self should: [ Chest named: chest name ] raise: KeyNotFound.
+	self deny: Chest defaultInstance identicalTo: chest
 ]
 
 { #category : #tests }
-ChestTests >> testRemoveObjectNamedWithExistingObject [
+ChestTest >> testRemoveObjectNamedWithExistingObject [
 
 	| chest |
 	chest := Chest new.
@@ -342,7 +350,7 @@ ChestTests >> testRemoveObjectNamedWithExistingObject [
 ]
 
 { #category : #tests }
-ChestTests >> testRemoveObjectNamedWithObjectThatDoesNotExist [
+ChestTest >> testRemoveObjectNamedWithObjectThatDoesNotExist [
 
 	| chest |
 	chest := Chest new.
@@ -359,7 +367,7 @@ ChestTests >> testRemoveObjectNamedWithObjectThatDoesNotExist [
 ]
 
 { #category : #tests }
-ChestTests >> testRemoveWithDefaultInstance [
+ChestTest >> testRemoveWithDefaultInstance [
 
 	| chest |
 	chest := Chest defaultInstance.
@@ -368,12 +376,12 @@ ChestTests >> testRemoveWithDefaultInstance [
 
 	chest remove.
 
-	self should: [Chest named: chest name] raise: KeyNotFound.
-	self assert: (Chest defaultInstance == chest) not
+	self should: [ Chest named: chest name ] raise: KeyNotFound.
+	self deny: Chest defaultInstance identicalTo: chest
 ]
 
 { #category : #tests }
-ChestTests >> testRenameObjectInto [
+ChestTest >> testRenameObjectInto [
 
 	| chest object |
 	chest := Chest new.
@@ -389,7 +397,7 @@ ChestTests >> testRenameObjectInto [
 ]
 
 { #category : #tests }
-ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
+ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
 
 	| chest objectToBeRenamed objectInChest |
 	chest := Chest new.
@@ -410,7 +418,7 @@ ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
 ]
 
 { #category : #tests }
-ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
+ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
 
 	| chest objectToBeRenamed objectAlreadyHavingNewName |
 	chest := Chest new.
@@ -435,7 +443,7 @@ ChestTests >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
 ]
 
 { #category : #tests }
-ChestTests >> testRenamingChestChangesItsKeyInDictionary [
+ChestTest >> testRenamingChestChangesItsKeyInDictionary [
 
 	| chest firstNameAvailable oldName |
 	chest := Chest new.
@@ -450,7 +458,7 @@ ChestTests >> testRenamingChestChangesItsKeyInDictionary [
 ]
 
 { #category : #tests }
-ChestTests >> testRenamingChestRaisesErrorWhenChestOfSameNameAlreadyExists [
+ChestTest >> testRenamingChestRaisesErrorWhenChestOfSameNameAlreadyExists [
 
 	| chestToBeRenamed firstNameAvailable oldName chestAlreadyHavingNewName |
 	chestToBeRenamed := Chest new.

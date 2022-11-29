@@ -31,7 +31,7 @@ ChestStoreObjectCommand class >> defaultShortcutKey [
 	^ $c meta , $s meta
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'private - commands' }
 ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName withPresenter: choicePresenter [
 
 	^ [ 

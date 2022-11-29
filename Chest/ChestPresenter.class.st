@@ -55,7 +55,7 @@ ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 		aCollectionOfBindings
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> buildChestContentTableContainerLayout [
 
 	chestTableWithContent chestContentTableContainer
@@ -67,7 +67,7 @@ ChestPresenter >> buildChestContentTableContainerLayout [
 		add: chestTableWithContent chestContentTable
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> buildChestTableContainerLayout [
 
 	chestTableWithContent chestTableContainer
@@ -80,21 +80,21 @@ ChestPresenter >> buildChestTableContainerLayout [
 		add: chestTableWithContent chestsTable
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #binding }
 ChestPresenter >> collectBindingsFromAllChests [
 
 	^ chestsTable items flatCollect: [ :each | 
 		  self collectBindingsFromChest: each ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #binding }
 ChestPresenter >> collectBindingsFromChest: aChest [
 
 	^ aChest contents associations collect: [ :each | 
 		  self convertBindingIntoProperWorkspaceVariable: each ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #converting }
 ChestPresenter >> convertBindingIntoProperWorkspaceVariable: aBinding [
 
 	^ WorkspaceVariable key: aBinding key value: aBinding value
@@ -106,7 +106,7 @@ ChestPresenter >> debuggerExtensionToolName [
 	^ 'Chest'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestPresenter >> debuggerLayout [
 
 	self
@@ -141,7 +141,7 @@ ChestPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
 	^ SpBoxLayout newHorizontal
@@ -150,7 +150,7 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #helper }
 ChestPresenter >> iconManager [
 
 	^ Smalltalk ui icons
@@ -192,7 +192,7 @@ ChestPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestContentTableContextMenu [
 
 	^ self newMenu
@@ -232,7 +232,7 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  action: [ chestContentsTable selectedItem value inspect ] ]
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestContentsTable [
 
 	^ chestContentsTable
@@ -246,7 +246,7 @@ ChestPresenter >> makeChestContentsTable [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestContentsTableToolbar [
 
 	| toolbar |
@@ -262,7 +262,7 @@ ChestPresenter >> makeChestContentsTableToolbar [
 	^ toolbar
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestTableContextMenu [
 
 	^ self newMenu
@@ -295,7 +295,7 @@ ChestPresenter >> makeChestTableContextMenu [
 					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ]
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestsTable [
 
 	^ chestsTable
@@ -304,7 +304,7 @@ ChestPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestsTableToolbar [
 
 	| toolbar |
@@ -324,7 +324,7 @@ ChestPresenter >> makeChestsTableToolbar [
 	^ toolbar
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> makePlayground [
 
 	| newPlayground |
@@ -381,7 +381,7 @@ ChestPresenter >> presenterToRenameChest: chest [
 						  ifRemoved: [ chest name: newChestName ] ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> presenterToRenameObject: object inChest: chest [
 
 	^ ChestRequestDialogPresenter
@@ -446,7 +446,7 @@ ChestPresenter >> removeSelectedItem [
 					chestContentsTable selection selectedIndex - 1 ] ]
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
 
 	| requestPresenter |
@@ -454,7 +454,7 @@ ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
 	self popupWithPresenter: requestPresenter onRightTo: toolbar
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
 
 	| requestPresenter |
@@ -462,7 +462,7 @@ ChestPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
 	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anItem [
 
 	| chest requestPresenter |
@@ -473,7 +473,7 @@ ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anIt
 	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ChestPresenter >> selectedChest [
 
 	^ chestsTable selection selectedItem

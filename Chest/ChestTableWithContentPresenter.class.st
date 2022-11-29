@@ -29,13 +29,13 @@ ChestTableWithContentPresenter >> chestContentTable [
 	^ chestContentsTable
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ChestTableWithContentPresenter >> chestContentTableContainer [
 
 	^ chestContentTableContainer
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ChestTableWithContentPresenter >> chestTableContainer [
 
 	^ chestTableContainer
@@ -161,7 +161,7 @@ ChestTableWithContentPresenter >> inputField [
 	^ inputField
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestTableWithContentPresenter >> loadCommandLayout [
 
 	self chestTableContainer
@@ -178,7 +178,7 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
 	^ self newTable
@@ -191,7 +191,7 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 		  items: #(  ) asOrderedCollection
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTable [
 
 	^ self newList
@@ -202,7 +202,7 @@ ChestTableWithContentPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeConfirmActionBar [
 
 	confirmButton := self newButton
@@ -220,7 +220,7 @@ ChestTableWithContentPresenter >> makeConfirmActionBar [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeInputField [
 
 	^ self newTextInput
@@ -232,7 +232,7 @@ ChestTableWithContentPresenter >> makeInputField [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self chestTableContainer
@@ -258,7 +258,7 @@ ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
 		subscribeToChestRemovedAnnouncement
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 
 	Chest announcer weak
@@ -267,7 +267,7 @@ ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 		to: self
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 
 	Chest announcer weak
@@ -276,7 +276,7 @@ ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 		to: self
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
 
 	Chest announcer weak
@@ -291,13 +291,13 @@ ChestTableWithContentPresenter >> title [
 	^ 'Choose a variable name for your object'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
 
 	Chest unsubscribe: self
 ]
 
-{ #category : #initialization }
+{ #category : #update }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 
 	chestContentsTable ifNotNil: [ :lst | 
@@ -310,7 +310,7 @@ ChestTableWithContentPresenter >> updateChestsTable [
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> warningNamingObjectInChest: newObjectName [
 
 	^ '`' , newObjectName
