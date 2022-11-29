@@ -1,0 +1,15 @@
+SmalltalkCISpec {
+  #loading : [
+    SCIMetacelloLoadSpec {
+      #baseline : 'Chest',
+      #directory : '.',
+      #load : 'common',
+      #onConflict : #useIncoming,
+      #onUpgrade : #useIncoming,
+      #ignoreImage : true
+    }
+  ],
+  #testing : { 
+  	#packages: [ 'Chest.*' ]
+  }
+}
