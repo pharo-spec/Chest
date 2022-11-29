@@ -31,6 +31,12 @@ ChestLoadObjectIntoCodeCommand class >> defaultShortcutKey [
 	^ $c meta , $l meta
 ]
 
+{ #category : #testing }
+ChestLoadObjectIntoCodeCommand class >> isVisibleForContext: aCodePresenter [
+
+	^ aCodePresenter canLoadBindings
+]
+
 { #category : #accessing }
 ChestLoadObjectIntoCodeCommand class >> variableTag [
 
