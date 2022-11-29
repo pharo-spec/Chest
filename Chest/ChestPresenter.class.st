@@ -362,15 +362,9 @@ ChestPresenter >> presenterToNameNewChest [
 			  [ Chest newNamed: newChestName ]
 				  on: ChestKeyAlreadyInUseError
 				  do: [ 
-					  | chest |
-					  chest := Chest named: newChestName.
-					  (self confirm: (self warningNamingChest: newChestName))
-						  ifTrue: [ 
-							  chest remove.
-							  Chest newNamed: newChestName ]
-						  ifFalse: [ 
-						  UIManager default inform:
-							  newChestName , ' could not be removed.' ] ] ]
+					  self
+						  privHandlingBlockWhenChestNameInUse: newChestName
+						  ifRemoved: [ Chest newNamed: newChestName ] ] ]
 ]
 
 { #category : #'presenter building' }
@@ -382,15 +376,9 @@ ChestPresenter >> presenterToRenameChest: chest [
 			  [ chest name: newChestName ]
 				  on: ChestKeyAlreadyInUseError
 				  do: [ 
-					  | chestBlockingRenaming |
-					  chestBlockingRenaming := Chest named: newChestName.
-					  (self confirm: (self warningNamingChest: newChestName))
-						  ifTrue: [ 
-							  chestBlockingRenaming remove.
-							  chest name: newChestName ]
-						  ifFalse: [ 
-						  UIManager default inform:
-							  newChestName , ' could not be removed.' ] ] ]
+					  self
+						  privHandlingBlockWhenChestNameInUse: newChestName
+						  ifRemoved: [ chest name: newChestName ] ] ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -406,6 +394,19 @@ ChestPresenter >> presenterToRenameObject: object inChest: chest [
 						  ifTrue: [ 
 							  chest removeObjectNamed: name.
 							  chest renameObject: object into: name ] ] ]
+]
+
+{ #category : #'private - building' }
+ChestPresenter >> privHandlingBlockWhenChestNameInUse: newChestName ifRemoved: aBlock [
+
+	"aBlock can take the removed block as an argument"
+
+	| chest |
+	chest := Chest named: newChestName.
+	(self confirm: (self warningNamingChest: newChestName)) ifFalse: [ 
+		^ self ].
+	chest remove.
+	aBlock cull: chest
 ]
 
 { #category : #removing }
