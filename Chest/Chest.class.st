@@ -170,6 +170,12 @@ Chest class >> chestDictionary [
 	^ ChestDictionary copy
 ]
 
+{ #category : #icons }
+Chest class >> chestIcon [
+
+	^ Smalltalk ui icons iconNamed: 'group'
+]
+
 { #category : #api }
 Chest class >> contents [
 
@@ -328,6 +334,24 @@ Chest >> at: aString put: anObject ifPresent: aBlock [
 	[ self at: aString put: anObject ]
 		on: ChestKeyAlreadyInUseError
 		do: aBlock
+]
+
+{ #category : #'private - tree building' }
+Chest >> chestChildren [
+
+	^ self contentsPrivate associations
+]
+
+{ #category : #evaluation }
+Chest >> chestEvaluation [
+
+	^ self contentsPrivate asString
+]
+
+{ #category : #'private - tree building' }
+Chest >> chestName [
+
+	^ self name
 ]
 
 { #category : #accessing }
