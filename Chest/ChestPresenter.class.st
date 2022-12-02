@@ -295,7 +295,21 @@ ChestPresenter >> makeChestContentTableContextMenu [
 			  anItem
 				  name: 'Inspect';
 				  shortcut: $i meta;
-				  action: [ chestContentsTable selectedItem value inspect ] ]
+				  action: [ chestContentsTable selectedItem value inspect ];
+				  description: 'Inspect the object' ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Remove';
+				  shortcut: $r meta , $m meta;
+				  action: [ self removeSelectedItem ];
+				  description:
+					  'Remove the selected object from the selected object' ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Remove all';
+				  shortcut: $r meta , $m meta shift;
+				  action: [ self removeAllItemsFromSelectedChest ];
+				  description: 'Remove all objects from the selected chest' ]
 ]
 
 { #category : #initialization }
@@ -358,7 +372,19 @@ ChestPresenter >> makeChestTableContextMenu [
 				  description:
 					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
 				  action: [ 
-					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ]
+					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Remove';
+				  shortcut: $c meta , $r meta , $m meta;
+				  description: 'Remove selected chest';
+				  action: [ self removeSelectedChest ] ];
+		  addItem: [ :anItem | 
+			  anItem
+				  name: 'Remove all';
+				  shortcut: $c meta , $r meta , $m meta shift;
+				  description: 'Remove all chests';
+				  action: [ self removeAllChests ] ]
 ]
 
 { #category : #initialization }
