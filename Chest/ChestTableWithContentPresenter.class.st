@@ -10,7 +10,9 @@ Class {
 		'inputField',
 		'confirmActionBar',
 		'chestTableContainer',
-		'chestContentTableContainer'
+		'chestContentTableContainer',
+		'chestsTableToolbar',
+		'chestContentsTableToolbar'
 	],
 	#category : #Chest
 }
@@ -33,6 +35,12 @@ ChestTableWithContentPresenter >> chestContentTableContainer [
 	^ chestContentTableContainer
 ]
 
+{ #category : #accessing }
+ChestTableWithContentPresenter >> chestContentsTableToolbar [
+
+	^ chestContentsTableToolbar
+]
+
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> chestTableContainer [
 
@@ -43,6 +51,12 @@ ChestTableWithContentPresenter >> chestTableContainer [
 ChestTableWithContentPresenter >> chestsTable [
 
 	^ chestsTable
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> chestsTableToolbar [
+
+	^ chestsTableToolbar
 ]
 
 { #category : #'ui requests' }
@@ -115,6 +129,12 @@ ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
 	self updateChestsTable
 ]
 
+{ #category : #initialization }
+ChestTableWithContentPresenter >> iconManager [
+
+	^ Smalltalk ui icons
+]
+
 { #category : #updating }
 ChestTableWithContentPresenter >> initialize [
 
@@ -136,6 +156,9 @@ ChestTableWithContentPresenter >> initializePresenters [
 	chestsTable selectIndex: 1.
 	inputField := self makeInputField.
 	confirmActionBar := self makeConfirmActionBar.
+
+	chestsTableToolbar := self makeChestsTableToolbar.
+	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 
 	self layout: self defaultLayout
 ]
@@ -184,6 +207,14 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 ]
 
 { #category : #initialization }
+ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
+
+	| toolbar |
+	toolbar := self newToolbar.
+	^ toolbar
+]
+
+{ #category : #initialization }
 ChestTableWithContentPresenter >> makeChestsTable [
 
 	^ self newList
@@ -192,6 +223,18 @@ ChestTableWithContentPresenter >> makeChestsTable [
 		  
 		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
 		  yourself
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestsTableToolbar [
+
+	| toolbar |
+	toolbar := self newToolbar.
+	toolbar addItem: (self newToolbarButton
+			 label: 'add';
+			 icon: (self iconManager iconNamed: #add);
+			 action: [ self requestNameNewChest ]).
+	^ toolbar
 ]
 
 { #category : #'as yet unclassified' }
@@ -220,13 +263,53 @@ ChestTableWithContentPresenter >> makeInputField [
 		  yourself
 ]
 
+{ #category : #'ui - requests' }
+ChestTableWithContentPresenter >> namingQuery [
+
+	^ 'What name do you want to give to your object?'
+]
+
+{ #category : #'presenter building' }
+ChestTableWithContentPresenter >> presenterToNameNewChest [
+
+	^ ChestRequestDialogPresenter
+		  request: self namingQuery
+		  onAccept: [ :newChestName | 
+			  [ Chest newNamed: newChestName ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  | chest |
+					  chest := Chest named: newChestName.
+					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
+						   chest ~= Chest defaultInstance ])
+						  ifTrue: [ 
+							  chest remove.
+							  Chest newNamed: newChestName ]
+						  ifFalse: [ 
+						  UIManager default inform:
+							  newChestName , ' could not be removed.' ] ] ]
+]
+
+{ #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> requestNameNewChest [
+
+	| requestPresenter |
+	requestPresenter := self presenterToNameNewChest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: chestsTableToolbar;
+		 bePositionRight;
+		 yourself) popup
+]
+
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self chestTableContainer
 		removeAll;
 		add: inputField;
-		add: #chestsTable.
+		add: #chestsTable;
+		add: chestsTableToolbar.
 	self chestContentTableContainer
 		removeAll;
 		add: #chestContentsTable.
@@ -296,6 +379,14 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 ChestTableWithContentPresenter >> updateChestsTable [
 
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
+]
+
+{ #category : #'ui - requests' }
+ChestTableWithContentPresenter >> warningNamingChest: newChestName [
+
+	^ '`' , newChestName
+	  ,
+	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
 ]
 
 { #category : #'as yet unclassified' }

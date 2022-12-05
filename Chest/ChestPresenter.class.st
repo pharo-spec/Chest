@@ -18,9 +18,7 @@ Class {
 		'helpText',
 		'objectTable',
 		'chestsTable',
-		'chestsTableToolbar',
 		'chestContentsTable',
-		'chestContentsTableToolbar',
 		'inspector',
 		'chestTableWithContent'
 	],
@@ -82,7 +80,7 @@ ChestPresenter >> buildChestContentTableContainerLayout [
 		removeAll;
 		add: (self
 				 headerLayoutWithTitle: 'Chest Contents'
-				 withToolbar: chestContentsTableToolbar)
+				 withToolbar: self chestContentsTableToolbar)
 		withConstraints: [ :cstr | cstr height: 35 ];
 		add: chestTableWithContent chestContentTable
 ]
@@ -95,9 +93,21 @@ ChestPresenter >> buildChestTableContainerLayout [
 		add:
 			(self
 				 headerLayoutWithTitle: 'Chests'
-				 withToolbar: chestsTableToolbar)
+				 withToolbar: self chestsTableToolbar)
 		withConstraints: [ :cstr | cstr height: 35 ];
 		add: chestTableWithContent chestsTable
+]
+
+{ #category : #accessing }
+ChestPresenter >> chestContentsTableToolbar [
+
+	^ chestTableWithContent chestContentsTableToolbar
+]
+
+{ #category : #accessing }
+ChestPresenter >> chestsTableToolbar [
+
+	^ chestTableWithContent chestsTableToolbar
 ]
 
 { #category : #'as yet unclassified' }
@@ -240,10 +250,10 @@ ChestPresenter >> initializePresenters [
 	chestTableWithContent := ChestTableWithContentPresenter new.
 	chestsTable := chestTableWithContent chestsTable.
 	self makeChestsTable.
-	chestsTableToolbar := self makeChestsTableToolbar.
+	self makeChestsTableToolbar.
 	chestContentsTable := chestTableWithContent chestContentTable.
 	self makeChestContentsTable.
-	chestContentsTableToolbar := self makeChestContentsTableToolbar.
+	self makeChestContentsTableToolbar.
 	inspector := StInspector on: (StInspectorModel on: nil).
 	helpButton := self makeHelpButton.
 	chestsTable selectIndex: 1.
@@ -330,7 +340,7 @@ ChestPresenter >> makeChestContentsTable [
 ChestPresenter >> makeChestContentsTableToolbar [
 
 	| toolbar |
-	toolbar := self newToolbar.
+	toolbar := self chestContentsTableToolbar.
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
@@ -339,7 +349,6 @@ ChestPresenter >> makeChestContentsTableToolbar [
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ self removeAllItemsFromSelectedChest ]).
-	^ toolbar
 ]
 
 { #category : #initialization }
@@ -400,7 +409,7 @@ ChestPresenter >> makeChestsTable [
 ChestPresenter >> makeChestsTableToolbar [
 
 	| toolbar |
-	toolbar := self newToolbar.
+	toolbar := self chestsTableToolbar.
 	toolbar addItem: (self newToolbarButton
 			 label: 'Remove';
 			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
@@ -409,10 +418,6 @@ ChestPresenter >> makeChestsTableToolbar [
 			 label: 'Remove All';
 			 icon: (self iconManager iconNamed: #glamorousTrash);
 			 action: [ self removeAllChests ]).
-	toolbar addItem: (self newToolbarButton
-			 label: 'add';
-			 icon: (self iconManager iconNamed: #add);
-			 action: [ self requestNameNewChestFromToolbar: toolbar ]).
 	^ toolbar
 ]
 
@@ -437,31 +442,10 @@ ChestPresenter >> makePlayground [
 	^ newPlayground
 ]
 
-{ #category : #updating }
+{ #category : #'ui - requests' }
 ChestPresenter >> namingQuery [
 
-	^ 'What name do you want to give to your object?'
-]
-
-{ #category : #'as yet unclassified' }
-ChestPresenter >> presenterToNameNewChest [
-
-	^ ChestRequestDialogPresenter
-		  request: self namingQuery
-		  onAccept: [ :newChestName | 
-			  [ Chest newNamed: newChestName ]
-				  on: ChestKeyAlreadyInUseError
-				  do: [ 
-					  | chest |
-					  chest := Chest named: newChestName.
-					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
-						   chest ~= Chest defaultInstance ])
-						  ifTrue: [ 
-							  chest remove.
-							  Chest newNamed: newChestName ]
-						  ifFalse: [ 
-						  UIManager default inform:
-							  newChestName , ' could not be removed.' ] ] ]
+	^ chestTableWithContent namingQuery
 ]
 
 { #category : #'as yet unclassified' }
@@ -537,16 +521,10 @@ ChestPresenter >> removeSelectedItem [
 					chestContentsTable selection selectedIndex - 1 ] ]
 ]
 
-{ #category : #initialization }
-ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
+{ #category : #'ui - dialogs' }
+ChestPresenter >> requestNameNewChest [
 
-	| requestPresenter |
-	requestPresenter := self presenterToNameNewChest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: toolbar;
-		 bePositionRight;
-		 yourself) popup
+	chestTableWithContent requestNameNewChest
 ]
 
 { #category : #initialization }
@@ -597,14 +575,11 @@ ChestPresenter >> title [
 { #category : #updating }
 ChestPresenter >> warningNamingChest: newChestName [
 
-	^ '`' , newChestName
-	  ,
-	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
+	^ chestTableWithContent warningNamingChest: newChestName
 ]
 
 { #category : #'as yet unclassified' }
 ChestPresenter >> warningNamingObjectInChest: newObjectName [
 
-	^ '`' , newObjectName
-	  , '` already exists in this chest. Do you want to replace it?'
+	^ chestTableWithContent warningNamingObjectInChest: newObjectName
 ]
