@@ -3,7 +3,7 @@ Command that allows to load an object or several objects from a chest into a cod
 "
 Class {
 	#name : #ChestLoadObjectIntoCode,
-	#superclass : #CmCommand,
+	#superclass : #ChestCommand,
 	#category : #'Chest-Commands'
 }
 
@@ -75,6 +75,12 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 		choicePresenter window close ].
 	choicePresenter layout: choicePresenter storeCommandLayout.
 	^ choicePresenter
+]
+
+{ #category : #testing }
+ChestLoadObjectIntoCode >> canBeExecuted [
+
+	^ self isVisibleForContext: context
 ]
 
 { #category : #execution }

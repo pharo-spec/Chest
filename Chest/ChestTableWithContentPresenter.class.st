@@ -17,6 +17,119 @@ Class {
 	#category : #Chest
 }
 
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildChestContentTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestContentMenu') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTableContentMenuCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildChestContentTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestContentToolbar') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTableContentToolbarCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildChestTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestMenu') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTableMenuCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildChestTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestToolbar') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTableToolbarCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildCommandsGroupWith: aChestWithTablePresenter forRoot: aCmCommandGroup [
+
+	self
+		buildChestTableMenuGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+	self
+		buildChestContentTableMenuGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+	self
+		buildTreeTableMenuGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+	self
+		buildTreeTableToolbarGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+	self
+		buildChestTableToolbarGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+	self
+		buildChestContentTableToolbarGroupWith: aChestWithTablePresenter
+		forRoot: aCmCommandGroup
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestWithContentMenu') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTreeTableMenuCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> buildTreeTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: 'ChestWithContentToolbar') asSpecGroup.
+	self
+		registerClasses: ChestCommand chestTreeTableToolbarCommandClasses
+		toGroup: group.
+		
+	group displayMode: CmUIHideWhenCantBeRun.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup: aGroup [
+
+	commandClasses do: [ :aClass | aGroup register: aClass ]
+]
+
 { #category : #accessing }
 ChestTableWithContentPresenter >> cancelButton [
 

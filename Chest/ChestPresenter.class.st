@@ -268,6 +268,26 @@ ChestPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter
 ]
 
+{ #category : #loading }
+ChestPresenter >> loadBindingsFromAllChestsInPlayground [
+
+	^ self addBindingsInPlayground: self collectBindingsFromAllChests
+]
+
+{ #category : #loading }
+ChestPresenter >> loadBindingsFromSelectedChestInPlayground [
+
+	^ self addBindingsInPlayground:
+		  (self collectBindingsFromChest: self selectedChest)
+]
+
+{ #category : #adding }
+ChestPresenter >> loadSelectedItemBindingInPlayground [
+
+	self addBindingsInPlayground:
+		{ (self convertBindingIntoProperWorkspaceVariable: self selectedItem) }
+]
+
 { #category : #initialization }
 ChestPresenter >> makeChestContentTableContextMenu [
 
@@ -278,20 +298,14 @@ ChestPresenter >> makeChestContentTableContextMenu [
 				  name: 'Rename';
 				  description: 'Rename the selected item in chest';
 				  action: [ 
-					  self
-						  requestRenameObjectFromChest:
-							  chestContentsTable selectedItem value
-						  fromContextMenuItem: anItem ] ];
+					  self renameSelectedItem ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load';
 				  shortcut: $l meta;
 				  description:
 					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
-				  action: [ 
-					  self addBindingsInPlayground:
-							  { (self convertBindingIntoProperWorkspaceVariable:
-									   chestContentsTable selectedItem) } ] ];
+				  action: [ self loadSelectedItemBindingInPlayground ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Load all';
@@ -299,13 +313,12 @@ ChestPresenter >> makeChestContentTableContextMenu [
 					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
 				  shortcut: $l shift meta;
 				  action: [ 
-					  self addBindingsInPlayground:
-							  (self collectBindingsFromChest: self selectedChest) ] ];
+					  self collectBindingsFromChest: self selectedChest ] ];
 		  addItem: [ :anItem | 
 			  anItem
 				  name: 'Inspect';
 				  shortcut: $i meta;
-				  action: [ chestContentsTable selectedItem value inspect ];
+				  action: [ self selectedItem value inspect ];
 				  description: 'Inspect the object' ];
 		  addItem: [ :anItem | 
 			  anItem
@@ -511,7 +524,7 @@ ChestPresenter >> removeSelectedChest [
 { #category : #removing }
 ChestPresenter >> removeSelectedItem [
 
-	chestContentsTable selectedItem ifNotNil: [ :assoc | 
+	self selectedItem ifNotNil: [ :assoc | 
 		self selectedChest remove: assoc value.
 		(chestContentsTable selection selectedIndex = 1 and: [ 
 			 chestContentsTable items isNotEmpty ])
@@ -519,6 +532,23 @@ ChestPresenter >> removeSelectedItem [
 			ifFalse: [ 
 				chestContentsTable selectIndex:
 					chestContentsTable selection selectedIndex - 1 ] ]
+]
+
+{ #category : #renaming }
+ChestPresenter >> renameSelectedChest [
+
+	self
+		requestRenameChest: self selectedChest
+		fromContextMenuItem: chestsTable
+]
+
+{ #category : #renaming }
+ChestPresenter >> renameSelectedItem [
+
+	^ self
+		  requestRenameObjectFromChest:
+		  self selectedItem value
+		  fromContextMenuItem: chestContentsTable
 ]
 
 { #category : #'ui - dialogs' }
@@ -558,6 +588,12 @@ ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anIt
 ChestPresenter >> selectedChest [
 
 	^ chestsTable selection selectedItem
+]
+
+{ #category : #accessing }
+ChestPresenter >> selectedItem [
+
+	^ chestContentsTable selection selectedItem
 ]
 
 { #category : #initialization }
