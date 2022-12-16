@@ -22,6 +22,12 @@ ChestInspectItemCommand class >> defaultShortcutKey [
 	^ $i meta
 ]
 
+{ #category : #testing }
+ChestInspectItemCommand >> canBeExecuted [
+
+	^ context selectedItem isNotNil
+]
+
 { #category : #executing }
 ChestInspectItemCommand >> execute [ 
 

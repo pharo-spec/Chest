@@ -13,7 +13,7 @@ ChestLoadBindingsInPlaygroundCommand class >> defaultDescription [
 { #category : #default }
 ChestLoadBindingsInPlaygroundCommand class >> defaultName [
 
-	^ 'Load'
+	^ 'Load bindings'
 ]
 
 { #category : #'accessing - defaults' }
@@ -23,7 +23,7 @@ ChestLoadBindingsInPlaygroundCommand class >> defaultShortcutKey [
 ]
 
 { #category : #testing }
-ChestLoadBindingsInPlaygroundCommand >> canExecute [
+ChestLoadBindingsInPlaygroundCommand >> canBeExecuted [
 
 	^ context selectedChest isNotNil
 ]

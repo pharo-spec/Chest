@@ -11,9 +11,9 @@ ChestLoadBindingsFromAllChestsInPlaygroundCommand class >> defaultDescription [
 ]
 
 { #category : #default }
-ChestLoadBindingsFromAllChestsInPlaygroundCommand class >> defaultName [ 
+ChestLoadBindingsFromAllChestsInPlaygroundCommand class >> defaultName [
 
-	^ 'Load all'
+	^ 'Load all chests'' bindings'
 ]
 
 { #category : #'accessing - defaults' }

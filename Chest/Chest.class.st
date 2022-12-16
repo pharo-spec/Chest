@@ -398,6 +398,12 @@ Chest >> inspectAt: aString [
 	^ (self contentsPrivate at: aString) inspect
 ]
 
+{ #category : #testing }
+Chest >> isChest [
+
+	^ true
+]
+
 { #category : #api }
 Chest >> name [
 

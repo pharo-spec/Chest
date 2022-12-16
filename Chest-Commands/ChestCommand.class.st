@@ -63,7 +63,8 @@ ChestCommand class >> chestTableToolbarCommandClasses [
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTreeTableMenuCommandClasses [
 
-	^ {  }
+	^ self chestTableMenuCommandClasses
+	  , self chestTableContentMenuCommandClasses
 ]
 
 { #category : #'accessing - commands classes' }
@@ -72,4 +73,16 @@ ChestCommand class >> chestTreeTableToolbarCommandClasses [
 	^ { 
 		  ChestAddNewChestCommand.
 		  ChestRemoveAllChestsCommand }
+]
+
+{ #category : #default }
+ChestCommand class >> defaultIconName [
+
+	^ nil
+]
+
+{ #category : #default }
+ChestCommand class >> defaultShortcutKey [
+
+	^ nil
 ]

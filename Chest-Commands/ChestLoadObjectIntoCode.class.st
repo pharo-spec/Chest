@@ -95,8 +95,8 @@ ChestLoadObjectIntoCode >> execute [
 ChestLoadObjectIntoCode >> isVisibleForContext: aCodePresenter [
 
 	^ aCodePresenter interactionModel isNotNil and: [ 
-		  aCodePresenter interactionModel allSelectors indexOf:
-			  #addBinding: > 0 ]
+		  aCodePresenter interactionModel class allSelectors 
+			  identityIncludes: #addBinding: ]
 ]
 
 { #category : #'as yet unclassified' }

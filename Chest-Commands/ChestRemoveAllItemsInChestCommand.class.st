@@ -19,7 +19,7 @@ ChestRemoveAllItemsInChestCommand class >> defaultIconName [
 { #category : #default }
 ChestRemoveAllItemsInChestCommand class >> defaultName [
 
-	^ 'Remove all items in chest'
+	^ 'Remove all items'
 ]
 
 { #category : #default }

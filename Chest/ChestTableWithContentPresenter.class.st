@@ -12,7 +12,11 @@ Class {
 		'chestTableContainer',
 		'chestContentTableContainer',
 		'chestsTableToolbar',
-		'chestContentsTableToolbar'
+		'chestContentsTableToolbar',
+		'chestWithContentTreeTable',
+		'chestTableWithContentContainer',
+		'activePresenter',
+		'chestWithContentTreeTableToolbar'
 	],
 	#category : #Chest
 }
@@ -21,12 +25,14 @@ Class {
 ChestTableWithContentPresenter class >> buildChestContentTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestContentMenu') asSpecGroup.
+	group := (CmCommandGroup named: self chestContentMenuGroupName)
+		         asSpecGroup
+		         beDisplayedAsGroup;
+		         yourself.
 	self
 		registerClasses: ChestCommand chestTableContentMenuCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
@@ -35,12 +41,12 @@ ChestTableWithContentPresenter class >> buildChestContentTableMenuGroupWith: aCh
 ChestTableWithContentPresenter class >> buildChestContentTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestContentToolbar') asSpecGroup.
+	group := (CmCommandGroup named: self chestContentToolbarGroupName)
+		         asSpecGroup.
 	self
 		registerClasses: ChestCommand chestTableContentToolbarCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
@@ -49,12 +55,13 @@ ChestTableWithContentPresenter class >> buildChestContentTableToolbarGroupWith: 
 ChestTableWithContentPresenter class >> buildChestTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestMenu') asSpecGroup.
+	group := (CmCommandGroup named: self chestMenuGroupName) asSpecGroup
+		         beDisplayedAsGroup;
+		         yourself.
 	self
 		registerClasses: ChestCommand chestTableMenuCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
@@ -63,12 +70,12 @@ ChestTableWithContentPresenter class >> buildChestTableMenuGroupWith: aChestWith
 ChestTableWithContentPresenter class >> buildChestTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestToolbar') asSpecGroup.
+	group := (CmCommandGroup named: self chestToolbarGroupName)
+		         asSpecGroup.
 	self
 		registerClasses: ChestCommand chestTableToolbarCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
@@ -100,12 +107,12 @@ ChestTableWithContentPresenter class >> buildCommandsGroupWith: aChestWithTableP
 ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestWithContentMenu') asSpecGroup.
+	group := (CmCommandGroup named: self chestWithContentMenuGroupName)
+		         asSpecGroup.
 	self
 		registerClasses: ChestCommand chestTreeTableMenuCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
@@ -114,20 +121,67 @@ ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithC
 ChestTableWithContentPresenter class >> buildTreeTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
-	group := (CmCommandGroup named: 'ChestWithContentToolbar') asSpecGroup.
+	group := (CmCommandGroup named: self chestWithContentToolbarGroupName)
+		         asSpecGroup.
 	self
 		registerClasses: ChestCommand chestTreeTableToolbarCommandClasses
-		toGroup: group.
-		
-	group displayMode: CmUIHideWhenCantBeRun.
+		toGroup: group
+		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
 ]
 
 { #category : #commands }
-ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup: aGroup [
+ChestTableWithContentPresenter class >> chestContentMenuGroupName [
 
-	commandClasses do: [ :aClass | aGroup register: aClass ]
+	^ 'ChestContentMenu'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> chestContentToolbarGroupName [
+
+	^ 'ChestContentToolbar'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> chestMenuGroupName [
+
+	^ 'ChestMenu'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> chestToolbarGroupName [
+
+	^ 'ChestToolbar'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> chestWithContentMenuGroupName [
+
+	^ 'ChestWithContentMenu'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> chestWithContentToolbarGroupName [
+
+	^ 'ChestWithContentToolbar'
+]
+
+{ #category : #commands }
+ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup: aGroup withContext: aChestWithContentPresenter [
+
+	commandClasses do: [ :aClass | 
+		aGroup register: ((aClass
+				  forSpecWithIconNamed: aClass defaultIconName
+				  shortcutKey: aClass defaultShortcutKey)
+				 context: aChestWithContentPresenter;
+				 beHiddenWhenCantBeRun) ]
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> activePresenter [
+
+	^ activePresenter
 ]
 
 { #category : #accessing }
@@ -158,6 +212,18 @@ ChestTableWithContentPresenter >> chestContentsTableToolbar [
 ChestTableWithContentPresenter >> chestTableContainer [
 
 	^ chestTableContainer
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> chestTableWithContentContainer [
+
+	^ chestTableWithContentContainer
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> chestWithContentTreeTable [
+
+	^ chestWithContentTreeTable
 ]
 
 { #category : #updating }
@@ -211,13 +277,39 @@ ChestTableWithContentPresenter >> connectPresenters [
 		selectFirst
 ]
 
+{ #category : #layout }
+ChestTableWithContentPresenter >> debuggerLayout [
+
+	activePresenter := self chestWithContentTreeTable.
+
+	^ SpBoxLayout newVertical
+		  add: chestWithContentTreeTableToolbar expand: false;
+		  add: chestWithContentTreeTable;
+		  yourself
+]
+
 { #category : #updating }
 ChestTableWithContentPresenter >> defaultLayout [
 
-	^ SpPanedLayout newHorizontal
-		  add: chestTableContainer;
-		  add: chestContentTableContainer;
-		  yourself
+	chestTableContainer
+		removeAll;
+		add: (self
+				 headerLayoutWithTitle: 'Chests'
+				 withToolbar: self chestsTableToolbar)
+		withConstraints: [ :cstr | cstr height: 35 ];
+		add: chestsTable.
+
+	chestContentTableContainer
+		removeAll;
+		add: (self
+				 headerLayoutWithTitle: 'Contents'
+				 withToolbar: self chestContentsTableToolbar)
+		withConstraints: [ :cstr | cstr height: 35 ];
+		add: chestContentsTable.
+		
+	activePresenter := chestTableWithContentContainer.
+
+	^ chestTableWithContentContainer
 ]
 
 { #category : #updating }
@@ -230,8 +322,13 @@ ChestTableWithContentPresenter >> eventChestRemoved: aChestRemovedAnnouncement [
 ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
 
 	| currentlySelectedChest updatedChest |
+	self flag: 'to do with polymorphism'.
+	
 	updatedChest := aChestUpdatedAnnouncement updatedChest.
-	currentlySelectedChest := chestsTable selectedItem.
+	currentlySelectedChest := self selectedChest.
+	activePresenter == chestWithContentTreeTable ifTrue: [ 
+		self updateChestContentTableForChest: updatedChest ].
+
 	currentlySelectedChest == updatedChest ifTrue: [ 
 		self updateChestContentTableForChest: updatedChest ]
 ]
@@ -240,6 +337,18 @@ ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnou
 ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
 
 	self updateChestsTable
+]
+
+{ #category : #layout }
+ChestTableWithContentPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
+
+	^ SpBoxLayout newHorizontal
+		  add: (SpLabelPresenter new
+				   label: aString;
+				   yourself)
+		  expand: false;
+		  addLast: aToolbar expand: false;
+		  yourself
 ]
 
 { #category : #initialization }
@@ -267,11 +376,26 @@ ChestTableWithContentPresenter >> initializePresenters [
 		                              add: self chestContentTable;
 		                              yourself.
 	chestsTable selectIndex: 1.
+	chestTableWithContentContainer := SpPanedLayout newHorizontal
+		                                  add: chestTableContainer;
+		                                  add: chestContentTableContainer;
+		                                  yourself.
+	activePresenter := chestTableWithContentContainer.
 	inputField := self makeInputField.
 	confirmActionBar := self makeConfirmActionBar.
 
+	chestWithContentTreeTable := self makeChestWithContentTreeTable.
+
+
 	chestsTableToolbar := self makeChestsTableToolbar.
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
+
+	self
+		makeChestTableContextMenu;
+		makeChestContentTableContextMenu.
+	chestWithContentTreeTableToolbar := self makeChestTreeTableToolbar.
+
+	self makeChestTreeTableContextMenu.
 
 	self layout: self defaultLayout
 ]
@@ -295,15 +419,30 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 	self chestTableContainer
 		removeAll;
 		add: inputField;
-		add: #chestsTable.
+		add: chestsTable.
 	self chestContentTableContainer
 		removeAll;
-		add: #chestContentsTable.
+		add: chestContentsTable.
 
 	^ SpBoxLayout newVertical
-		  add: self defaultLayout;
-		  add: #confirmActionBar;
+		  add: chestTableWithContentContainer;
+		  add: (SpBoxLayout newHorizontal
+				   add: chestsTableToolbar;
+				   add: chestContentsTableToolbar;
+				   yourself);
+		  add: confirmActionBar;
 		  yourself
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
+
+	chestContentsTable contextMenu: [ 
+		(self rootCommandsGroup / self class chestContentMenuGroupName)
+			asMenuPresenter ].
+
+	chestContentsTable applyKeyBindingsFromMenu:
+		chestContentsTable contextMenu value
 ]
 
 { #category : #initialization }
@@ -325,6 +464,72 @@ ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 	| toolbar |
 	toolbar := self newToolbar.
 	^ toolbar
+		  displayMode: StPharoSettings toolbarDisplayMode;
+		  addStyle: 'stToolbar';
+		  fillWith:
+			  self rootCommandsGroup / self class chestContentToolbarGroupName;
+		  yourself
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestTableContextMenu [
+
+	chestsTable contextMenu: [ 
+		(self rootCommandsGroup / self class chestMenuGroupName)
+			asMenuPresenter ].
+
+	chestsTable applyKeyBindingsFromMenu: chestsTable contextMenu value
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestTreeTableContextMenu [
+
+	chestWithContentTreeTable contextMenu: [ 
+		(self rootCommandsGroup / self class chestWithContentMenuGroupName)
+			asMenuPresenter ].
+
+	chestWithContentTreeTable applyKeyBindingsFromMenu:
+		chestWithContentTreeTable contextMenu value
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestTreeTableToolbar [
+
+	| toolbar |
+	toolbar := self newToolbar.
+	^ toolbar
+		  displayMode: StPharoSettings toolbarDisplayMode;
+		  addStyle: 'stToolbar';
+		  fillWith:
+			  self rootCommandsGroup / self class chestWithContentToolbarGroupName;
+		  yourself
+]
+
+{ #category : #initialization }
+ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
+
+	| treeTable |
+	treeTable := SpTreeTablePresenter new.
+	treeTable
+		roots: Chest allChests;
+		children: [ :anObject | anObject chestChildren ].
+
+	^ treeTable
+		  addColumn: (SpCompositeTableColumn new
+				   title: 'Chests';
+				   addColumn: ((SpImageTableColumn evaluated: [ :anObject | 
+							     anObject class chestIcon ])
+						    width: 20;
+						    yourself);
+				   addColumn: (SpStringTableColumn evaluated: [ :anObject | 
+						    anObject chestEvaluation ]) yourself);
+		  addColumn: ((SpStringTableColumn new title: 'Name')
+				   evaluated: [ :anObject | anObject chestName ];
+				   yourself);
+		  beResizable;
+		  activatesOnDoubleClick;
+		  whenActivatedDo: [ :selection | selection selectedItem inspect ];
+		  yourself
 ]
 
 { #category : #initialization }
@@ -343,11 +548,12 @@ ChestTableWithContentPresenter >> makeChestsTableToolbar [
 
 	| toolbar |
 	toolbar := self newToolbar.
-	toolbar addItem: (self newToolbarButton
-			 label: 'add';
-			 icon: (self iconManager iconNamed: #add);
-			 action: [ self requestNameNewChest ]).
 	^ toolbar
+		  displayMode: StPharoSettings toolbarDisplayMode;
+		  addStyle: 'stToolbar';
+		  fillWith:
+			  self rootCommandsGroup / self class chestToolbarGroupName;
+		  yourself
 ]
 
 { #category : #'as yet unclassified' }
@@ -369,7 +575,7 @@ ChestTableWithContentPresenter >> makeInputField [
 
 	^ self newTextInput
 		  placeholder: 'Choose a name for your object';
-		  text: (chestsTable selectedItem
+		  text: (self selectedChest
 				   ifNotNil: [ :selectedChest | 
 					   selectedChest nextDefaultNameForObject ]
 				   ifNil: [ '' ]);
@@ -403,6 +609,125 @@ ChestTableWithContentPresenter >> presenterToNameNewChest [
 							  newChestName , ' could not be removed.' ] ] ]
 ]
 
+{ #category : #'presenter building' }
+ChestTableWithContentPresenter >> presenterToRenameChest: chest [
+
+	^ ChestRequestDialogPresenter
+		  request: self namingQuery
+		  onAccept: [ :newChestName | 
+			  [ chest name: newChestName ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  | chestBlockingRenaming |
+					  chestBlockingRenaming := Chest named: newChestName.
+					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
+						   chestBlockingRenaming ~= Chest defaultInstance ])
+						  ifTrue: [ 
+							  chestBlockingRenaming remove.
+							  chest name: newChestName ]
+						  ifFalse: [ 
+						  UIManager default inform:
+							  newChestName , ' could not be removed.' ] ] ]
+]
+
+{ #category : #'presenter building' }
+ChestTableWithContentPresenter >> presenterToRenameObject: object inChest: chest [
+
+	^ ChestRequestDialogPresenter
+		  request: self namingQuery
+		  onAccept: [ :name | 
+			  [ chest renameObject: object into: name ]
+				  on: ChestKeyAlreadyInUseError
+				  do: [ 
+					  (self confirm: (self warningNamingObjectInChest: name)) 
+						  ifTrue: [ 
+							  chest removeObjectNamed: name.
+							  chest renameObject: object into: name ] ] ]
+]
+
+{ #category : #removing }
+ChestTableWithContentPresenter >> removeAllChests [
+
+	| items |
+	self flag: 'to do with polymorphism'.
+
+	items := activePresenter == chestWithContentTreeTable
+		         ifTrue: [ chestWithContentTreeTable roots ]
+		         ifFalse: [ chestsTable items ].
+	items copy do: [ :chest | chest remove ]
+]
+
+{ #category : #removing }
+ChestTableWithContentPresenter >> removeAllItemsFromSelectedChest [
+
+	| items |
+	self flag: 'to do with polymorphism'.
+
+	items := activePresenter == chestWithContentTreeTable
+		         ifTrue: [ 
+		         chestWithContentTreeTable childrenFor: self selectedChest ]
+		         ifFalse: [ chestContentsTable items ].
+	items do: [ :assoc | self selectedChest remove: assoc value ]
+]
+
+{ #category : #removing }
+ChestTableWithContentPresenter >> removeSelectedChest [
+
+	| selectedChestIndex |
+	self flag: 'to do with polymorphism'.
+	
+	self selectedChest remove.
+	activePresenter == chestWithContentTreeTable ifTrue: [ ^ self ].
+	chestsTable selectIndex:
+		(1 max: chestsTable selection selectedIndex - 1)
+		
+	"activePresenter == chestWithContentTreeTable ifTrue: [ ^ self ]."
+]
+
+{ #category : #removing }
+ChestTableWithContentPresenter >> removeSelectedItem [
+
+	| assoc |
+	self flag: 'to do with polymorphism'.
+	
+	assoc := self selectedItem.
+	self selectedChest remove: assoc value.
+	activePresenter == chestWithContentTreeTable ifTrue: [ ^ self ].
+	(chestContentsTable selection selectedIndex = 1 and: [ 
+		 chestContentsTable items isNotEmpty ])
+		ifTrue: [ chestContentsTable selectIndex: 1 ]
+		ifFalse: [ 
+			chestContentsTable selectIndex:
+				chestContentsTable selection selectedIndex - 1 ]
+]
+
+{ #category : #renaming }
+ChestTableWithContentPresenter >> renameSelectedChest [
+
+	self flag: 'to do with polymorphism'.
+
+	self
+		requestRenameChest: self selectedChest
+		fromContextMenuItem: (activePresenter == chestWithContentTreeTable
+				 ifTrue: [ chestWithContentTreeTable ]
+				 ifFalse: [ chestsTable ])
+]
+
+{ #category : #renaming }
+ChestTableWithContentPresenter >> renameSelectedItem [
+
+	"need to redo renaming and removing + event handlers to take into account tree table (+ add load commands in ChestPresenter for treeTable menu)"
+
+	self flag: 'to do with polymorphism'.
+
+	^ self
+		  requestRenameObjectFromChest: self selectedItem
+		  fromContextMenuItem:
+			  (activePresenter == chestWithContentTreeTable
+				   ifTrue: [ chestWithContentTreeTable ]
+				   ifFalse: [ chestContentsTable ])
+]
+
 { #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> requestNameNewChest [
 
@@ -410,9 +735,68 @@ ChestTableWithContentPresenter >> requestNameNewChest [
 	requestPresenter := self presenterToNameNewChest.
 	(self newPopover
 		 presenter: requestPresenter;
-		 relativeTo: chestsTableToolbar;
+		 relativeTo: activePresenter;
 		 bePositionRight;
 		 yourself) popup
+]
+
+{ #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
+
+	| requestPresenter |
+	requestPresenter := self presenterToRenameChest: chest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
+]
+
+{ #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> requestRenameObjectFromChest: objectNameValueAssociation fromContextMenuItem: anItem [
+
+	| chest requestPresenter object |
+	object := objectNameValueAssociation value.
+	chest := activePresenter == chestWithContentTreeTable
+		         ifTrue: [ 
+			         chestWithContentTreeTable roots detect: [ :root | 
+				         (chestWithContentTreeTable childrenFor: root) 
+					         identityIncludes: objectNameValueAssociation ] ]
+		         ifFalse: [ self selectedChest ].
+	requestPresenter := self
+		                    presenterToRenameObject: object
+		                    inChest: chest.
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> selectedChest [
+
+	self flag: 'to do with polymorphism'.
+
+	activePresenter == chestWithContentTreeTable ifTrue: [ 
+		^ chestWithContentTreeTable selectedItem isChest
+			  ifTrue: [ chestWithContentTreeTable selectedItem ]
+			  ifFalse: [ nil ] ].
+	^ chestsTable selection selectedItem
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> selectedItem [
+
+	self flag: 'to do with polymorphism'.
+
+	activePresenter == chestWithContentTreeTable ifTrue: [ 
+		^ chestWithContentTreeTable selectedItem isChest
+			  ifFalse: [ chestWithContentTreeTable selectedItem ]
+			  ifTrue: [ nil ] ].
+	^ chestContentsTable selection selectedItem
+
+	"^ activePresenter selectedChestItem"
 ]
 
 { #category : #'as yet unclassified' }
@@ -421,15 +805,18 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 	self chestTableContainer
 		removeAll;
 		add: inputField;
-		add: #chestsTable;
-		add: chestsTableToolbar.
+		add: chestsTable.
 	self chestContentTableContainer
 		removeAll;
-		add: #chestContentsTable.
+		add: chestContentsTable.
 
 	^ SpBoxLayout newVertical
-		  add: self defaultLayout;
-		  add: #confirmActionBar;
+		  add: chestTableWithContentContainer;
+		  add: (SpBoxLayout newHorizontal
+				   add: chestsTableToolbar;
+				   add: chestContentsTableToolbar;
+				   yourself);
+		  add: confirmActionBar;
 		  yourself
 ]
 
@@ -484,6 +871,11 @@ ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
 { #category : #initialization }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 
+	self flag: 'to do with polymorphism'.
+
+	activePresenter == chestWithContentTreeTable ifTrue: [ 
+		chestWithContentTreeTable roots: Chest allChests.
+		^ self ].
 	chestContentsTable ifNotNil: [ :lst | 
 		lst items: aChest contents associations asOrderedCollection ]
 ]
@@ -491,6 +883,11 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 { #category : #updating }
 ChestTableWithContentPresenter >> updateChestsTable [
 
+	self flag: 'to do with polymorphism'.
+
+	activePresenter == chestWithContentTreeTable ifTrue: [ 
+		chestWithContentTreeTable roots: Chest allChests.
+		^ self ].
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 

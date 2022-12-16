@@ -19,7 +19,7 @@ ChestAddNewChestCommand class >> defaultIconName [
 { #category : #default }
 ChestAddNewChestCommand class >> defaultName [
 
-	^ 'add chest'
+	^ 'Add chest'
 ]
 
 { #category : #executing }
