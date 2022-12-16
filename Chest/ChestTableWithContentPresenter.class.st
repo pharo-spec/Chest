@@ -108,7 +108,9 @@ ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithC
 
 	| group |
 	group := (CmCommandGroup named: self chestWithContentMenuGroupName)
-		         asSpecGroup.
+		         asSpecGroup
+		         beDisplayedAsGroup;
+		         yourself.
 	self
 		registerClasses: ChestCommand chestTreeTableMenuCommandClasses
 		toGroup: group
