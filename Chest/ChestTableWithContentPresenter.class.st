@@ -596,6 +596,7 @@ ChestTableWithContentPresenter >> presenterToNameNewChest [
 	^ ChestRequestDialogPresenter
 		  request: self namingQuery
 		  onAccept: [ :newChestName | 
+			  [ 
 			  [ Chest newNamed: newChestName ]
 				  on: ChestKeyAlreadyInUseError
 				  do: [ 
@@ -609,6 +610,10 @@ ChestTableWithContentPresenter >> presenterToNameNewChest [
 						  ifFalse: [ 
 						  UIManager default inform:
 							  newChestName , ' could not be removed.' ] ] ]
+				  on: ChestInvalidNameError
+				  do: [ 
+				  UIManager inform:
+					  newChestName , ' is not a valid name for a chest.' ] ]
 ]
 
 { #category : #'presenter building' }
@@ -617,9 +622,10 @@ ChestTableWithContentPresenter >> presenterToRenameChest: chest [
 	^ ChestRequestDialogPresenter
 		  request: self namingQuery
 		  onAccept: [ :newChestName | 
+			  [ 
 			  [ chest name: newChestName ]
 				  on: ChestKeyAlreadyInUseError
-				  do: [ 
+				  do: [
 					  | chestBlockingRenaming |
 					  chestBlockingRenaming := Chest named: newChestName.
 					  ((self confirm: (self warningNamingChest: newChestName)) and: [ 
@@ -630,6 +636,11 @@ ChestTableWithContentPresenter >> presenterToRenameChest: chest [
 						  ifFalse: [ 
 						  UIManager default inform:
 							  newChestName , ' could not be removed.' ] ] ]
+				  on: ChestInvalidNameError
+				  do: [ 
+					  UIManager inform:
+						  newChestName
+						  , ' is not a valid name for a chest.' ] ]
 ]
 
 { #category : #'presenter building' }
@@ -638,6 +649,7 @@ ChestTableWithContentPresenter >> presenterToRenameObject: object inChest: chest
 	^ ChestRequestDialogPresenter
 		  request: self namingQuery
 		  onAccept: [ :name | 
+			  [ 
 			  [ chest renameObject: object into: name ]
 				  on: ChestKeyAlreadyInUseError
 				  do: [ 
@@ -645,6 +657,10 @@ ChestTableWithContentPresenter >> presenterToRenameObject: object inChest: chest
 						  ifTrue: [ 
 							  chest removeObjectNamed: name.
 							  chest renameObject: object into: name ] ] ]
+				  on: ChestInvalidNameError
+				  do: [ 
+					  UIManager inform:
+						  name , ' is not a valid name an object.' ] ]
 ]
 
 { #category : #removing }

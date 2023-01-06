@@ -336,6 +336,12 @@ Chest >> at: aString put: anObject ifPresent: aBlock [
 		do: aBlock
 ]
 
+{ #category : #validating }
+Chest >> checkValidName: aString [
+
+	[ Slot checkValidName: aString ] on: InvalidSlotName do: [ ChestInvalidNameError signal ]
+]
+
 { #category : #'private - tree building' }
 Chest >> chestChildren [
 
@@ -415,6 +421,7 @@ Chest >> name: aString [
 
 	| oldName |
 	oldName := self name.
+	self checkValidName: aString.
 	self class at: aString putChestIfKeyIsAbsent: self.
 	name := aString.
 	oldName ifNotNil: [ self class removeChestNamed: oldName ]
