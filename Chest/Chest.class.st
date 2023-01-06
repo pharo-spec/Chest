@@ -314,9 +314,10 @@ Chest >> at: aString [
 	^ self contentsPrivate at: aString
 ]
 
-{ #category : #api }
+{ #category : #accessing }
 Chest >> at: aString put: anObject [
 
+	self checkValidName: aString.
 	(self contentsPrivate includesKey: aString) ifTrue: [ 
 		ChestKeyAlreadyInUseError signal:
 			'You cannot put an object named ' , aString
