@@ -293,6 +293,8 @@ ChestTableWithContentPresenter >> debuggerLayout [
 { #category : #updating }
 ChestTableWithContentPresenter >> defaultLayout [
 
+	self makeChestContentsTable.
+
 	chestTableContainer
 		removeAll;
 		add: (self
@@ -369,11 +371,11 @@ ChestTableWithContentPresenter >> initialize [
 { #category : #initialization }
 ChestTableWithContentPresenter >> initializePresenters [
 
-	chestsTable := self makeChestsTable.
+	self makeChestsTable.
 	chestTableContainer := SpBoxLayout newVertical
 		                       add: self chestsTable;
 		                       yourself.
-	chestContentsTable := self makeChestContentsTable.
+	self makeChestContentsTable.
 	chestContentTableContainer := SpBoxLayout newVertical
 		                              add: self chestContentTable;
 		                              yourself.
@@ -386,18 +388,12 @@ ChestTableWithContentPresenter >> initializePresenters [
 	inputField := self makeInputField.
 	confirmActionBar := self makeConfirmActionBar.
 
-	chestWithContentTreeTable := self makeChestWithContentTreeTable.
-
+	self makeChestWithContentTreeTable.
 
 	chestsTableToolbar := self makeChestsTableToolbar.
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 
-	self
-		makeChestTableContextMenu;
-		makeChestContentTableContextMenu.
 	chestWithContentTreeTableToolbar := self makeChestTreeTableToolbar.
-
-	self makeChestTreeTableContextMenu.
 
 	self layout: self defaultLayout
 ]
@@ -418,9 +414,21 @@ ChestTableWithContentPresenter >> inputField [
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> loadCommandLayout [
 
+	| inputVariableNameColumn |
+	inputVariableNameColumn := (SpStringTableColumn
+		                            title: 'Variable Name'
+		                            evaluated: #variableName)
+		                           beEditable;
+		                           onAcceptEdition: [ :assoc :newVarName | 
+			                           assoc variableName: newVarName ];
+		                           yourself.
+	self makeChestContentsTable.
+	chestContentsTable
+		beMultipleSelection;
+		addColumn: inputVariableNameColumn.
+
 	self chestTableContainer
 		removeAll;
-		add: inputField;
 		add: chestsTable.
 	self chestContentTableContainer
 		removeAll;
@@ -450,14 +458,17 @@ ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 { #category : #initialization }
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
-	^ self newTable
-		  addColumn: ((SpStringTableColumn
-				    title: 'Name'
-				    evaluated: [ :association | association key ]) width: 40);
-		  addColumn: (SpStringTableColumn
-				   title: 'Object'
-				   evaluated: [ :association | association value asString ]);
-		  items: #(  ) asOrderedCollection
+	chestContentsTable := self newTable
+		                      addColumn: ((SpStringTableColumn
+				                        title: 'Name'
+				                        evaluated: [ :association | 
+					                        association key ]) width: 40);
+		                      addColumn: (SpStringTableColumn
+				                       title: 'Object'
+				                       evaluated: [ :association | 
+					                       association value asString ]);
+		                      items: #(  ) asOrderedCollection.
+	self makeChestContentTableContextMenu
 ]
 
 { #category : #initialization }
@@ -516,33 +527,44 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 		roots: Chest allChests;
 		children: [ :anObject | anObject chestChildren ].
 
-	^ treeTable
-		  addColumn: (SpCompositeTableColumn new
-				   title: 'Chests';
-				   addColumn: ((SpImageTableColumn evaluated: [ :anObject | 
-							     anObject class chestIcon ])
-						    width: 20;
-						    yourself);
-				   addColumn: (SpStringTableColumn evaluated: [ :anObject | 
-						    anObject chestEvaluation ]) yourself);
-		  addColumn: ((SpStringTableColumn new title: 'Name')
-				   evaluated: [ :anObject | anObject chestName ];
-				   yourself);
-		  beResizable;
-		  activatesOnDoubleClick;
-		  whenActivatedDo: [ :selection | selection selectedItem inspect ];
-		  yourself
+	chestWithContentTreeTable := treeTable
+		                             addColumn: (SpCompositeTableColumn new
+				                              title: 'Chests';
+				                              addColumn:
+					                              ((SpImageTableColumn evaluated: [ 
+							                                :anObject | 
+							                                anObject class chestIcon ])
+						                               width: 20;
+						                               yourself);
+				                              addColumn:
+					                              (SpStringTableColumn evaluated: [ 
+						                               :anObject | 
+						                               anObject chestEvaluation ])
+						                              yourself);
+		                             addColumn:
+			                             ((SpStringTableColumn new title:
+					                               'Name')
+				                              evaluated: [ :anObject | 
+					                              anObject chestName ];
+				                              yourself);
+		                             beResizable;
+		                             activatesOnDoubleClick;
+		                             whenActivatedDo: [ :selection | 
+		                             selection selectedItem inspect ];
+		                             yourself.
+	self makeChestTreeTableContextMenu
 ]
 
 { #category : #initialization }
 ChestTableWithContentPresenter >> makeChestsTable [
 
-	^ self newList
-		  items: Chest allChests;
-		  display: [ :chest | chest name ];
-		  
-		  sortingBlock: [ :chest1 :chest2 | chest1 name < chest2 name ];
-		  yourself
+	chestsTable := self newList
+		               items: Chest allChests;
+		               display: [ :chest | chest name ];
+		               sortingBlock: [ :chest1 :chest2 | 
+			               chest1 name < chest2 name ];
+		               yourself.
+	self makeChestTableContextMenu
 ]
 
 { #category : #initialization }
@@ -796,7 +818,8 @@ ChestTableWithContentPresenter >> selectedChest [
 
 	self flag: 'to do with polymorphism'.
 
-	activePresenter == chestWithContentTreeTable ifTrue: [ 
+	(activePresenter isNotNil and: [ 
+		 activePresenter == chestWithContentTreeTable ]) ifTrue: [ 
 		^ chestWithContentTreeTable selectedItem isChest
 			  ifTrue: [ chestWithContentTreeTable selectedItem ]
 			  ifFalse: [ nil ] ].
@@ -808,7 +831,8 @@ ChestTableWithContentPresenter >> selectedItem [
 
 	self flag: 'to do with polymorphism'.
 
-	activePresenter == chestWithContentTreeTable ifTrue: [ 
+	(activePresenter isNotNil and: [ 
+		 activePresenter == chestWithContentTreeTable ]) ifTrue: [ 
 		^ chestWithContentTreeTable selectedItem isChest
 			  ifFalse: [ chestWithContentTreeTable selectedItem ]
 			  ifTrue: [ nil ] ].
@@ -819,6 +843,8 @@ ChestTableWithContentPresenter >> selectedItem [
 
 { #category : #'as yet unclassified' }
 ChestTableWithContentPresenter >> storeCommandLayout [
+
+	self makeChestContentsTable.
 
 	self chestTableContainer
 		removeAll;

@@ -198,6 +198,11 @@ ChestPresenter >> defaultLayout [
 	bottomRibbonHeight := 35.
 
 	chestTableWithContent layout: chestTableWithContent defaultLayout.
+	chestsTable := chestTableWithContent chestsTable.
+	chestContentsTable := chestTableWithContent chestContentTable.
+	self
+		makeChestsTable;
+		makeChestContentsTable.
 
 	^ SpPanedLayout newHorizontal
 		  add: (SpPanedLayout newVertical

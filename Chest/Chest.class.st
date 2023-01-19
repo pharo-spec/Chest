@@ -164,6 +164,12 @@ Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 	ChestDictionary at: aKey put: aChest
 ]
 
+{ #category : #validating }
+Chest class >> checkValidName: aString [
+
+	[ Slot checkValidName: aString ] on: InvalidSlotName do: [ ChestInvalidNameError signal ]
+]
+
 { #category : #accessing }
 Chest class >> chestDictionary [
 
@@ -297,6 +303,12 @@ Chest class >> unsubscribe: subscriber [
 	self announcer unsubscribe: subscriber
 ]
 
+{ #category : #validating }
+Chest class >> variableNameTag [
+
+	^ #variableName
+]
+
 { #category : #api }
 Chest >> add: anObject [
 
@@ -325,6 +337,7 @@ Chest >> at: aString put: anObject [
 	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key | 
 		self contentsPrivate removeKey: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
 	self contentsPrivate at: aString put: anObject.
+	(self contentsPrivate associationAt: aString) variableName: aString.
 	self contentsUpdated.
 	^ aString
 ]
@@ -338,9 +351,8 @@ Chest >> at: aString put: anObject ifPresent: aBlock [
 ]
 
 { #category : #validating }
-Chest >> checkValidName: aString [
-
-	[ Slot checkValidName: aString ] on: InvalidSlotName do: [ ChestInvalidNameError signal ]
+Chest >> checkValidName: aString [ 
+	^ self class checkValidName: aString 
 ]
 
 { #category : #'private - tree building' }
@@ -396,7 +408,7 @@ Chest >> initialize [
 { #category : #initialization }
 Chest >> initializeContents [
 
-	contents := Dictionary new
+	contents := ChestContentDictionary new
 ]
 
 { #category : #accessing }

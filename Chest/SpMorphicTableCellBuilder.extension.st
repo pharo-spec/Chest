@@ -8,7 +8,8 @@ SpMorphicTableCellBuilder >> visitChestInputFieldColumn: aChestInputFieldColumn 
 		             maxLength: aChestInputFieldColumn maxLength;
 		             placeholder: aChestInputFieldColumn placeholder;
 		             text: (aChestInputFieldColumn readObject: self item);
-		             "color: Color darkGray;"
+		             "color: Color darkGray;"whenTextChanged: [ :newText | 
+			             aChestInputFieldColumn text: newText ];
 		             addStyle: 'table';
 		             yourself.
 
