@@ -713,15 +713,12 @@ ChestTableWithContentPresenter >> removeAllItemsFromSelectedChest [
 { #category : #removing }
 ChestTableWithContentPresenter >> removeSelectedChest [
 
-	| selectedChestIndex |
 	self flag: 'to do with polymorphism'.
 	
 	self selectedChest remove.
 	activePresenter == chestWithContentTreeTable ifTrue: [ ^ self ].
 	chestsTable selectIndex:
 		(1 max: chestsTable selection selectedIndex - 1)
-		
-	"activePresenter == chestWithContentTreeTable ifTrue: [ ^ self ]."
 ]
 
 { #category : #removing }
@@ -837,8 +834,6 @@ ChestTableWithContentPresenter >> selectedItem [
 			  ifFalse: [ chestWithContentTreeTable selectedItem ]
 			  ifTrue: [ nil ] ].
 	^ chestContentsTable selection selectedItem
-
-	"^ activePresenter selectedChestItem"
 ]
 
 { #category : #'as yet unclassified' }
