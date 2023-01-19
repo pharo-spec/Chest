@@ -164,10 +164,22 @@ Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 	ChestDictionary at: aKey put: aChest
 ]
 
+{ #category : #validating }
+Chest class >> checkValidName: aString [
+
+	[ Slot checkValidName: aString ] on: InvalidSlotName do: [ ChestInvalidNameError signal ]
+]
+
 { #category : #accessing }
 Chest class >> chestDictionary [
 
 	^ ChestDictionary copy
+]
+
+{ #category : #icons }
+Chest class >> chestIcon [
+
+	^ Smalltalk ui icons iconNamed: 'group'
 ]
 
 { #category : #api }
@@ -203,7 +215,7 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 	| chest |
 	[ chest := self named: aChestName ]
 		on: KeyNotFound
-		do: [ chest newNamed: aChestName ].
+		do: [ chest := self class newNamed: aChestName ].
 
 	^ chest at: aKey put: anObject
 ]
@@ -291,6 +303,12 @@ Chest class >> unsubscribe: subscriber [
 	self announcer unsubscribe: subscriber
 ]
 
+{ #category : #validating }
+Chest class >> variableNameTag [
+
+	^ #variableName
+]
+
 { #category : #api }
 Chest >> add: anObject [
 
@@ -308,9 +326,10 @@ Chest >> at: aString [
 	^ self contentsPrivate at: aString
 ]
 
-{ #category : #api }
+{ #category : #accessing }
 Chest >> at: aString put: anObject [
 
+	self checkValidName: aString.
 	(self contentsPrivate includesKey: aString) ifTrue: [ 
 		ChestKeyAlreadyInUseError signal:
 			'You cannot put an object named ' , aString
@@ -318,6 +337,7 @@ Chest >> at: aString put: anObject [
 	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key | 
 		self contentsPrivate removeKey: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
 	self contentsPrivate at: aString put: anObject.
+	(self contentsPrivate associationAt: aString) variableName: aString.
 	self contentsUpdated.
 	^ aString
 ]
@@ -328,6 +348,29 @@ Chest >> at: aString put: anObject ifPresent: aBlock [
 	[ self at: aString put: anObject ]
 		on: ChestKeyAlreadyInUseError
 		do: aBlock
+]
+
+{ #category : #validating }
+Chest >> checkValidName: aString [ 
+	^ self class checkValidName: aString 
+]
+
+{ #category : #'private - tree building' }
+Chest >> chestChildren [
+
+	^ self contentsPrivate associations
+]
+
+{ #category : #evaluation }
+Chest >> chestEvaluation [
+
+	^ self contentsPrivate asString
+]
+
+{ #category : #'private - tree building' }
+Chest >> chestName [
+
+	^ self name
 ]
 
 { #category : #accessing }
@@ -365,13 +408,19 @@ Chest >> initialize [
 { #category : #initialization }
 Chest >> initializeContents [
 
-	contents := Dictionary new
+	contents := ChestContentDictionary new
 ]
 
 { #category : #accessing }
 Chest >> inspectAt: aString [
 
 	^ (self contentsPrivate at: aString) inspect
+]
+
+{ #category : #testing }
+Chest >> isChest [
+
+	^ true
 ]
 
 { #category : #api }
@@ -385,6 +434,7 @@ Chest >> name: aString [
 
 	| oldName |
 	oldName := self name.
+	self checkValidName: aString.
 	self class at: aString putChestIfKeyIsAbsent: self.
 	name := aString.
 	oldName ifNotNil: [ self class removeChestNamed: oldName ]

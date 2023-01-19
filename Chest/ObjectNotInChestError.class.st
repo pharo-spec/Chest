@@ -4,5 +4,5 @@ Exception signaled when you want to remove or rename an object that is not in a 
 Class {
 	#name : #ObjectNotInChestError,
 	#superclass : #Error,
-	#category : #Chest
+	#category : #'Chest-Errors'
 }

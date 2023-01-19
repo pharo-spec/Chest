@@ -3,7 +3,7 @@ Command that allows to load an object or several objects from a chest into a cod
 "
 Class {
 	#name : #ChestLoadObjectIntoCode,
-	#superclass : #CmCommand,
+	#superclass : #ChestCommand,
 	#category : #'Chest-Commands'
 }
 
@@ -43,38 +43,34 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 	| choicePresenter |
 	choicePresenter := ChestTableWithContentPresenter new.
 	choicePresenter chestContentTable beMultipleSelection.
+	choicePresenter layout: choicePresenter loadCommandLayout.
 	choicePresenter confirmButton action: [ 
-		| chest objectName objectsAssociations |
+		| chest selectedIndexes chestContentTable |
 		chest := choicePresenter chestsTable selectedItem.
-		objectName := choicePresenter inputField text.
-		objectsAssociations := choicePresenter chestContentTable
-			                       selectedItems.
-		objectsAssociations size = 1
-			ifTrue: [ 
-				(context interactionModel hasBindingOf: objectName)
-					ifTrue: [ 
-						self
-							warnUserWhenDeletingBindingWithKey: objectName
-							withNewValue: objectsAssociations first value ]
-					ifFalse: [ 
-						self
-							loadIntoContextObject: objectsAssociations first value
-							named: objectName ] ]
-			ifFalse: [ 
-				objectsAssociations isEmpty ifTrue: [ 
-					objectsAssociations := chest contents associations
-						                       asOrderedCollection ].
-				objectsAssociations do: [ :assoc | 
-					(context interactionModel hasBindingOf: assoc key)
-						ifTrue: [ 
-							self
-								warnUserWhenDeletingBindingWithKey: assoc key
-								withNewValue: assoc value ]
-						ifFalse: [ 
-						self loadIntoContextObject: assoc value named: assoc key ] ] ].
+		chestContentTable := choicePresenter chestContentTable.
+		selectedIndexes := chestContentTable selectionMode selectedIndexes.
+		selectedIndexes isEmpty ifTrue: [ 
+			chestContentTable selectIndexes:
+				(1 to: chestContentTable items size) ].
+		selectedIndexes do: [ :index | 
+			| assoc |
+			assoc := chestContentTable items at: index.
+			(context interactionModel hasBindingOf: assoc key)
+				ifTrue: [ 
+					self
+						warnUserWhenDeletingBindingWithKey: assoc key
+						withNewValue: assoc value ]
+				ifFalse: [ 
+				self loadIntoContextObject: assoc value named: assoc variableName ] ].
 		choicePresenter window close ].
-	choicePresenter layout: choicePresenter storeCommandLayout.
+
 	^ choicePresenter
+]
+
+{ #category : #testing }
+ChestLoadObjectIntoCode >> canBeExecuted [
+
+	^ self isVisibleForContext: context
 ]
 
 { #category : #execution }
@@ -89,8 +85,8 @@ ChestLoadObjectIntoCode >> execute [
 ChestLoadObjectIntoCode >> isVisibleForContext: aCodePresenter [
 
 	^ aCodePresenter interactionModel isNotNil and: [ 
-		  aCodePresenter interactionModel allSelectors indexOf:
-			  #addBinding: > 0 ]
+		  aCodePresenter interactionModel class allSelectors 
+			  identityIncludes: #addBinding: ]
 ]
 
 { #category : #'as yet unclassified' }
