@@ -1,3 +1,6 @@
+"
+Abstract class whose subclasses are all commands for `Chest`. It is also an utility class that provides on class side groups of commands that can be used to create Commander command groups.
+"
 Class {
 	#name : #ChestCommand,
 	#superclass : #CmCommand,

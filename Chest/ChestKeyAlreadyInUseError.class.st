@@ -4,5 +4,5 @@ Exception raised when you want to name/rename a chest (resp. an object in a ches
 Class {
 	#name : #ChestKeyAlreadyInUseError,
 	#superclass : #Error,
-	#category : #Chest
+	#category : #'Chest-Errors'
 }

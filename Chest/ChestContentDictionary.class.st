@@ -1,3 +1,6 @@
+"
+Dictionary used by Chest that contains `(key, value, variable name)` triplets, variable name being the name of the variable when the association will be loaded into a playground or a debugger.
+"
 Class {
 	#name : #ChestContentDictionary,
 	#superclass : #Dictionary,
