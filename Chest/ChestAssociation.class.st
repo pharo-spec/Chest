@@ -10,7 +10,7 @@ Class {
 	#category : #Chest
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 ChestAssociation class >> key: key value: value variableName: variableName [
 
 	^ self new

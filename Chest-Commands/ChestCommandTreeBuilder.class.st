@@ -76,7 +76,8 @@ ChestCommandTreeBuilder >> buildSpecCommand: commandClass forContext: aContext [
 { #category : #building }
 ChestCommandTreeBuilder >> chestCommandClasses [
 
-	^ { ChestLoadObjectIntoCode }
+	^ { ChestLoadObjectIntoCodeCommand } select: [ :each | 
+		  each isVisibleForContext: codePresenter ]
 ]
 
 { #category : #accessing }

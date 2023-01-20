@@ -8,15 +8,6 @@ Class {
 	#classTraits : 'TStDebuggerExtension classTrait',
 	#instVars : [
 		'playground',
-		'helpButton',
-		'emptyButton',
-		'helpExpanded',
-		'descriptionLabel',
-		'helpTitleLabel',
-		'leftSpacerForHelpTitleLabel',
-		'rightSpacerForHelpTitleLabel',
-		'helpText',
-		'objectTable',
 		'chestsTable',
 		'chestContentsTable',
 		'inspector',
@@ -150,21 +141,21 @@ ChestPresenter >> chestsTableToolbar [
 	^ chestTableWithContent chestsTableToolbar
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #binding }
 ChestPresenter >> collectBindingsFromAllChests [
 
 	^ chestsTable items flatCollect: [ :each | 
 		  self collectBindingsFromChest: each ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #binding }
 ChestPresenter >> collectBindingsFromChest: aChest [
 
 	^ aChest contents associations collect: [ :each | 
 		  self convertBindingIntoProperWorkspaceVariable: each ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #converting }
 ChestPresenter >> convertBindingIntoProperWorkspaceVariable: aBinding [
 
 	^ WorkspaceVariable key: aBinding key value: aBinding value
@@ -213,51 +204,16 @@ ChestPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #updating }
-ChestPresenter >> helpText [
+{ #category : #layout }
+ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
-	^ 'THIS IS THE HELP FOR CHESTS' , Character cr asString
-	  , Character cr asString , 'ID' , Character cr asString
-	  ,
-	  '	Each Chest instance has an ID (Integer). These IDs are unique. No two Chest can ever have the same ID (unless of course one re-initialize the Chest class).'
-	  , Character cr asString , Character cr asString , 'Default Chest'
-	  , Character cr asString
-	  ,
-	  '	This is an instance of Chest that always exists, always has ID = 1, and can be interacted with in the same way as any other Chest by sending the messages to the Chest class.'
-	  , Character cr asString , Character cr asString , 'API'
-	  , Character cr asString , '	Chest class' , Character cr asString
-	  , '		#new' , Character cr asString
-	  , '			Create and return a new Chest' , Character cr asString
-	  , '		#newNamed: aString' , Character cr asString
-	  , '			Create and return a new Chest, with the provided name'
-	  , Character cr asString , '		#withId: anInteger'
-	  , Character cr asString
-	  , '			Return the Chest whose ID is @anInteger'
-	  , Character cr asString , Character cr asString , '	Chest instance'
-	  , Character cr asString , '		#add: anObject'
-	  , Character cr asString , '			Add anObject to this Chest'
-	  , Character cr asString , '		#at: anInteger'
-	  , Character cr asString
-	  , '			Gets the object stored in this Chest at index @anInteger'
-	  , Character cr asString , '		#contents' , Character cr asString
-	  ,
-	  '			Gets an OrderedCollection with the content of this Chest. This collection is a copy so editing it directly does not affect this Chest.'
-	  , Character cr asString , '		#empty' , Character cr asString
-	  , '			Removes all objects from this Chest' , Character cr asString
-	  , '		#name' , Character cr asString
-	  , '			Gets the name of this Chest' , Character cr asString
-	  , '		#id' , Character cr asString , '			Gets the ID of this Chest'
-	  , Character cr asString , '		#remove' , Character cr asString
-	  ,
-	  '			Destroy this Chest (it will no longer appear in the Chest UI)'
-	  , Character cr asString , '		#remove: anObject'
-	  , Character cr asString , '			Remove @anObject from this Chest'
-	  , Character cr asString , '		#removeAt: anInteger'
-	  , Character cr asString
-	  , '			Remove the object ar index @anInteger from this Chest'
+	^ SpBoxLayout newHorizontal
+		  add: aString expand: false;
+		  addLast: aToolbar expand: false;
+		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #helper }
 ChestPresenter >> iconManager [
 
 	^ Smalltalk ui icons
@@ -272,8 +228,7 @@ ChestPresenter >> initialExtent [
 { #category : #initialization }
 ChestPresenter >> initialize [
 
-	super initialize.
-	helpExpanded := false
+	super initialize
 ]
 
 { #category : #initialization }
@@ -286,7 +241,6 @@ ChestPresenter >> initializePresenters [
 	chestContentsTable := chestTableWithContent chestContentTable.
 	self makeChestContentsTable.
 	inspector := StInspector on: (StInspectorModel on: nil).
-	helpButton := self makeHelpButton.
 	chestsTable selectIndex: 1.
 
 	self makeChestTreeTableContextMenu.
@@ -321,7 +275,7 @@ ChestPresenter >> loadSelectedItemBindingInPlayground [
 		{ (self convertBindingIntoProperWorkspaceVariable: self selectedItem) }
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestContentTableContextMenu [
 
 	| contextMenu |
@@ -338,7 +292,7 @@ ChestPresenter >> makeChestContentTableContextMenu [
 	chestContentsTable contextMenu: contextMenu
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestContentsTable [
 
 	self makeChestContentTableContextMenu.
@@ -352,7 +306,7 @@ ChestPresenter >> makeChestContentsTable [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestTableContextMenu [
 
 	| contextMenu |
@@ -367,7 +321,7 @@ ChestPresenter >> makeChestTableContextMenu [
 	chestsTable contextMenu: contextMenu
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestTreeTableContextMenu [
 
 	| contextMenu |
@@ -389,7 +343,7 @@ ChestPresenter >> makeChestTreeTableContextMenu [
 		applyKeyBindingsFromMenu: contextMenu value
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestPresenter >> makeChestsTable [
 
 	self makeChestTableContextMenu.
@@ -398,15 +352,7 @@ ChestPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #initialization }
-ChestPresenter >> makeHelpButton [
-
-	^ self newButton
-		  action: [ UIManager default notify: self helpText ];
-		  icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)
-]
-
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestPresenter >> makePlayground [
 
 	| newPlayground |

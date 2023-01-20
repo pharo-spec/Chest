@@ -5,3 +5,9 @@ SpCodePresenter class >> buildChestCommandsGroupWith: aCodePresenter forRoot: ro
 	<extensionCommands>
 	ChestCommandTreeBuilder buildCommandsGroupWith: aCodePresenter forRoot: rootCommandGroup 
 ]
+
+{ #category : #'*Chest-Commands' }
+SpCodePresenter >> canLoadBindings [
+
+	^ self interactionModel canLoadBindings
+]

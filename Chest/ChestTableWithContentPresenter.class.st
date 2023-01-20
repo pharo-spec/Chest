@@ -9,6 +9,8 @@ Class {
 		'chestContentsTable',
 		'inputField',
 		'confirmActionBar',
+		'confirmButton',
+		'cancelButton',
 		'chestTableContainer',
 		'chestContentTableContainer',
 		'chestsTableToolbar',
@@ -189,7 +191,7 @@ ChestTableWithContentPresenter >> activePresenter [
 { #category : #accessing }
 ChestTableWithContentPresenter >> cancelButton [
 
-	^ self confirmActionBar presenters last
+	^ cancelButton
 ]
 
 { #category : #updating }
@@ -198,7 +200,7 @@ ChestTableWithContentPresenter >> chestContentTable [
 	^ chestContentsTable
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ChestTableWithContentPresenter >> chestContentTableContainer [
 
 	^ chestContentTableContainer
@@ -210,10 +212,25 @@ ChestTableWithContentPresenter >> chestContentsTableToolbar [
 	^ chestContentsTableToolbar
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 ChestTableWithContentPresenter >> chestTableContainer [
 
 	^ chestTableContainer
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> chestTableTransmitBlock [
+
+	^ [ :aChest | 
+	  aChest
+		  ifNotNil: [ 
+			  self updateChestContentTableForChest: aChest.
+			  chestContentsTable items ifNotEmpty: [ 
+				  chestContentsTable selectIndex: 1 ].
+			  inputField text: aChest nextDefaultNameForObject ]
+		  ifNil: [ 
+			  chestContentsTable items: {  } asOrderedCollection.
+			  inputField text: '' ] ]
 ]
 
 { #category : #accessing }
@@ -222,7 +239,7 @@ ChestTableWithContentPresenter >> chestTableWithContentContainer [
 	^ chestTableWithContentContainer
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 ChestTableWithContentPresenter >> chestWithContentTreeTable [
 
 	^ chestWithContentTreeTable
@@ -259,23 +276,14 @@ ChestTableWithContentPresenter >> confirmActionBar [
 { #category : #accessing }
 ChestTableWithContentPresenter >> confirmButton [
 
-	^ self confirmActionBar presenters first
+	^ confirmButton
 ]
 
 { #category : #initialization }
 ChestTableWithContentPresenter >> connectPresenters [
 
 	chestsTable
-		transmitDo: [ :aChest | 
-			aChest
-				ifNotNil: [ 
-					self updateChestContentTableForChest: aChest.
-					chestContentsTable items ifNotEmpty: [ 
-							chestContentsTable selectIndex: 1 ].
-					inputField text: aChest nextDefaultNameForObject ]
-				ifNil: [ 
-					chestContentsTable items: {  } asOrderedCollection.
-					inputField text: '' ] ];
+		transmitDo: self chestTableTransmitBlock;
 		selectFirst
 ]
 
@@ -411,7 +419,7 @@ ChestTableWithContentPresenter >> inputField [
 	^ inputField
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestTableWithContentPresenter >> loadCommandLayout [
 
 	| inputVariableNameColumn |
@@ -444,7 +452,7 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 
 	chestContentsTable contextMenu: [ 
@@ -455,7 +463,7 @@ ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 		chestContentsTable contextMenu value
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
 	chestContentsTable := self newTable
@@ -471,7 +479,7 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 	self makeChestContentTableContextMenu
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 
 	| toolbar |
@@ -484,7 +492,7 @@ ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestTableContextMenu [
 
 	chestsTable contextMenu: [ 
@@ -494,7 +502,7 @@ ChestTableWithContentPresenter >> makeChestTableContextMenu [
 	chestsTable applyKeyBindingsFromMenu: chestsTable contextMenu value
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestTreeTableContextMenu [
 
 	chestWithContentTreeTable contextMenu: [ 
@@ -505,7 +513,7 @@ ChestTableWithContentPresenter >> makeChestTreeTableContextMenu [
 		chestWithContentTreeTable contextMenu value
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestTreeTableToolbar [
 
 	| toolbar |
@@ -518,7 +526,7 @@ ChestTableWithContentPresenter >> makeChestTreeTableToolbar [
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 
 	| treeTable |
@@ -555,7 +563,7 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 	self makeChestTreeTableContextMenu
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTable [
 
 	chestsTable := self newList
@@ -567,7 +575,7 @@ ChestTableWithContentPresenter >> makeChestsTable [
 	self makeChestTableContextMenu
 ]
 
-{ #category : #initialization }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTableToolbar [
 
 	| toolbar |
@@ -580,21 +588,25 @@ ChestTableWithContentPresenter >> makeChestsTableToolbar [
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeConfirmActionBar [
 
+	confirmButton := self newButton
+		                 label: 'Confirm';
+		                 yourself.
+
+	cancelButton := self newButton
+		                label: 'Cancel';
+		                action: [ self window close ];
+		                yourself.
+
 	^ self newActionBar
-		  add: (self newButton
-				   label: 'Confirm';
-				   yourself);
-		  add: (self newButton
-				   label: 'Cancel';
-				   action: [ self window close ];
-				   yourself);
+		  add: confirmButton;
+		  add: cancelButton;
 		  yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeInputField [
 
 	^ self newTextInput
@@ -610,6 +622,16 @@ ChestTableWithContentPresenter >> makeInputField [
 ChestTableWithContentPresenter >> namingQuery [
 
 	^ 'What name do you want to give to your object?'
+]
+
+{ #category : #'ui - requests' }
+ChestTableWithContentPresenter >> popupWithPresenter: requestPresenter onRightTo: anItem [
+
+	(self newPopover
+		 presenter: requestPresenter;
+		 relativeTo: anItem;
+		 bePositionRight;
+		 yourself) popup
 ]
 
 { #category : #'presenter building' }
@@ -770,11 +792,7 @@ ChestTableWithContentPresenter >> requestNameNewChest [
 
 	| requestPresenter |
 	requestPresenter := self presenterToNameNewChest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: activePresenter;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: activePresenter
 ]
 
 { #category : #'ui - dialogs' }
@@ -782,11 +800,7 @@ ChestTableWithContentPresenter >> requestRenameChest: chest fromContextMenuItem:
 
 	| requestPresenter |
 	requestPresenter := self presenterToRenameChest: chest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: anItem;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
 { #category : #'ui - dialogs' }
@@ -803,11 +817,7 @@ ChestTableWithContentPresenter >> requestRenameObjectFromChest: objectNameValueA
 	requestPresenter := self
 		                    presenterToRenameObject: object
 		                    inChest: chest.
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: anItem;
-		 bePositionRight;
-		 yourself) popup
+	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
 { #category : #accessing }
@@ -836,7 +846,7 @@ ChestTableWithContentPresenter >> selectedItem [
 	^ chestContentsTable selection selectedItem
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #layout }
 ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self makeChestContentsTable.
@@ -868,7 +878,7 @@ ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
 		subscribeToChestRemovedAnnouncement
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 
 	Chest announcer weak
@@ -877,7 +887,7 @@ ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 		to: self
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 
 	Chest announcer weak
@@ -886,7 +896,7 @@ ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 		to: self
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
 
 	Chest announcer weak
@@ -901,13 +911,13 @@ ChestTableWithContentPresenter >> title [
 	^ 'Choose a variable name for your object'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #subscription }
 ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
 
 	Chest unsubscribe: self
 ]
 
-{ #category : #initialization }
+{ #category : #update }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 
 	self flag: 'to do with polymorphism'.
@@ -930,7 +940,7 @@ ChestTableWithContentPresenter >> updateChestsTable [
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 
-{ #category : #'ui - requests' }
+{ #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> warningNamingChest: newChestName [
 
 	^ '`' , newChestName
@@ -938,7 +948,7 @@ ChestTableWithContentPresenter >> warningNamingChest: newChestName [
 	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> warningNamingObjectInChest: newObjectName [
 
 	^ '`' , newObjectName

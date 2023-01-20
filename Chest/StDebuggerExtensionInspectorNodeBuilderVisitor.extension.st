@@ -7,7 +7,7 @@ StDebuggerExtensionInspectorNodeBuilderVisitor >> visitChest: aChestExtension [
 	debuggerInteractionModel := aChestExtension debugger interactionModel.
 	result := debuggerInteractionModel bindings associations
 		          select: [ :aBinding | 
-			          aBinding propertyAt: #comesFromChest ifAbsent: [ false ] ]
+			          aBinding comesFromChest]
 		          thenCollect: [ :chestVariable | 
 			          (StInspectorDynamicNode
 				           hostObject: chestVariable value

@@ -182,6 +182,12 @@ Chest class >> chestIcon [
 	^ Smalltalk ui icons iconNamed: 'group'
 ]
 
+{ #category : #'accessing - tags' }
+Chest class >> comesFromChestVariableTag [
+
+	^ #comesFromChest
+]
+
 { #category : #api }
 Chest class >> contents [
 

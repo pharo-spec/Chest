@@ -2,43 +2,49 @@
 Command that allows to load an object or several objects from a chest into a code presenter in a playground or in a debugger.
 "
 Class {
-	#name : #ChestLoadObjectIntoCode,
+	#name : #ChestLoadObjectIntoCodeCommand,
 	#superclass : #ChestCommand,
 	#category : #'Chest-Commands'
 }
 
 { #category : #'accessing - defaults' }
-ChestLoadObjectIntoCode class >> defaultDescription [
+ChestLoadObjectIntoCodeCommand class >> defaultDescription [
 
 	^ 'Load an object from a chest into a code presenter'
 ]
 
 { #category : #initialization }
-ChestLoadObjectIntoCode class >> defaultIconName [
+ChestLoadObjectIntoCodeCommand class >> defaultIconName [
 
 	^ #group
 ]
 
 { #category : #'accessing - defaults' }
-ChestLoadObjectIntoCode class >> defaultName [
+ChestLoadObjectIntoCodeCommand class >> defaultName [
 
 	^ 'Load object from chest'
 ]
 
 { #category : #default }
-ChestLoadObjectIntoCode class >> defaultShortcutKey [
+ChestLoadObjectIntoCodeCommand class >> defaultShortcutKey [
 
 	^ $c meta , $l meta
 ]
 
-{ #category : #accessing }
-ChestLoadObjectIntoCode class >> variableTag [
+{ #category : #testing }
+ChestLoadObjectIntoCodeCommand class >> isVisibleForContext: aCodePresenter [
 
-	^ #comesFromChest
+	^ aCodePresenter canLoadBindings
+]
+
+{ #category : #accessing }
+ChestLoadObjectIntoCodeCommand class >> variableTag [
+
+	^ Chest comesFromChestVariableTag
 ]
 
 { #category : #initialization }
-ChestLoadObjectIntoCode >> buildChoicePresenter [
+ChestLoadObjectIntoCodeCommand >> buildChoicePresenter [
 
 	| choicePresenter |
 	choicePresenter := ChestTableWithContentPresenter new.
@@ -68,13 +74,13 @@ ChestLoadObjectIntoCode >> buildChoicePresenter [
 ]
 
 { #category : #testing }
-ChestLoadObjectIntoCode >> canBeExecuted [
+ChestLoadObjectIntoCodeCommand >> canBeExecuted [
 
 	^ self isVisibleForContext: context
 ]
 
 { #category : #execution }
-ChestLoadObjectIntoCode >> execute [
+ChestLoadObjectIntoCodeCommand >> execute [
 
 	| choicePresenter |
 	choicePresenter := self buildChoicePresenter.
@@ -82,35 +88,32 @@ ChestLoadObjectIntoCode >> execute [
 ]
 
 { #category : #testing }
-ChestLoadObjectIntoCode >> isVisibleForContext: aCodePresenter [
+ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
 
 	^ aCodePresenter interactionModel isNotNil and: [ 
 		  aCodePresenter interactionModel class allSelectors 
 			  identityIncludes: #addBinding: ]
 ]
 
-{ #category : #'as yet unclassified' }
-ChestLoadObjectIntoCode >> loadIntoContextObject: anObject named: objectName [
+{ #category : #'private - commands' }
+ChestLoadObjectIntoCodeCommand >> loadIntoContextObject: anObject named: objectName [
 
-	| metalink interactionModel |
+	| interactionModel |
 	interactionModel := self context interactionModel.
 	interactionModel addBinding:
 		((WorkspaceVariable key: objectName value: anObject)
 			 propertyAt: self variableTag put: true;
 			 yourself)
-	"metalink := MetaLink new.
-	metalink arguments: #(receiver arguments).
-	metalink metaObject: [:receiver :arguments|  ]."
 ]
 
 { #category : #accessing }
-ChestLoadObjectIntoCode >> variableTag [ 
+ChestLoadObjectIntoCodeCommand >> variableTag [ 
 
 	^ self class variableTag
 ]
 
-{ #category : #'as yet unclassified' }
-ChestLoadObjectIntoCode >> warnUserWhenDeletingBindingWithKey: key withNewValue: newValue [
+{ #category : #'private - commands' }
+ChestLoadObjectIntoCodeCommand >> warnUserWhenDeletingBindingWithKey: key withNewValue: newValue [
 
 	| presenter |
 	presenter := ChestRequestDialogPresenter
