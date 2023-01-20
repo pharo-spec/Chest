@@ -819,7 +819,6 @@ ChestTableWithContentPresenter >> requestRenameObjectFromChest: objectNameValueA
 		                    inChest: chest.
 	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
->>>>>>> master
 
 { #category : #accessing }
 ChestTableWithContentPresenter >> selectedChest [
