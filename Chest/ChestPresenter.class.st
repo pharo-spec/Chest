@@ -9,14 +9,54 @@ Class {
 	#instVars : [
 		'playground',
 		'chestsTable',
-		'chestsTableToolbar',
 		'chestContentsTable',
-		'chestContentsTableToolbar',
 		'inspector',
 		'chestTableWithContent'
 	],
 	#category : #Chest
 }
+
+{ #category : #commands }
+ChestPresenter class >> buildCommandsGroupWith: aChestWithTablePresenter forRoot: aCmCommandGroup [
+
+	self
+		buildLoadChestCommandGroup: aChestWithTablePresenter
+		forRoot: aCmCommandGroup.
+
+	self
+		buildLoadItemCommandGroup: aChestWithTablePresenter
+		forRoot: aCmCommandGroup
+]
+
+{ #category : #commands }
+ChestPresenter class >> buildLoadChestCommandGroup: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: self loadChestGroupName) asSpecGroup
+		         beDisplayedAsGroup;
+		         yourself.
+	self
+		registerClasses: ChestCommand chestLoadChestCommandClasses
+		toGroup: group
+		withContext: aChestWithContentPresenter.
+
+	aRoot register: group
+]
+
+{ #category : #commands }
+ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter forRoot: aRoot [
+
+	| group |
+	group := (CmCommandGroup named: self loadItemGroupName) asSpecGroup
+		         beDisplayedAsGroup;
+		         yourself.
+	self
+		registerClasses: ChestCommand chestLoadItemCommandClasses
+		toGroup: group
+		withContext: aChestWithContentPresenter.
+
+	aRoot register: group
+]
 
 { #category : #'menu-entry' }
 ChestPresenter class >> debugWorldMenuOn: aBuilder [
@@ -31,6 +71,18 @@ ChestPresenter class >> debugWorldMenuOn: aBuilder [
 		icon: (Smalltalk ui icons iconNamed: #group)
 ]
 
+{ #category : #accessing }
+ChestPresenter class >> loadChestGroupName [
+
+	^ 'LoadChest'
+]
+
+{ #category : #accessing }
+ChestPresenter class >> loadItemGroupName [
+
+	^ 'LoadItem'
+]
+
 { #category : #examples }
 ChestPresenter class >> open [
 
@@ -40,6 +92,17 @@ ChestPresenter class >> open [
 	chestPresenter open.
 
 	^ chestPresenter
+]
+
+{ #category : #commands }
+ChestPresenter class >> registerClasses: commandClasses toGroup: aGroup withContext: aChestWithContentPresenter [
+
+	commandClasses do: [ :aClass | 
+		aGroup register: ((aClass
+				  forSpecWithIconNamed: aClass defaultIconName
+				  shortcutKey: aClass defaultShortcutKey)
+				 context: aChestWithContentPresenter;
+				 beHiddenWhenCantBeRun) ]
 ]
 
 { #category : #visiting }
@@ -55,29 +118,27 @@ ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 		aCollectionOfBindings
 ]
 
-{ #category : #'presenter building' }
-ChestPresenter >> buildChestContentTableContainerLayout [
+{ #category : #adding }
+ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBlock [
 
-	chestTableWithContent chestContentTableContainer
-		removeAll;
-		add: (self
-				 headerLayoutWithTitle: 'Chest Contents'
-				 withToolbar: chestContentsTableToolbar)
-		withConstraints: [ :cstr | cstr height: 35 ];
-		add: chestTableWithContent chestContentTable
+	| dialogLayout |
+	dialogLayout := aDialogPresenter layout.
+	dialogLayout add: (SpButtonPresenter new
+			 label: 'Confirm';
+			 action: aBlock;
+			 yourself)
 ]
 
-{ #category : #'presenter building' }
-ChestPresenter >> buildChestTableContainerLayout [
+{ #category : #accessing }
+ChestPresenter >> chestContentsTableToolbar [
 
-	chestTableWithContent chestTableContainer
-		removeAll;
-		add:
-			(self
-				 headerLayoutWithTitle: 'Chests'
-				 withToolbar: chestsTableToolbar)
-		withConstraints: [ :cstr | cstr height: 35 ];
-		add: chestTableWithContent chestsTable
+	^ chestTableWithContent chestContentsTableToolbar
+]
+
+{ #category : #accessing }
+ChestPresenter >> chestsTableToolbar [
+
+	^ chestTableWithContent chestsTableToolbar
 ]
 
 { #category : #binding }
@@ -109,12 +170,10 @@ ChestPresenter >> debuggerExtensionToolName [
 { #category : #layout }
 ChestPresenter >> debuggerLayout [
 
-	self
-		buildChestTableContainerLayout;
-		buildChestContentTableContainerLayout.
-
 	^ SpBoxLayout newVertical
-		  add: chestTableWithContent;
+		  add:
+			  (chestTableWithContent layout:
+					   chestTableWithContent debuggerLayout);
 		  add: playground;
 		  yourself
 ]
@@ -128,9 +187,13 @@ ChestPresenter >> defaultLayout [
 	toolbarHeight := 35.
 	helpButtonSize := 35.
 	bottomRibbonHeight := 35.
+
+	chestTableWithContent layout: chestTableWithContent defaultLayout.
+	chestsTable := chestTableWithContent chestsTable.
+	chestContentsTable := chestTableWithContent chestContentTable.
 	self
-		buildChestTableContainerLayout;
-		buildChestContentTableContainerLayout.
+		makeChestsTable;
+		makeChestContentsTable.
 
 	^ SpPanedLayout newHorizontal
 		  add: (SpPanedLayout newVertical
@@ -175,12 +238,12 @@ ChestPresenter >> initializePresenters [
 	chestTableWithContent := ChestTableWithContentPresenter new.
 	chestsTable := chestTableWithContent chestsTable.
 	self makeChestsTable.
-	chestsTableToolbar := self makeChestsTableToolbar.
 	chestContentsTable := chestTableWithContent chestContentTable.
 	self makeChestContentsTable.
-	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 	inspector := StInspector on: (StInspectorModel on: nil).
 	chestsTable selectIndex: 1.
+
+	self makeChestTreeTableContextMenu.
 
 	self layout: self defaultLayout
 ]
@@ -192,136 +255,101 @@ ChestPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter
 ]
 
+{ #category : #loading }
+ChestPresenter >> loadBindingsFromAllChestsInPlayground [
+
+	^ self addBindingsInPlayground: self collectBindingsFromAllChests
+]
+
+{ #category : #loading }
+ChestPresenter >> loadBindingsFromSelectedChestInPlayground [
+
+	^ self addBindingsInPlayground:
+		  (self collectBindingsFromChest: self selectedChest)
+]
+
+{ #category : #adding }
+ChestPresenter >> loadSelectedItemBindingInPlayground [
+
+	self addBindingsInPlayground:
+		{ (self convertBindingIntoProperWorkspaceVariable: self selectedItem) }
+]
+
 { #category : #'presenter building' }
 ChestPresenter >> makeChestContentTableContextMenu [
 
-	^ self newMenu
-		  title: 'Chest Contents';
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Rename';
-				  description: 'Rename the selected item in chest';
-				  action: [ 
-					  self
-						  requestRenameObjectFromChest:
-							  chestContentsTable selectedItem value
-						  fromContextMenuItem: anItem ] ];
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Load';
-				  shortcut: $l meta;
-				  description:
-					  'Load the selected object into the playground (or in a global scope ??), in a variable of same name as its key in the chest.';
-				  action: [ 
-					  self addBindingsInPlayground:
-							  { (self convertBindingIntoProperWorkspaceVariable:
-									   chestContentsTable selectedItem) } ] ];
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Load all';
-				  description:
-					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest.';
-				  shortcut: $l shift meta;
-				  action: [ 
-					  self addBindingsInPlayground:
-							  (self collectBindingsFromChest: self selectedChest) ] ];
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Inspect';
-				  shortcut: $i meta;
-				  action: [ chestContentsTable selectedItem value inspect ] ]
+	| contextMenu |
+	contextMenu := [ 
+	               (CmCommandGroup new
+		                register: chestTableWithContent rootCommandsGroup
+			                /
+				                chestTableWithContent class
+					                chestContentMenuGroupName;
+		                register:
+			                self rootCommandsGroup
+			                / self class loadItemGroupName) asSpecGroup beRoot
+		               asMenuPresenter ].
+	chestContentsTable contextMenu: contextMenu
 ]
 
 { #category : #'presenter building' }
 ChestPresenter >> makeChestContentsTable [
 
+	self makeChestContentTableContextMenu.
 	^ chestContentsTable
-		  contextMenu: self makeChestContentTableContextMenu;
 		  whenSelectionChangedDo: [ :selection | 
 			  inspector model inspectedObject:
 					  (selection selectedItem ifNotNil: [ :association | 
 							   association value ]).
 			  inspector updateList ];
-		  applyKeyBindingsFromMenu: chestContentsTable contextMenu;
+		  applyKeyBindingsFromMenu: chestContentsTable contextMenu value;
 		  yourself
-]
-
-{ #category : #'presenter building' }
-ChestPresenter >> makeChestContentsTableToolbar [
-
-	| toolbar |
-	toolbar := self newToolbar.
-	toolbar addItem: (self newToolbarButton
-			 label: 'Remove';
-			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-			 action: [ self removeSelectedItem ]).
-	toolbar addItem: (self newToolbarButton
-			 label: 'Remove All';
-			 icon: (self iconManager iconNamed: #glamorousTrash);
-			 action: [ self removeAllItemsFromSelectedChest ]).
-	^ toolbar
 ]
 
 { #category : #'presenter building' }
 ChestPresenter >> makeChestTableContextMenu [
 
-	^ self newMenu
-		  title: 'Chests';
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Rename';
-				  shortcut: $r meta;
-				  description: 'Rename the selected chest';
-				  action: [ 
-					  self
-						  requestRenameChest: chestsTable selectedItem
-						  fromContextMenuItem: anItem ] ];
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Load';
-				  shortcut: $l meta;
-				  description:
-					  'Load all objects from the selected chest into the playground (or in a global scope ??), in variables of same name as their key in the chest';
-				  action: [ "$o meta , $l meta"
-					  self addBindingsInPlayground:
-							  (self collectBindingsFromChest: chestsTable selectedItem) ] ];
-		  addItem: [ :anItem | 
-			  anItem
-				  name: 'Load all';
-				  shortcut: $l shift meta;
-				  description:
-					  'Load all objects from all chests into the playground (or in a global scope ??), in variables of same name as their key in their respective chest';
-				  action: [ 
-					  self addBindingsInPlayground: self collectBindingsFromAllChests ] ]
+	| contextMenu |
+	contextMenu := [ 
+	               (CmCommandGroup new
+		                register: chestTableWithContent rootCommandsGroup
+			                / chestTableWithContent class chestMenuGroupName;
+		                register:
+			                self rootCommandsGroup
+			                / self class loadChestGroupName) asSpecGroup beRoot
+		               asMenuPresenter ].
+	chestsTable contextMenu: contextMenu
+]
+
+{ #category : #'presenter building' }
+ChestPresenter >> makeChestTreeTableContextMenu [
+
+	| contextMenu |
+	contextMenu := [ 
+	               (CmCommandGroup new
+		                register: (chestTableWithContent rootCommandsGroup
+			                /
+				                chestTableWithContent class
+					                chestWithContentMenuGroupName);
+		                register:
+			                (self rootCommandsGroup
+			                / self class loadChestGroupName);
+		                register:
+			                self rootCommandsGroup
+			                / self class loadItemGroupName) asSpecGroup beRoot
+		               asMenuPresenter ].
+	chestTableWithContent chestWithContentTreeTable
+		contextMenu: contextMenu;
+		applyKeyBindingsFromMenu: contextMenu value
 ]
 
 { #category : #'presenter building' }
 ChestPresenter >> makeChestsTable [
 
+	self makeChestTableContextMenu.
 	^ chestsTable
-		  contextMenu: self makeChestTableContextMenu;
-		  applyKeyBindingsFromMenu: chestsTable contextMenu;
+		  applyKeyBindingsFromMenu: chestsTable contextMenu value;
 		  yourself
-]
-
-{ #category : #'presenter building' }
-ChestPresenter >> makeChestsTableToolbar [
-
-	| toolbar |
-	toolbar := self newToolbar.
-	toolbar addItem: (self newToolbarButton
-			 label: 'Remove';
-			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-			 action: [ self removeSelectedChest ]).
-	toolbar addItem: (self newToolbarButton
-			 label: 'Remove All';
-			 icon: (self iconManager iconNamed: #glamorousTrash);
-			 action: [ self removeAllChests ]).
-	toolbar addItem: (self newToolbarButton
-			 label: 'add';
-			 icon: (self iconManager iconNamed: #add);
-			 action: [ self requestNameNewChestFromToolbar: toolbar ]).
-	^ toolbar
 ]
 
 { #category : #'presenter building' }
@@ -337,146 +365,58 @@ ChestPresenter >> makePlayground [
 	^ newPlayground
 ]
 
-{ #category : #updating }
-ChestPresenter >> namingQuery [
-
-	^ 'What name do you want to give to your object?'
-]
-
-{ #category : #'ui - requests' }
-ChestPresenter >> popupWithPresenter: requestPresenter onRightTo: anItem [
-
-	(self newPopover
-		 presenter: requestPresenter;
-		 relativeTo: anItem;
-		 bePositionRight;
-		 yourself) popup
-]
-
-{ #category : #'presenter building' }
-ChestPresenter >> presenterToNameNewChest [
-
-	^ ChestRequestDialogPresenter
-		  request: self namingQuery
-		  onAccept: [ :newChestName | 
-			  [ Chest newNamed: newChestName ]
-				  on: ChestKeyAlreadyInUseError
-				  do: [ 
-					  self
-						  privHandlingBlockWhenChestNameInUse: newChestName
-						  ifRemoved: [ Chest newNamed: newChestName ] ] ]
-]
-
-{ #category : #'presenter building' }
-ChestPresenter >> presenterToRenameChest: chest [
-
-	^ ChestRequestDialogPresenter
-		  request: self namingQuery
-		  onAccept: [ :newChestName | 
-			  [ chest name: newChestName ]
-				  on: ChestKeyAlreadyInUseError
-				  do: [ 
-					  self
-						  privHandlingBlockWhenChestNameInUse: newChestName
-						  ifRemoved: [ chest name: newChestName ] ] ]
-]
-
-{ #category : #'presenter building' }
-ChestPresenter >> presenterToRenameObject: object inChest: chest [
-
-	^ ChestRequestDialogPresenter
-		  request: self namingQuery
-		  onAccept: [ :name | 
-			  [ chest renameObject: object into: name ]
-				  on: ChestKeyAlreadyInUseError
-				  do: [ 
-					  (self confirm: (self warningNamingObjectInChest: name)) 
-						  ifTrue: [ 
-							  chest removeObjectNamed: name.
-							  chest renameObject: object into: name ] ] ]
-]
-
-{ #category : #'private - building' }
-ChestPresenter >> privHandlingBlockWhenChestNameInUse: newChestName ifRemoved: aBlock [
-
-	"aBlock can take the removed block as an argument"
-
-	| chest |
-	chest := Chest named: newChestName.
-	(self confirm: (self warningNamingChest: newChestName)) ifFalse: [ 
-		^ self ].
-	chest remove.
-	aBlock cull: chest
-]
-
 { #category : #removing }
 ChestPresenter >> removeAllChests [
 
-	chestsTable items copy do: [ :chest | chest remove ]
+	chestTableWithContent removeAllChests
 ]
 
 { #category : #removing }
 ChestPresenter >> removeAllItemsFromSelectedChest [
 
-	chestContentsTable items ifNotEmpty: [ 
-		chestContentsTable items do: [ :assoc | 
-			self selectedChest remove: assoc value ] ]
+	chestTableWithContent removeAllItemsFromSelectedChest
 ]
 
 { #category : #removing }
 ChestPresenter >> removeSelectedChest [
 
-	chestsTable selection selectedIndex ifNotNil: [ :index | 
-		chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
-			(chestsTable itemAt: index) remove.
-			chestsTable selectIndex:
-				(1 max: chestsTable selection selectedIndex - 1) ] ]
+	chestTableWithContent removeSelectedChest
 ]
 
 { #category : #removing }
 ChestPresenter >> removeSelectedItem [
 
-	chestContentsTable selectedItem ifNotNil: [ :assoc | 
-		self selectedChest remove: assoc value.
-		(chestContentsTable selection selectedIndex = 1 and: [ 
-			 chestContentsTable items isNotEmpty ])
-			ifTrue: [ chestContentsTable selectIndex: 1 ]
-			ifFalse: [ 
-				chestContentsTable selectIndex:
-					chestContentsTable selection selectedIndex - 1 ] ]
+	chestTableWithContent removeSelectedItem
 ]
 
-{ #category : #'presenter building' }
-ChestPresenter >> requestNameNewChestFromToolbar: toolbar [
+{ #category : #renaming }
+ChestPresenter >> renameSelectedChest [
 
-	| requestPresenter |
-	requestPresenter := self presenterToNameNewChest.
-	self popupWithPresenter: requestPresenter onRightTo: toolbar
+	^ chestTableWithContent renameSelectedChest
 ]
 
-{ #category : #'presenter building' }
-ChestPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
+{ #category : #renaming }
+ChestPresenter >> renameSelectedItem [
 
-	| requestPresenter |
-	requestPresenter := self presenterToRenameChest: chest.
-	self popupWithPresenter: requestPresenter onRightTo: anItem
+	^ chestTableWithContent renameSelectedItem
 ]
 
-{ #category : #'presenter building' }
-ChestPresenter >> requestRenameObjectFromChest: object fromContextMenuItem: anItem [
+{ #category : #'ui - dialogs' }
+ChestPresenter >> requestNameNewChest [
 
-	| chest requestPresenter |
-	chest := chestsTable selectedItem.
-	requestPresenter := self
-		                    presenterToRenameObject: object
-		                    inChest: chest.
-	self popupWithPresenter: requestPresenter onRightTo: anItem
+	chestTableWithContent requestNameNewChest
 ]
 
 { #category : #accessing }
 ChestPresenter >> selectedChest [
 
-	^ chestsTable selection selectedItem
+	^ chestTableWithContent selectedChest
+]
+
+{ #category : #accessing }
+ChestPresenter >> selectedItem [
+
+	^ chestTableWithContent selectedItem
 ]
 
 { #category : #initialization }
@@ -489,18 +429,4 @@ ChestPresenter >> setModelBeforeInitialization: aStDebugger [
 ChestPresenter >> title [
 
 	^ 'Chests'
-]
-
-{ #category : #'ui - dialogs' }
-ChestPresenter >> warningNamingChest: newChestName [
-
-	^ '`' , newChestName
-	  ,
-	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
-]
-
-{ #category : #'ui - dialogs' }
-ChestPresenter >> warningNamingObjectInChest: newObjectName [
-
-	^ chestTableWithContent warningNamingObjectInChest: newObjectName
 ]

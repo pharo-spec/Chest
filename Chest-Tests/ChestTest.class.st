@@ -126,7 +126,61 @@ ChestTest >> testAtPutAddsObjectToChestWithCorrectName [
 ]
 
 { #category : #tests }
-ChestTest >> testChestCreationWithCustomName [
+ChestTests >> testCannotNameChestWithInvalidName [
+
+	| chest |
+	chest := Chest new.
+
+	self
+		should: [ chest name: '  \n\t' ] raise: ChestInvalidNameError;
+		should: [ chest name: '1a' ] raise: ChestInvalidNameError;
+		shouldnt: [ chest name: '_1a' ] raise: ChestInvalidNameError;
+		should: [ chest name: 'a/b' ] raise: ChestInvalidNameError
+]
+
+{ #category : #tests }
+ChestTests >> testCannotNameObjectInChestWithInvalidName [
+
+	| chest |
+	chest := Chest new.
+
+	self
+		should: [ chest at: '  \n\t' put: Object new ]
+		raise: ChestInvalidNameError;
+		should: [ chest at: '1a' put: Object new ]
+		raise: ChestInvalidNameError;
+		shouldnt: [ chest at: '_1a' put: Object new ]
+		raise: ChestInvalidNameError;
+		should: [ chest at: 'a/b' put: Object new ]
+		raise: ChestInvalidNameError
+]
+
+{ #category : #tests }
+ChestTests >> testCannotReNameObjectInChestWithInvalidName [
+
+	| chest object |
+	chest := Chest new.
+	object := Object new.
+
+	chest at: 'toto' put: object.
+
+	self
+		should: [ chest renameObject: object into: '  \n\t' ]
+		raise: ChestInvalidNameError;
+		assert: (chest at: 'toto') identicalTo: object;
+		should: [ chest renameObject: object into: '1a' ]
+		raise: ChestInvalidNameError;
+		assert: (chest at: 'toto') identicalTo: object;
+		shouldnt: [ chest renameObject: object into: '_1a' ]
+		raise: ChestInvalidNameError;
+		should: [ chest at: 'toto' ] raise: KeyNotFound;
+		should: [ chest renameObject: object into: 'a/b' ]
+		raise: ChestInvalidNameError;
+		assert: (chest at: '_1a') identicalTo: object
+]
+
+{ #category : #tests }
+ChestTests >> testChestCreationWithCustomName [
 
 	| firstNameAvailable chestWithCustomName |
 	firstNameAvailable := self firstChestNameAvailable.
