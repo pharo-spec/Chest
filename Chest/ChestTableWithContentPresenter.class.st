@@ -800,7 +800,7 @@ ChestTableWithContentPresenter >> requestRenameChest: chest fromContextMenuItem:
 
 	| requestPresenter |
 	requestPresenter := self presenterToRenameChest: chest.
-	popupWithPresenter: requestPresenter onRightTo: anItem
+	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
 { #category : #'ui - dialogs' }
