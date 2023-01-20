@@ -417,8 +417,6 @@ Chest >> initializeContents [
 	contents := ChestContentDictionary new
 ]
 
-<<<<<<< HEAD
-=======
 { #category : #accessing }
 Chest >> inspectAt: aString [
 
@@ -431,7 +429,6 @@ Chest >> isChest [
 	^ true
 ]
 
->>>>>>> master
 { #category : #api }
 Chest >> name [
 
