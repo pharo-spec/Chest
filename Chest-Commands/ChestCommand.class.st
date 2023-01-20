@@ -10,7 +10,7 @@ Class {
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestCodePresenterCommandClasses [
 
-	^ { ChestLoadObjectIntoCode }
+	^ { ChestLoadObjectIntoCodeCommand }
 ]
 
 { #category : #'accessing - commands classes' }

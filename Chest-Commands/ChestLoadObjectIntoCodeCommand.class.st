@@ -4,7 +4,6 @@ Command that allows to load an object or several objects from a chest into a cod
 Class {
 	#name : #ChestLoadObjectIntoCodeCommand,
 	#superclass : #ChestCommand,
-
 	#category : #'Chest-Commands'
 }
 
@@ -75,7 +74,7 @@ ChestLoadObjectIntoCodeCommand >> buildChoicePresenter [
 ]
 
 { #category : #testing }
-ChestLoadObjectIntoCode >> canBeExecuted [
+ChestLoadObjectIntoCodeCommand >> canBeExecuted [
 
 	^ self isVisibleForContext: context
 ]
@@ -88,8 +87,16 @@ ChestLoadObjectIntoCodeCommand >> execute [
 	choicePresenter open
 ]
 
+{ #category : #testing }
+ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
+
+	^ aCodePresenter interactionModel isNotNil and: [ 
+		  aCodePresenter interactionModel class allSelectors 
+			  identityIncludes: #addBinding: ]
+]
+
 { #category : #'private - commands' }
-ChestLoadObjectIntoCode >> loadIntoContextObject: anObject named: objectName [
+ChestLoadObjectIntoCodeCommand >> loadIntoContextObject: anObject named: objectName [
 
 	| interactionModel |
 	interactionModel := self context interactionModel.

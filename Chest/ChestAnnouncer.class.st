@@ -14,7 +14,7 @@ Class {
 	#category : #Chest
 }
 
-{ #category : #initialization }
+{ #category : #'class initialization' }
 ChestAnnouncer class >> initialize [
 
 	uniqueInstance := self new

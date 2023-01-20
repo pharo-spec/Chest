@@ -126,7 +126,7 @@ ChestTest >> testAtPutAddsObjectToChestWithCorrectName [
 ]
 
 { #category : #tests }
-ChestTests >> testCannotNameChestWithInvalidName [
+ChestTest >> testCannotNameChestWithInvalidName [
 
 	| chest |
 	chest := Chest new.
@@ -139,7 +139,7 @@ ChestTests >> testCannotNameChestWithInvalidName [
 ]
 
 { #category : #tests }
-ChestTests >> testCannotNameObjectInChestWithInvalidName [
+ChestTest >> testCannotNameObjectInChestWithInvalidName [
 
 	| chest |
 	chest := Chest new.
@@ -156,7 +156,7 @@ ChestTests >> testCannotNameObjectInChestWithInvalidName [
 ]
 
 { #category : #tests }
-ChestTests >> testCannotReNameObjectInChestWithInvalidName [
+ChestTest >> testCannotReNameObjectInChestWithInvalidName [
 
 	| chest object |
 	chest := Chest new.
@@ -180,7 +180,7 @@ ChestTests >> testCannotReNameObjectInChestWithInvalidName [
 ]
 
 { #category : #tests }
-ChestTests >> testChestCreationWithCustomName [
+ChestTest >> testChestCreationWithCustomName [
 
 	| firstNameAvailable chestWithCustomName |
 	firstNameAvailable := self firstChestNameAvailable.
