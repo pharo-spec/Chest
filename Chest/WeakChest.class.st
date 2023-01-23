@@ -26,7 +26,7 @@ WeakChest class >> defaultNameForNewChest [
 	^ 'WChest_'
 ]
 
-{ #category : #initialization }
+{ #category : #'class initialization' }
 WeakChest class >> initialize [
 
 	nextAvailableID := 1.

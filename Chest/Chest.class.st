@@ -109,7 +109,7 @@ Class {
 		'lastUsedNumber'
 	],
 	#classVars : [
-		'Announcer',
+		'CAnnouncer',
 		'ChestDictionary'
 	],
 	#classInstVars : [
@@ -134,7 +134,7 @@ Chest class >> allChests [
 { #category : #accessing }
 Chest class >> announcer [
 
-	^ Announcer ifNil: [ Announcer := ChestAnnouncer uniqueInstance ]
+	^ CAnnouncer ifNil: [ CAnnouncer := ChestAnnouncer uniqueInstance ]
 ]
 
 { #category : #api }
