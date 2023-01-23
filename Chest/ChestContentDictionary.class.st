@@ -8,6 +8,18 @@ Class {
 }
 
 { #category : #accessing }
+ChestContentDictionary class >> associationClass [
+
+	^ ChestAssociation
+]
+
+{ #category : #accessing }
+ChestContentDictionary >> associationClass [
+
+	^ self class associationClass
+]
+
+{ #category : #accessing }
 ChestContentDictionary >> at: key put: anObject [
 
 	"Set the value at key to be anObject.  If key is not found, create a
@@ -20,7 +32,7 @@ ChestContentDictionary >> at: key put: anObject [
 		ifNil: [ 
 			self
 				atNewIndex: index
-				put: (ChestAssociation key: key value: anObject variableName: key) ]
+				put: (self associationClass key: key value: anObject variableName: key) ]
 		ifNotNil: [ assoc value: anObject ].
 	^ anObject
 ]

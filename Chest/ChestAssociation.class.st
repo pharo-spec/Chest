@@ -4,30 +4,7 @@ Association used by `ChestContentDictionary` that, when its value will be loaded
 Class {
 	#name : #ChestAssociation,
 	#superclass : #Association,
-	#instVars : [
-		'variableName'
-	],
+	#traits : 'TChestAssociation',
+	#classTraits : 'TChestAssociation classTrait',
 	#category : #Chest
 }
-
-{ #category : #'instance creation' }
-ChestAssociation class >> key: key value: value variableName: variableName [
-
-	^ self new
-		  key: key;
-		  value: value;
-		  variableName: variableName
-]
-
-{ #category : #accessing }
-ChestAssociation >> variableName [
-
-	^ variableName
-]
-
-{ #category : #accessing }
-ChestAssociation >> variableName: aString [
-
-	Chest checkValidName: aString.
-	variableName := aString
-]

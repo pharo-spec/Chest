@@ -109,12 +109,12 @@ Class {
 		'lastUsedNumber'
 	],
 	#classVars : [
-		'ChestDictionary',
-		'DefaultInstance',
-		'NextAvailableID'
+		'Announcer',
+		'ChestDictionary'
 	],
 	#classInstVars : [
-		'announcer'
+		'defaultInstance',
+		'nextAvailableID'
 	],
 	#category : #Chest
 }
@@ -134,7 +134,7 @@ Chest class >> allChests [
 { #category : #accessing }
 Chest class >> announcer [
 
-	^ announcer ifNil: [ announcer := ChestAnnouncer uniqueInstance ]
+	^ Announcer ifNil: [ Announcer := ChestAnnouncer uniqueInstance ]
 ]
 
 { #category : #api }
@@ -203,15 +203,28 @@ Chest class >> default [
 { #category : #accessing }
 Chest class >> defaultInstance [
 
-	^ DefaultInstance ifNil: [ DefaultInstance := self newNamed: 'Default' ]
+	^ defaultInstance ifNil: [ 
+		  defaultInstance := self newNamed: self defaultInstanceName ]
+]
+
+{ #category : #'default values' }
+Chest class >> defaultInstanceName [
+
+	^ 'Default'
+]
+
+{ #category : #'default values' }
+Chest class >> defaultNameForNewChest [
+
+	^ 'Chest_'
 ]
 
 { #category : #private }
 Chest class >> getNewID [
 
 	| newId |
-	newId := NextAvailableID.
-	NextAvailableID := NextAvailableID + 1.
+	newId := nextAvailableID.
+	nextAvailableID := nextAvailableID + 1.
 	^ newId
 ]
 
@@ -230,8 +243,8 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
-	NextAvailableID := 1.
-	DefaultInstance := nil
+	nextAvailableID := 1.
+	defaultInstance := nil
 ]
 
 { #category : #'class initialization' }
@@ -245,7 +258,7 @@ Chest class >> named: aString [
 { #category : #api }
 Chest class >> new [
 
-	^ self newNamed: 'Chest_' , self getNewID asString
+	^ self newNamed: self defaultNameForNewChest , self getNewID asString
 ]
 
 { #category : #api }
@@ -293,7 +306,7 @@ Chest class >> removeChestNamed: aKey [
 
 	| removedChest |
 	removedChest := ChestDictionary removeKey: aKey.
-	removedChest == DefaultInstance ifTrue: [ DefaultInstance := nil ].
+	removedChest == defaultInstance ifTrue: [ defaultInstance := nil ].
 	self notifyChestRemoved: removedChest
 ]
 
@@ -313,6 +326,12 @@ Chest class >> unsubscribe: subscriber [
 Chest class >> variableNameTag [
 
 	^ #variableName
+]
+
+{ #category : #'wrapped protocol' }
+Chest class >> weak [
+
+	^ WeakChest
 ]
 
 { #category : #api }

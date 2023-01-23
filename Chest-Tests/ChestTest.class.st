@@ -7,6 +7,18 @@ Class {
 	#category : #'Chest-Tests'
 }
 
+{ #category : #tests }
+ChestTest class >> chestClass [
+
+	^ Chest
+]
+
+{ #category : #tests }
+ChestTest >> chestClass [
+
+	^ self class chestClass
+]
+
 { #category : #accessing }
 ChestTest >> firstChestNameAvailable [
 
@@ -48,7 +60,7 @@ ChestTest >> tearDown [
 
 { #category : #tests }
 ChestTest >> testAddRemoveToChest [
-	self testAddRemoveToChest: Chest new.
+	self testAddRemoveToChest: self chestClass new.
 ]
 
 { #category : #tests }
@@ -74,14 +86,14 @@ ChestTest >> testAddRemoveToChest: aChest [
 { #category : #tests }
 ChestTest >> testAddRemoveToDefaultChest [
 	"Tests that the Chest class itself works as a chest"
-	self testAddRemoveToChest: Chest.
+	self testAddRemoveToChest: self chestClass.
 ]
 
 { #category : #tests }
 ChestTest >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKeyForThisObject [
 
 	| chest object oldName newName |
-	chest := Chest new.
+	chest := self chestClass new.
 	object := Object new.
 	oldName := chest add: object.
 
@@ -96,16 +108,16 @@ ChestTest >> testAddingAnObjectTwiceInSameChestWithDifferentNamesRemoveTheOldKey
 { #category : #tests }
 ChestTest >> testAlwaysGiveFreshIDToNewChests [
 	| c1 c2 c3 idList c4 |
-	c1 := Chest new.
-	c2 := Chest new.
-	c3 := Chest new.
+	c1 := self chestClass new.
+	c2 := self chestClass new.
+	c3 := self chestClass new.
 	self assert: c1 name ~= c2 name.
 	self assert: c2 name ~= c3 name.
 	self assert: c1 name ~= c3 name.
 	idList := OrderedCollection new.
 	idList add: (c1 name); add: (c2 name); add: (c3 name).
-	Chest removeChest: c3.
-	c4 := Chest new.
+	self chestClass removeChest: c3.
+	c4 := self chestClass new.
 	self assert: ((idList includes: c4 name) not).
 	
 	
@@ -115,7 +127,7 @@ ChestTest >> testAlwaysGiveFreshIDToNewChests [
 ChestTest >> testAtPutAddsObjectToChestWithCorrectName [
 
 	| chest object |
-	chest := Chest new.
+	chest := self chestClass new.
 	object := 42.
 
 	self should: [chest at: 'toto'] raise: KeyNotFound.
@@ -129,7 +141,7 @@ ChestTest >> testAtPutAddsObjectToChestWithCorrectName [
 ChestTest >> testCannotNameChestWithInvalidName [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 
 	self
 		should: [ chest name: '  \n\t' ] raise: ChestInvalidNameError;
@@ -142,7 +154,7 @@ ChestTest >> testCannotNameChestWithInvalidName [
 ChestTest >> testCannotNameObjectInChestWithInvalidName [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 
 	self
 		should: [ chest at: '  \n\t' put: Object new ]
@@ -159,7 +171,7 @@ ChestTest >> testCannotNameObjectInChestWithInvalidName [
 ChestTest >> testCannotReNameObjectInChestWithInvalidName [
 
 	| chest object |
-	chest := Chest new.
+	chest := self chestClass new.
 	object := Object new.
 
 	chest at: 'toto' put: object.
@@ -185,13 +197,13 @@ ChestTest >> testChestCreationWithCustomName [
 	| firstNameAvailable chestWithCustomName |
 	firstNameAvailable := self firstChestNameAvailable.
 
-	self should: [ Chest named: firstNameAvailable ] raise: KeyNotFound.
+	self should: [ self chestClass named: firstNameAvailable ] raise: KeyNotFound.
 
-	chestWithCustomName := Chest newNamed: firstNameAvailable.
+	chestWithCustomName := self chestClass newNamed: firstNameAvailable.
 
 	self assert: chestWithCustomName name equals: firstNameAvailable.
 	self
-		assert: (Chest named: firstNameAvailable)
+		assert: (self chestClass named: firstNameAvailable)
 		identicalTo: chestWithCustomName
 ]
 
@@ -234,13 +246,13 @@ ChestTest >> testChestCreationWithNameThatAlreadyExistsRaisesAnError [
 ChestTest >> testChestDictionaryProvidesCopyOfAllChests [
 
 	| chestDictionary firstNameAvailable |
-	chestDictionary := Chest chestDictionary.
+	chestDictionary := self chestClass chestDictionary.
 	firstNameAvailable := self firstChestNameAvailable.
 
 	chestDictionary at: firstNameAvailable put: 42.
 
 	self
-		should: [ Chest named: firstNameAvailable ]
+		should: [ self chestClass named: firstNameAvailable ]
 		raise: KeyNotFound 
 ]
 
@@ -248,7 +260,7 @@ ChestTest >> testChestDictionaryProvidesCopyOfAllChests [
 ChestTest >> testContentsProvidesCopyOfChestContent [
 
 	| chest object contents objectInCopy |
-	chest := Chest new.
+	chest := self chestClass new.
 	object := 42.
 	objectInCopy := 72.
 
@@ -271,7 +283,7 @@ ChestTest >> testDefaultInstance [
 ChestTest >> testEmpty [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 	chest
 		at: 'toto' put: 'toto';
 		at: 'tata' put: 'tata';
@@ -292,7 +304,7 @@ ChestTest >> testEmpty [
 ChestTest >> testEmptyChest [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 	chest
 		at: 'toto' put: 42;
 		at: 'titi' put: 72;
@@ -308,8 +320,8 @@ ChestTest >> testEmptyChest [
 ChestTest >> testGettingChestFromID [
 	"Tests that retrieving chests by their id works"
 	| c1 c2 |
-	c1 := Chest new.
-	c2 := Chest new.
+	c1 := self chestClass new.
+	c2 := self chestClass new.
 	self assert: (Chest named: c1 name) identicalTo: c1.
 	self assert: (Chest named: c2 name) identicalTo: c2.
 	"Tests that accessing a removed chest signals an error"
@@ -329,7 +341,7 @@ ChestTest >> testNotifications [
 	self assert: l chestRemovedReceived not.
 	
 	"Test the event on chest creation"
-	c := Chest new.
+	c := self chestClass new.
 	self assert: l newChestReceived.
 	self assert: l newChest identicalTo: c.
 	
@@ -341,7 +353,7 @@ ChestTest >> testNotifications [
 	self assert: l newContentsOfUpdatedChest equals: c contents.
 	
 	"Test the event on chest removal"
-	Chest removeChest: c.
+	self chestClass removeChest: c.
 	self assert: l chestRemovedReceived.
 	self assert: l removedChest identicalTo: c.
 ]
@@ -350,47 +362,47 @@ ChestTest >> testNotifications [
 ChestTest >> testRemove [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 
-	self assert: (Chest named: chest name) identicalTo: chest.
+	self assert: (self chestClass named: chest name) identicalTo: chest.
 
 	chest remove.
 
-	self should: [ Chest named: chest name ] raise: KeyNotFound
+	self should: [ self chestClass named: chest name ] raise: KeyNotFound
 ]
 
 { #category : #tests }
 ChestTest >> testRemoveChestNamed [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 
-	self assert: (Chest named: chest name) identicalTo: chest.
+	self assert: (self chestClass named: chest name) identicalTo: chest.
 
-	Chest removeChestNamed: chest name.
+	self chestClass removeChestNamed: chest name.
 
-	self should: [ Chest named: chest name ] raise: KeyNotFound
+	self should: [ self chestClass named: chest name ] raise: KeyNotFound
 ]
 
 { #category : #tests }
 ChestTest >> testRemoveChestNamedWithDefaultInstance [
 
 	| chest |
-	chest := Chest defaultInstance.
+	chest := self chestClass defaultInstance.
 
-	self assert: (Chest named: chest name) identicalTo: chest.
+	self assert: (self chestClass named: chest name) identicalTo: chest.
 
-	Chest removeChestNamed: chest name.
+	self chestClass removeChestNamed: chest name.
 
-	self should: [ Chest named: chest name ] raise: KeyNotFound.
-	self deny: Chest defaultInstance identicalTo: chest
+	self should: [ self chestClass named: chest name ] raise: KeyNotFound.
+	self deny: self chestClass defaultInstance identicalTo: chest
 ]
 
 { #category : #tests }
 ChestTest >> testRemoveObjectNamedWithExistingObject [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 	chest
 		at: 'toto' put: 'toto';
 		at: 'tata' put: 'tata';
@@ -407,7 +419,7 @@ ChestTest >> testRemoveObjectNamedWithExistingObject [
 ChestTest >> testRemoveObjectNamedWithObjectThatDoesNotExist [
 
 	| chest |
-	chest := Chest new.
+	chest := self chestClass new.
 	chest
 		at: 'toto' put: 'toto';
 		at: 'tata' put: 'tata';
@@ -424,21 +436,21 @@ ChestTest >> testRemoveObjectNamedWithObjectThatDoesNotExist [
 ChestTest >> testRemoveWithDefaultInstance [
 
 	| chest |
-	chest := Chest defaultInstance.
+	chest := self chestClass defaultInstance.
 
 	self assert: (Chest named: chest name) identicalTo: chest.
 
 	chest remove.
 
-	self should: [ Chest named: chest name ] raise: KeyNotFound.
-	self deny: Chest defaultInstance identicalTo: chest
+	self should: [ self chestClass named: chest name ] raise: KeyNotFound.
+	self deny: self chestClass defaultInstance identicalTo: chest
 ]
 
 { #category : #tests }
 ChestTest >> testRenameObjectInto [
 
 	| chest object |
-	chest := Chest new.
+	chest := self chestClass new.
 	object := Object new.
 	chest at: 'toto' put: object.
 
@@ -454,7 +466,7 @@ ChestTest >> testRenameObjectInto [
 ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
 
 	| chest objectToBeRenamed objectInChest |
-	chest := Chest new.
+	chest := self chestClass new.
 	objectToBeRenamed := Object new.
 	objectInChest := Object new.
 	chest at: 'tata' put: objectInChest.
@@ -475,7 +487,7 @@ ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectIsNotInChest [
 ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
 
 	| chest objectToBeRenamed objectAlreadyHavingNewName |
-	chest := Chest new.
+	chest := self chestClass new.
 	objectToBeRenamed := Object new.
 	objectAlreadyHavingNewName := Object new.
 	chest at: 'tata' put: objectAlreadyHavingNewName.
@@ -500,25 +512,25 @@ ChestTest >> testRenameObjectIntoRaisesErrorWhenObjectOfSameNameAlreadyExists [
 ChestTest >> testRenamingChestChangesItsKeyInDictionary [
 
 	| chest firstNameAvailable oldName |
-	chest := Chest new.
+	chest := self chestClass new.
 	oldName := chest name.
 	firstNameAvailable := self firstChestNameAvailable.
 
 	chest name: firstNameAvailable.
 
 	self assert: chest name equals: firstNameAvailable.
-	self assert: (Chest named: firstNameAvailable) identicalTo: chest.
-	self should: [ Chest named: oldName ] raise: KeyNotFound
+	self assert: (self chestClass named: firstNameAvailable) identicalTo: chest.
+	self should: [ self chestClass named: oldName ] raise: KeyNotFound
 ]
 
 { #category : #tests }
 ChestTest >> testRenamingChestRaisesErrorWhenChestOfSameNameAlreadyExists [
 
 	| chestToBeRenamed firstNameAvailable oldName chestAlreadyHavingNewName |
-	chestToBeRenamed := Chest new.
+	chestToBeRenamed := self chestClass new.
 	oldName := chestToBeRenamed name.
 	firstNameAvailable := self firstChestNameAvailable.
-	chestAlreadyHavingNewName := Chest newNamed: firstNameAvailable.
+	chestAlreadyHavingNewName := self chestClass newNamed: firstNameAvailable.
 
 	self
 		should: [ chestToBeRenamed name: firstNameAvailable ]
@@ -526,7 +538,7 @@ ChestTest >> testRenamingChestRaisesErrorWhenChestOfSameNameAlreadyExists [
 
 	self assert: chestToBeRenamed name equals: oldName.
 	self
-		assert: (Chest named: firstNameAvailable)
+		assert: (self chestClass named: firstNameAvailable)
 		identicalTo: chestAlreadyHavingNewName.
-	self assert: (Chest named: oldName) identicalTo: chestToBeRenamed
+	self assert: (self chestClass named: oldName) identicalTo: chestToBeRenamed
 ]
