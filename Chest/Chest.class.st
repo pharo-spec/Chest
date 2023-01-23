@@ -234,7 +234,7 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 	| chest |
 	[ chest := self named: aChestName ]
 		on: KeyNotFound
-		do: [ chest := self class newNamed: aChestName ].
+		do: [ chest := self newNamed: aChestName ].
 
 	^ chest at: aKey put: anObject
 ]

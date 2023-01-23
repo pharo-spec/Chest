@@ -7,6 +7,13 @@ Class {
 	#category : #Chest
 }
 
+{ #category : #accessing }
+WeakChest class >> defaultInstance [
+
+	^ defaultInstance ifNil: [ 
+		  defaultInstance := self newNamed: self defaultInstanceName ]
+]
+
 { #category : #'default values' }
 WeakChest class >> defaultInstanceName [
 
