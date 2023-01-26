@@ -7,6 +7,12 @@ Class {
 	#category : #Chest
 }
 
+{ #category : #icons }
+WeakChest class >> chestIcon [
+
+	^ Smalltalk ui icons iconNamed: 'box'
+]
+
 { #category : #accessing }
 WeakChest class >> defaultInstance [
 

@@ -9,6 +9,13 @@ Trait {
 	#category : #Chest
 }
 
+{ #category : #icons }
+TChestAssociation classSide >> chestIcon [ 
+
+
+	^ Smalltalk ui icons iconNamed: 'objects'
+]
+
 { #category : #'instance creation' }
 TChestAssociation classSide >> key: key value: value variableName: variableName [
 
@@ -16,6 +23,24 @@ TChestAssociation classSide >> key: key value: value variableName: variableName 
 		  key: key;
 		  value: value;
 		  variableName: variableName
+]
+
+{ #category : #'*Chest' }
+TChestAssociation >> chestChildren [
+
+	^ {  } asOrderedCollection
+]
+
+{ #category : #'*Chest' }
+TChestAssociation >> chestEvaluation [
+
+	^ self value
+]
+
+{ #category : #'*Chest' }
+TChestAssociation >> chestName [
+
+	^ self key
 ]
 
 { #category : #accessing }
