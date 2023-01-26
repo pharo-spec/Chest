@@ -61,13 +61,7 @@ ChestLoadObjectIntoCodeCommand >> buildChoicePresenter [
 		selectedIndexes do: [ :index | 
 			| assoc |
 			assoc := chestContentTable items at: index.
-			(context interactionModel hasBindingOf: assoc key)
-				ifTrue: [ 
-					self
-						warnUserWhenDeletingBindingWithKey: assoc key
-						withNewValue: assoc value ]
-				ifFalse: [ 
-				self loadIntoContextObject: assoc value named: assoc variableName ] ].
+			self loadAssocIntoContext: assoc ].
 		choicePresenter window close ].
 
 	^ choicePresenter
@@ -93,6 +87,18 @@ ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
 	^ aCodePresenter interactionModel isNotNil and: [ 
 		  aCodePresenter interactionModel class allSelectors 
 			  identityIncludes: #addBinding: ]
+]
+
+{ #category : #execution }
+ChestLoadObjectIntoCodeCommand >> loadAssocIntoContext: assoc [
+
+	(context interactionModel hasBindingOf: assoc key)
+		ifTrue: [ 
+			self
+				warnUserWhenDeletingBindingWithKey: assoc key
+				withNewValue: assoc value ]
+		ifFalse: [ 
+		self loadIntoContextObject: assoc value named: assoc variableName ]
 ]
 
 { #category : #'private - commands' }
