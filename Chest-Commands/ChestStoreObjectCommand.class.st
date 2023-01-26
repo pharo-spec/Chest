@@ -31,17 +31,6 @@ ChestStoreObjectCommand class >> defaultShortcutKey [
 	^ $c meta , $s meta
 ]
 
-{ #category : #'private - commands' }
-ChestStoreObjectCommand >> blockToEvaluateToStoreResult: result intoChest: chest withName: objectName withPresenter: choicePresenter [
-
-	^ [ 
-	  objectName = chest nextDefaultNameForObject
-		  ifTrue: [ self storeObject: result intoChest: chest ]
-		  ifFalse: [ 
-		  self storeObject: result intoChest: chest withName: objectName ].
-	  choicePresenter window close ]
-]
-
 { #category : #initialization }
 ChestStoreObjectCommand >> buildChoicePresenter [
 
@@ -51,24 +40,22 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 		| chest objectName |
 		chest := choicePresenter chestsTable selectedItem.
 		objectName := choicePresenter inputField text.
-		self evaluateSelectionAndDo: [ :result | 
-			(self
-				 blockToEvaluateToStoreResult: result
-				 intoChest: chest
-				 withName: objectName
-				 withPresenter: choicePresenter)
-				on: ChestKeyAlreadyInUseError
-				do: [ 
-					((choicePresenter confirm:
-						  (choicePresenter warningNamingObjectInChest: objectName)) 
-						 onAccept: [ 
-							 chest removeObjectNamed: objectName.
-							 (self
-								  blockToEvaluateToStoreResult: result
-								  intoChest: chest
-								  withName: objectName
-								  withPresenter: choicePresenter) value ]) 
-						openDialogWithParent: choicePresenter chestContentTable ] ] ].
+		[ 
+		self
+			storeSelectionInChest: chest
+			withName: objectName
+			replacing: false ]
+			on: ChestKeyAlreadyInUseError
+			do: [ 
+				((choicePresenter confirm:
+					  (choicePresenter warningNamingObjectInChest: objectName)) 
+					 onAccept: [ 
+						 self
+							 storeSelectionInChest: chest
+							 withName: objectName
+							 replacing: true ]) openDialogWithParent:
+					choicePresenter chestContentTable ].
+		choicePresenter window close ].
 	choicePresenter layout: choicePresenter storeCommandLayout.
 	^ choicePresenter
 ]
@@ -91,4 +78,23 @@ ChestStoreObjectCommand >> storeObject: result intoChest: chest [
 ChestStoreObjectCommand >> storeObject: result intoChest: chest withName: objectName [
 
 	chest ifNotNil: [ chest at: objectName put: result ]
+]
+
+{ #category : #execution }
+ChestStoreObjectCommand >> storeResult: result intoChest: chest withName: objectName replacing: replacingBoolean [
+
+	replacingBoolean ifTrue: [ chest removeObjectNamed: objectName ].
+
+	objectName = chest nextDefaultNameForObject
+		ifTrue: [ self storeObject: result intoChest: chest ]
+		ifFalse: [ 
+		self storeObject: result intoChest: chest withName: objectName ]
+]
+
+{ #category : #execution }
+ChestStoreObjectCommand >> storeSelectionInChest: aChest withName: objectName replacing: replacingBoolean [
+
+	self evaluateSelectionAndDo: [ :result | 
+		self storeResult: result intoChest: aChest withName: objectName replacing: replacingBoolean
+	]
 ]
