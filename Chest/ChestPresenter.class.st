@@ -62,13 +62,17 @@ ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter fo
 ChestPresenter class >> debugWorldMenuOn: aBuilder [
 
 	<worldMenu>
-	(aBuilder item: #'Open Chests')
-		parent: #Debugging;
-		order: 0;
-		help:
-			'Store objects from anywhere to keep them around, check equality...';
-		action: [ self open ];
-		icon: (Smalltalk ui icons iconNamed: #group)
+	(aBuilder group: #Chest)
+		parent: #Debug;
+		order: 10;
+		withSeparatorAfter;
+		with: [
+			(aBuilder item: #'Open Chests')
+				order: 1;
+				help:
+					'Store objects from anywhere to keep them around, check equality...';
+				action: [ self open ];
+				icon: (Smalltalk ui icons iconNamed: #group) ]
 ]
 
 { #category : #accessing }
