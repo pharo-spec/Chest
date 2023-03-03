@@ -369,7 +369,7 @@ ChestTableWithContentPresenter >> iconManager [
 	^ Smalltalk ui icons
 ]
 
-{ #category : #updating }
+{ #category : #initialization }
 ChestTableWithContentPresenter >> initialize [
 
 	super initialize.
