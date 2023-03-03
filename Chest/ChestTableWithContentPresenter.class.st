@@ -369,7 +369,7 @@ ChestTableWithContentPresenter >> iconManager [
 	^ Smalltalk ui icons
 ]
 
-{ #category : #updating }
+{ #category : #initialization }
 ChestTableWithContentPresenter >> initialize [
 
 	super initialize.
@@ -539,25 +539,25 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 		                             addColumn: (SpCompositeTableColumn new
 				                              title: 'Chests';
 				                              addColumn:
-					                              ((SpImageTableColumn evaluated: [ 
-							                                :anObject | 
+					                              ((SpImageTableColumn evaluated: [
+							                                :anObject |
 							                                anObject class chestIcon ])
 						                               width: 20;
 						                               yourself);
 				                              addColumn:
-					                              (SpStringTableColumn evaluated: [ 
-						                               :anObject | 
+					                              (SpStringTableColumn evaluated: [
+						                               :anObject |
 						                               anObject chestEvaluation ])
 						                              yourself);
 		                             addColumn:
 			                             ((SpStringTableColumn new title:
 					                               'Name')
-				                              evaluated: [ :anObject | 
+				                              evaluated: [ :anObject |
 					                              anObject chestName ];
 				                              yourself);
 		                             beResizable;
-		                             activatesOnDoubleClick;
-		                             whenActivatedDo: [ :selection | 
+		                             isActiveOnDoubleClick;
+		                             whenActivatedDo: [ :selection |
 		                             selection selectedItem inspect ];
 		                             yourself.
 	self makeChestTreeTableContextMenu
