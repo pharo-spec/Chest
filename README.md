@@ -12,16 +12,7 @@ Chest allows you to store objects from anywhere, to keep them around to check eq
 ```smalltalk
 Metacello new
     baseline: 'Chest';
-    repository: 'github://adri09070/Chest';
-    load.
-```
-
-To see Chest variables in the debugger inspector, as long as the associated PR in NewTools (https://github.com/pharo-spec/NewTools/pull/402) is not merged, you should also load my branch of NewTools that allows me to see Chest variables in the debugger inspector:
-
-```smalltalk
-Metacello new
-    baseline: 'NewTools';
-    repository: 'github://adri09070/NewTools:adding-debugger-visitor-to-display-variables-from-extensions';
+    repository: 'github://pharo-spec/Chest';
     load.
 ```
 
@@ -111,6 +102,8 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 
 - `Chest class>>#unsubscribe:` : helper that unsubscribes its argument from the unique instance of `ChestAnnouncer`
 
+- `Chest class>>#weak` : returns `WeakChest class`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects.
+
 ##### How to create instances 
 - `Chest class>>#new` : creates a chest with a default name that is in the form of 'Chest_autoIncrementedNumber'
 
@@ -166,7 +159,9 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 	
 	Chest add: 42. "adds 42 to the default chest"
 	
-	Chest inChest: 'titi' at: 'tata' put: 42 "creates the chest named 'titi' as it doesn't exist, and put 42 in it with the name 'tata' "
+	Chest inChest: 'titi' at: 'tata' put: 42. "creates the chest named 'titi' as it doesn't exist, and put 42 in it with the name 'tata' "
 	
-	Chest inChest: 'titi' at: 'toto' put: 43 "puts 43 in the chest named 'titi' with the name 'toto'"
+	Chest inChest: 'titi' at: 'toto' put: 43. "puts 43 in the chest named 'titi' with the name 'toto'"
+	
+	Chest weak inChest: 'wtiti' at: 'tata' put: 42 "puts 42 in the weak chest named 'wtiti' with the name 'tata'"
 ```
