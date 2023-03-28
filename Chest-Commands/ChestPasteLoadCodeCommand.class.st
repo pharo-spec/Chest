@@ -46,6 +46,14 @@ ChestPasteLoadCodeCommand class >> forSpecContext: specContext withChestName: ch
 		  asSpecCommand
 ]
 
+{ #category : #executing }
+ChestPasteLoadCodeCommand >> buildInjectedCode [
+
+	^ '(Chest named: ''{1}'') at: ''{2}''' format: {
+			  chestName.
+			  objectName }
+]
+
 { #category : #accessing }
 ChestPasteLoadCodeCommand >> chestName [
 
@@ -70,9 +78,7 @@ ChestPasteLoadCodeCommand >> description [
 ChestPasteLoadCodeCommand >> execute [
 
 	| code |
-	code := '(Chest named: ''{1}'') at: ''{2}''' format: {
-			        chestName.
-			        objectName }.
+	code := self buildInjectedCode.
 	Clipboard clipboardText: code.
 	context doTextPaste
 ]
