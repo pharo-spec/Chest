@@ -53,9 +53,11 @@ ChestCommandTreeBuilder >> buildAndRegisterGroup [
 { #category : #building }
 ChestCommandTreeBuilder >> buildChestCommandGroup [
 
-	self chestCommandClasses do: [ :commandClass | 
-		self group register:
-			(self buildSpecCommand: commandClass forContext: codePresenter) ].
+	self chestCommandClasses do: [ :commandClass |
+		self group
+			register:
+				(self buildSpecCommand: commandClass forContext: codePresenter);
+			register: self buildPasteLoadCodeGroup ].
 	self group beDisplayedAsGroup
 ]
 
@@ -65,6 +67,27 @@ ChestCommandTreeBuilder >> buildCommandsGroupWith: aCodePresenter forRoot: aRoot
 	codePresenter := aCodePresenter.
 	rootCommandGroup := aRootCommandGroup.
 	self buildChestCommandGroup
+]
+
+{ #category : #building }
+ChestCommandTreeBuilder >> buildPasteLoadCodeGroup [
+
+	| specGroup allChests subSpecGroup |
+	specGroup := (CmCommandGroup forSpecNamed:
+			              'Paste object from chest > ')
+		             beDisplayedAsSubMenu;
+		             yourself.
+	allChests := Chest allChests.
+	allChests do: [ :chest |
+		subSpecGroup := CmCommandGroup forSpecNamed: chest name.
+		specGroup register: subSpecGroup.
+		chest contents keysDo: [ :key |
+			subSpecGroup register: (ChestPasteLoadCodeCommand
+					 forSpecContext: codePresenter
+					 withChestName: chest name
+					 withObjectName: key) ] ].
+
+	^ specGroup
 ]
 
 { #category : #building }
