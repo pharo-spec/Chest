@@ -50,7 +50,7 @@ is a way to access the class `WeakChest`. This class can be interacted with the 
 
 If you right-click on a code presenter with an `SpCodeInteractionModel` or `StDebuggerContextInteractionModel` (e.g: playground, debugger etc.), you can evaluate an expression and store the result in the chest of your choice, with the name of your choice:
 
-![image](https://user-images.githubusercontent.com/97704417/228250449-a0f19896-0750-401e-bb2f-04bad687f292.png)
+![image](https://user-images.githubusercontent.com/97704417/228267430-558412c9-73b3-417a-9a50-0810437ec72a.png)
 
 ![image](https://user-images.githubusercontent.com/97704417/228250744-b3a99ae2-08dc-4a27-ad1f-30316e73bd4c.png)
 
