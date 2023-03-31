@@ -2,7 +2,7 @@ SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
       #baseline : 'Chest',
-      #directory : '.',
+      #directory : 'src',
       #onConflict : #useIncoming,
       #onUpgrade : #useIncoming,
       #ignoreImage : true
