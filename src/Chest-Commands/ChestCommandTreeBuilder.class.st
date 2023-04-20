@@ -54,10 +54,9 @@ ChestCommandTreeBuilder >> buildAndRegisterGroup [
 ChestCommandTreeBuilder >> buildChestCommandGroup [
 
 	self chestCommandClasses do: [ :commandClass |
-		self group
-			register:
-				(self buildSpecCommand: commandClass forContext: codePresenter);
-			register: self buildPasteLoadCodeGroup ].
+		self group register:
+			(self buildSpecCommand: commandClass forContext: codePresenter) ].
+	self group register: self buildPasteLoadCodeGroup.
 	self group beDisplayedAsGroup
 ]
 
@@ -99,7 +98,9 @@ ChestCommandTreeBuilder >> buildSpecCommand: commandClass forContext: aContext [
 { #category : #building }
 ChestCommandTreeBuilder >> chestCommandClasses [
 
-	^ { ChestLoadObjectIntoCodeCommand } select: [ :each | 
+	^ {
+		  ChestLoadObjectIntoCodeCommand.
+		  ChestPasteLastObjectLoadCodeCommand } select: [ :each |
 		  each isVisibleForContext: codePresenter ]
 ]
 

@@ -39,6 +39,12 @@ WeakChest class >> initialize [
 	defaultInstance := nil
 ]
 
+{ #category : #'wrapped protocol' }
+WeakChest class >> weak [
+
+	^ self
+]
+
 { #category : #initialization }
 WeakChest >> initializeContents [
 
