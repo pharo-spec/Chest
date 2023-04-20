@@ -13,7 +13,7 @@ ChestPasteLastObjectLoadCodeCommand class >> defaultDescription [
 { #category : #default }
 ChestPasteLastObjectLoadCodeCommand class >> defaultName [
 
-	^ 'ChestObjectPasteLast'
+	^ 'Paste last object copied to clipboard'
 ]
 
 { #category : #default }
@@ -27,6 +27,18 @@ ChestPasteLastObjectLoadCodeCommand class >> forSpecContext: aContext [
 
 	^ self
 		  forSpecContext: aContext
-		  withChestName: ClipboardChest defaultInstanceName
+		  withChestName: ClipboardChest defaultInstance name
 		  withObjectName: ClipboardChest clipboardEntryName
+]
+
+{ #category : #accessing }
+ChestPasteLastObjectLoadCodeCommand >> description [
+
+	^ self class defaultDescription
+]
+
+{ #category : #accessing }
+ChestPasteLastObjectLoadCodeCommand >> name [ 
+
+	^ self class defaultName
 ]

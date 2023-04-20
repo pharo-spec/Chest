@@ -19,7 +19,7 @@ ChestCopyObjectCommand class >> defaultIconName [
 { #category : #default }
 ChestCopyObjectCommand class >> defaultName [
 
-	'Copy object in a clipboard chest'
+	^ 'Copy object in a clipboard chest'
 ]
 
 { #category : #defaults }
@@ -32,6 +32,10 @@ ChestCopyObjectCommand class >> defaultShortcutKey [
 ChestCopyObjectCommand >> execute [
 
 	self evaluateSelectionAndDo: [ :result |
-		ClipboardChest at: ClipboardChest clipboardEntryName put: result
-	]
+		[ ClipboardChest at: ClipboardChest clipboardEntryName put: result ]
+			on: ChestKeyAlreadyInUseError
+			do: [
+				ClipboardChest removeObjectNamed:
+					ClipboardChest clipboardEntryName.
+				ClipboardChest at: ClipboardChest clipboardEntryName put: result ] ]
 ]
