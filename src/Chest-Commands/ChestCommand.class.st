@@ -89,3 +89,9 @@ ChestCommand class >> defaultShortcutKey [
 
 	^ nil
 ]
+
+{ #category : #default }
+ChestCommand class >> isVisibleForContext: aSpecContext [
+
+	^ true
+]
