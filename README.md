@@ -87,6 +87,28 @@ When clicking on a variable name, the necessary code to access the corresponding
 
 This command allows you to access objects from a chest, without relying on your memory of the `Chest` API.
 
+#### Simpler code injection in any spec code presenter
+
+The method described above to access objects in chests implies that your objects need to be stored in a chest with a name that you must remember...
+
+Sometimes, you would like to access objects quickly, without needing to give a name to an object that is stored...
+
+That's why it is possible to copy / paste (=inject code to access) to / from a "Clipboard Chest", just as you would do to copy/paste text to/from the clipboard.
+
+To do that, you just need to select the expression that you want to evaluate and whose results should be stored in the "Clipboard Chest", and then select **Copy object in a clipboard chest** in the context menu:
+
+![image](https://user-images.githubusercontent.com/97704417/233565153-aa00a719-c48c-4710-885e-2a72148586cd.png)
+
+This will store the result of the expression into the default clipboard chest. Please note, that if you "copy" another object to the clipboard chest, it will replace the previous copied object. Note also that the clipboard chest is a weak chest, so your object inside the clipboard chest can become `nil` if it gets garbage-collected.
+
+In order to inject the code to access the object, you should then select in the context menu: **Paste last object copied to clipboard**:
+
+![image](https://user-images.githubusercontent.com/97704417/233566222-4244847a-29db-4ccb-aa64-8bbd988cdccb.png)
+
+And the code to access your object is now pasted:
+
+![image](https://user-images.githubusercontent.com/97704417/233566504-3f78e1da-2482-4428-91d6-09896b7106b8.png)
+
 ### API
 
 #### Chest instance API
