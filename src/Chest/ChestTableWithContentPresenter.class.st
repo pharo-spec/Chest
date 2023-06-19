@@ -18,7 +18,10 @@ Class {
 		'chestWithContentTreeTable',
 		'chestTableWithContentContainer',
 		'activePresenter',
-		'chestWithContentTreeTableToolbar'
+		'chestWithContentTreeTableToolbar',
+		'buttonNoCopy',
+		'buttonShallowCopy',
+		'buttonDeepCopy'
 	],
 	#category : #Chest
 }
@@ -186,6 +189,24 @@ ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup:
 ChestTableWithContentPresenter >> activePresenter [
 
 	^ activePresenter
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> buttonDeepCopy [
+
+	^ buttonDeepCopy
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> buttonNoCopy [
+
+	^ buttonNoCopy
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> buttonShallowCopy [
+
+	^ buttonShallowCopy
 ]
 
 { #category : #accessing }
@@ -402,6 +423,8 @@ ChestTableWithContentPresenter >> initializePresenters [
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 
 	chestWithContentTreeTableToolbar := self makeChestTreeTableToolbar.
+	
+	self makeCopyRadioButtons.
 
 	self layout: self defaultLayout
 ]
@@ -604,6 +627,22 @@ ChestTableWithContentPresenter >> makeConfirmActionBar [
 		  add: confirmButton;
 		  add: cancelButton;
 		  yourself
+]
+
+{ #category : #'presenter building' }
+ChestTableWithContentPresenter >> makeCopyRadioButtons [
+
+	buttonNoCopy := self newRadioButton.
+	buttonShallowCopy := self newRadioButton.
+	buttonDeepCopy := self newRadioButton.
+
+	buttonNoCopy associatedRadioButtons: {
+			buttonShallowCopy.
+			buttonDeepCopy }.
+
+	buttonNoCopy label: 'No copy'.
+	buttonShallowCopy label: 'Shallow copy'.
+	buttonDeepCopy label: 'Deep copy'
 ]
 
 { #category : #'presenter building' }
@@ -864,6 +903,11 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 		  add: (SpBoxLayout newHorizontal
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
+				   yourself);
+		  add: (SpBoxLayout newHorizontal
+				   add: buttonNoCopy;
+				   add: buttonShallowCopy;
+				   add: buttonDeepCopy;
 				   yourself);
 		  add: confirmActionBar;
 		  yourself
