@@ -722,14 +722,15 @@ ChestTableWithContentPresenter >> removeAllChests [
 { #category : #removing }
 ChestTableWithContentPresenter >> removeAllItemsFromSelectedChest [
 
-	| items |
+	| items chest |
 	self flag: 'to do with polymorphism'.
 
 	items := activePresenter == chestWithContentTreeTable
 		         ifTrue: [ 
 		         chestWithContentTreeTable childrenFor: self selectedChest ]
 		         ifFalse: [ chestContentsTable items ].
-	items do: [ :assoc | self selectedChest remove: assoc value ]
+	chest := self selectedChest.
+	items do: [ :assoc | chest remove: assoc value ]
 ]
 
 { #category : #removing }
@@ -829,7 +830,7 @@ ChestTableWithContentPresenter >> selectedChest [
 		 activePresenter == chestWithContentTreeTable ]) ifTrue: [ 
 		^ chestWithContentTreeTable selectedItem isChest
 			  ifTrue: [ chestWithContentTreeTable selectedItem ]
-			  ifFalse: [ nil ] ].
+			  ifFalse: [ chestWithContentTreeTable parentOfSelected ] ].
 	^ chestsTable selection selectedItem
 ]
 
