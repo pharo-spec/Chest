@@ -11,7 +11,15 @@ Class {
 		'chestsTable',
 		'chestContentsTable',
 		'inspector',
-		'chestTableWithContent'
+		'chestTableWithContent',
+		'showPlaygroundButton',
+		'showInspectorButton',
+		'showPlaygroundContainer',
+		'showInspectorContainer'
+	],
+	#classVars : [
+		'ShowInspector',
+		'ShowPlayground'
 	],
 	#category : #Chest
 }
@@ -56,6 +64,28 @@ ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter fo
 		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
+]
+
+{ #category : #settings }
+ChestPresenter class >> chestSettingsOn: aBuilder [
+
+	<systemsettings>
+	(aBuilder group: #ChestTool)
+		label: 'Chest';
+		parent: #tools;
+		description: 'Settings related to the Chest tool';
+		with: [
+			(aBuilder setting: #showPlayground)
+				label: 'Shows playground in Chest';
+				target: self;
+				default: self showPlayground;
+				description: 'Shows a playground below chests and their contents.'.
+			(aBuilder setting: #showInspector)
+				label: 'Shows inspector in Chest';
+				target: self;
+				default: self showInspector;
+				description:
+					'Shows an inspector on the right to chests and their contents, on the selected chest item' ]
 ]
 
 { #category : #'menu-entry' }
@@ -107,6 +137,30 @@ ChestPresenter class >> registerClasses: commandClasses toGroup: aGroup withCont
 				  shortcutKey: aClass defaultShortcutKey)
 				 context: aChestWithContentPresenter;
 				 beHiddenWhenCantBeRun) ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showInspector [
+
+	^ ShowInspector ifNil: [ ShowInspector := false ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showInspector: anObject [
+
+	^ ShowInspector := anObject
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showPlayground [
+
+	^ ShowPlayground ifNil: [ ShowPlayground := false ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showPlayground: anObject [
+
+	^ ShowPlayground := anObject
 ]
 
 { #category : #visiting }
@@ -202,10 +256,26 @@ ChestPresenter >> defaultLayout [
 	^ SpPanedLayout newHorizontal
 		  add: (SpPanedLayout newVertical
 				   add: #chestTableWithContent;
-				   add: #playground;
+				   add: showPlaygroundContainer;
 				   yourself);
-		  add: #inspector;
+		  add: showInspectorContainer;
 		  yourself
+]
+
+{ #category : #layout }
+ChestPresenter >> displayInspector [
+
+	self class showInspector: true.
+	showInspectorContainer add: inspector.
+	showInspectorButton icon: (self application iconNamed: #enable)
+]
+
+{ #category : #layout }
+ChestPresenter >> displayPlayground [
+
+	self class showPlayground: true.
+	showPlaygroundContainer add: playground.
+	showPlaygroundButton icon: (self application iconNamed: #enable)
 ]
 
 { #category : #layout }
@@ -215,6 +285,22 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 		  add: aString expand: false;
 		  addLast: aToolbar expand: false;
 		  yourself
+]
+
+{ #category : #layout }
+ChestPresenter >> hideInspector [
+
+	self class showInspector: false.
+	showInspectorContainer remove: inspector.
+	showInspectorButton icon: (self application iconNamed: #disable)
+]
+
+{ #category : #layout }
+ChestPresenter >> hidePlayground [
+
+	self class showPlayground: false.
+	showPlaygroundContainer remove: playground.
+	showPlaygroundButton icon: (self application iconNamed: #disable )
 ]
 
 { #category : #helper }
@@ -248,6 +334,8 @@ ChestPresenter >> initializePresenters [
 	chestsTable selectIndex: 1.
 
 	self makeChestTreeTableContextMenu.
+	
+	self makeExpandableLayouts.
 
 	self layout: self defaultLayout
 ]
@@ -354,6 +442,40 @@ ChestPresenter >> makeChestsTable [
 	^ chestsTable
 		  applyKeyBindingsFromMenu: chestsTable contextMenu value;
 		  yourself
+]
+
+{ #category : #'presenter building' }
+ChestPresenter >> makeExpandableLayouts [
+
+	showPlaygroundContainer := SpBoxLayout newVertical.
+	showPlaygroundButton := self newToggleButton
+		                        state: self class showPlayground;
+		                        icon: (self application iconNamed: #disable);
+		                        yourself.
+
+	showPlaygroundContainer add: showPlaygroundButton expand: false.
+	self class showPlayground ifTrue: [
+		showPlaygroundContainer add: playground.
+		showPlaygroundButton icon: (self application iconNamed: #enable) ].
+
+	showInspectorContainer := SpBoxLayout newHorizontal.
+	showInspectorButton := self newToggleButton
+		                       state: self class showInspector;
+		                       icon: (self application iconNamed: #disable);
+		                       yourself.
+
+	showInspectorContainer add: showInspectorButton expand: false.
+	self class showInspector ifTrue: [
+		showInspectorContainer add: inspector.
+		showInspectorButton icon: (self application iconNamed: #enable) ].
+
+	showPlaygroundButton
+		whenActivatedDo: [ self displayPlayground ];
+		whenDeactivatedDo: [ self hidePlayground ].
+
+	showInspectorButton
+		whenActivatedDo: [ self displayInspector ];
+		whenDeactivatedDo: [ self hideInspector ]
 ]
 
 { #category : #'presenter building' }
