@@ -427,7 +427,7 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		                            title: 'Variable Name'
 		                            evaluated: #variableName)
 		                           beEditable;
-		                           onAcceptEdition: [ :assoc :newVarName | 
+		                           onAcceptEdition: [ :assoc :newVarName |
 			                           assoc variableName: newVarName ];
 		                           yourself.
 	self makeChestContentsTable.
@@ -447,8 +447,9 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		  add: (SpBoxLayout newHorizontal
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
-				   yourself);
-		  add: confirmActionBar;
+				   yourself)
+		  expand: false;
+		  add: confirmActionBar expand: false;
 		  yourself
 ]
 
@@ -861,7 +862,7 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self chestTableContainer
 		removeAll;
-		add: inputField;
+		add: inputField expand: false;
 		add: chestsTable.
 	self chestContentTableContainer
 		removeAll;
@@ -872,8 +873,8 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 		  add: (SpBoxLayout newHorizontal
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
-				   yourself);
-		  add: confirmActionBar;
+				   yourself) expand: false;
+		  add: confirmActionBar expand: false;
 		  yourself
 ]
 
