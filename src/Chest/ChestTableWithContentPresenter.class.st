@@ -473,9 +473,15 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 				                       evaluated: [ :association |
 					                       association key ]) beExpandable;
 		                      addColumn: (SpStringTableColumn
-				                       title: 'Object'
+				                       title: 'Value'
 				                       evaluated: [ :association |
-					                       association value asString ]) beExpandable;
+					                       association value printString ])
+				                      beExpandable;
+		                      addColumn: (SpStringTableColumn
+				                       title: 'Class'
+				                       evaluated: [ :association |
+					                       association value class printString ])
+				                      beExpandable;
 		                      items: #(  ) asOrderedCollection;
 		                      beResizable;
 		                      yourself.
