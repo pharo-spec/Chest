@@ -274,7 +274,6 @@ ChestPresenter >> displayInspector [
 { #category : #layout }
 ChestPresenter >> displayPlayground [
 
-	self class showPlayground: true.
 	showPlaygroundContainer add: playground.
 	showPlaygroundButton icon: (self application iconNamed: #enable)
 ]
@@ -303,9 +302,8 @@ ChestPresenter >> hideInspector [
 { #category : #layout }
 ChestPresenter >> hidePlayground [
 
-	self class showPlayground: false.
 	showPlaygroundContainer remove: playground.
-	showPlaygroundButton icon: (self application iconNamed: #disable )
+	showPlaygroundButton icon: (self application iconNamed: #disable)
 ]
 
 { #category : #helper }
@@ -449,7 +447,7 @@ ChestPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : #layout }
 ChestPresenter >> makeExpandableLayouts [
 
 	showPlaygroundButton := self newToggleButton
@@ -478,7 +476,9 @@ ChestPresenter >> makeExpandableLayouts [
 			self displayPlayground ];
 		whenDeactivatedDo: [
 			self class showPlayground: false.
-			self hidePlayground ].
+			self hidePlayground.
+			"not satisfied with this but, for obscure reasons, the layout won't update automatically if wer hide the playground after displaying or hiding the inspector. It still displays automatically the playground though, leading to having several playgrounds. I need to force the layout update to prevent that, though I don't really understand why I need to do that. Probably a Spec bug"
+			self layout: globalContainer ].
 
 	showInspectorButton
 		whenActivatedDo: [
