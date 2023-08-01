@@ -468,15 +468,17 @@ ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
 	chestContentsTable := self newTable
-		                      addColumn: ((SpStringTableColumn
-				                        title: 'Name'
-				                        evaluated: [ :association | 
-					                        association key ]) width: 40);
+		                      addColumn: (SpStringTableColumn
+				                       title: 'Name'
+				                       evaluated: [ :association |
+					                       association key ]) beExpandable;
 		                      addColumn: (SpStringTableColumn
 				                       title: 'Object'
-				                       evaluated: [ :association | 
-					                       association value asString ]);
-		                      items: #(  ) asOrderedCollection.
+				                       evaluated: [ :association |
+					                       association value asString ]) beExpandable;
+		                      items: #(  ) asOrderedCollection;
+		                      beResizable;
+		                      yourself.
 	self makeChestContentTableContextMenu
 ]
 
