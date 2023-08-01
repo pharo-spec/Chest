@@ -15,7 +15,8 @@ Class {
 		'showPlaygroundButton',
 		'showInspectorButton',
 		'showPlaygroundContainer',
-		'showInspectorContainer'
+		'showInspectorContainer',
+		'globalContainer'
 	],
 	#classVars : [
 		'ShowInspector',
@@ -253,20 +254,20 @@ ChestPresenter >> defaultLayout [
 		makeChestsTable;
 		makeChestContentsTable.
 
-	^ SpPanedLayout newHorizontal
-		  add: (SpPanedLayout newVertical
-				   add: #chestTableWithContent;
-				   add: showPlaygroundContainer;
-				   yourself);
-		  add: showInspectorContainer;
-		  yourself
+	^ globalContainer
 ]
 
 { #category : #layout }
 ChestPresenter >> displayInspector [
 
-	self class showInspector: true.
-	showInspectorContainer add: inspector.
+	showInspectorContainer := SpBoxLayout newHorizontal
+		                          add: showInspectorButton expand: false;
+		                          add: inspector;
+		                          yourself.
+	globalContainer := SpPanedLayout newHorizontal
+		                   add: showPlaygroundContainer;
+		                   add: showInspectorContainer;
+		                   yourself.
 	showInspectorButton icon: (self application iconNamed: #enable)
 ]
 
@@ -290,8 +291,12 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 { #category : #layout }
 ChestPresenter >> hideInspector [
 
-	self class showInspector: false.
-	showInspectorContainer remove: inspector.
+	showInspectorContainer := showInspectorButton.
+	globalContainer := SpBoxLayout newHorizontal
+		                   add: showPlaygroundContainer;
+		                   add: showInspectorContainer expand: false;
+		                   yourself.
+	"showInspectorContainer remove: inspector."
 	showInspectorButton icon: (self application iconNamed: #disable)
 ]
 
@@ -447,35 +452,43 @@ ChestPresenter >> makeChestsTable [
 { #category : #'presenter building' }
 ChestPresenter >> makeExpandableLayouts [
 
-	showPlaygroundContainer := SpBoxLayout newVertical.
 	showPlaygroundButton := self newToggleButton
 		                        state: self class showPlayground;
 		                        icon: (self application iconNamed: #disable);
 		                        yourself.
+	showPlaygroundContainer := SpBoxLayout newVertical
+		                           add: #chestTableWithContent;
+		                           add: showPlaygroundButton expand: false;
+		                           yourself.
 
-	showPlaygroundContainer add: showPlaygroundButton expand: false.
-	self class showPlayground ifTrue: [
-		showPlaygroundContainer add: playground.
-		showPlaygroundButton icon: (self application iconNamed: #enable) ].
+	self class showPlayground ifTrue: [ self displayPlayground ].
 
-	showInspectorContainer := SpBoxLayout newHorizontal.
 	showInspectorButton := self newToggleButton
 		                       state: self class showInspector;
 		                       icon: (self application iconNamed: #disable);
 		                       yourself.
 
-	showInspectorContainer add: showInspectorButton expand: false.
-	self class showInspector ifTrue: [
-		showInspectorContainer add: inspector.
-		showInspectorButton icon: (self application iconNamed: #enable) ].
+	self class showInspector
+		ifTrue: [ self displayInspector ]
+		ifFalse: [ self hideInspector ].
 
 	showPlaygroundButton
-		whenActivatedDo: [ self displayPlayground ];
-		whenDeactivatedDo: [ self hidePlayground ].
+		whenActivatedDo: [
+			self class showPlayground: true.
+			self displayPlayground ];
+		whenDeactivatedDo: [
+			self class showPlayground: false.
+			self hidePlayground ].
 
 	showInspectorButton
-		whenActivatedDo: [ self displayInspector ];
-		whenDeactivatedDo: [ self hideInspector ]
+		whenActivatedDo: [
+			self class showInspector: true.
+			self displayInspector.
+			self layout: globalContainer ];
+		whenDeactivatedDo: [
+			self class showInspector: false.
+			self hideInspector.
+			self layout: globalContainer ]
 ]
 
 { #category : #'presenter building' }
