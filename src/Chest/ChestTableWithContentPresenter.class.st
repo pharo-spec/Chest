@@ -566,11 +566,19 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 { #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTable [
 
-	chestsTable := self newList
+	chestsTable := self newTable
 		               items: Chest allChests;
-		               display: [ :chest | chest name ];
-		               sortingBlock: [ :chest1 :chest2 | 
+		               addColumn:
+			               (SpStringTableColumn
+				                title: 'Name'
+				                evaluated: [ :chest | chest name ]) beExpandable;
+		               addColumn: ((SpStringTableColumn
+				                 title: 'Size'
+				                 evaluated: [ :chest |
+					                 chest contents size asString ]) width: 40);
+		               sortingBlock: [ :chest1 :chest2 |
 			               chest1 name < chest2 name ];
+		               beResizable;
 		               yourself.
 	self makeChestTableContextMenu
 ]
