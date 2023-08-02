@@ -22,5 +22,6 @@ ChestCommandTest >> tearDown [
 	"Removing chests that currently exist but did not exist before the test execution"
 	nowChests do: [ :aChest |
 		(initialChests includes: aChest) ifFalse: [
-			Chest removeChest: aChest ] ]
+			Chest removeChest: aChest ] ].
+	super tearDown
 ]
