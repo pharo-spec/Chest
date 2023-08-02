@@ -12,9 +12,19 @@ BaselineOfChest >> baseline: spec [
 		spec
 			package: 'Chest';
 			package: 'Chest-Tests';
-			package: 'Chest-Commands' ].
+			package: 'Chest-Commands'.
+		self createChestExamples ].
 
 	spec
 		group: 'default'
 		with: #( 'Chest' 'Chest-Commands' 'Chest-Tests' )
+]
+
+{ #category : #baselines }
+BaselineOfChest >> createChestExamples [
+
+	Chest at: 'fortyTwo' put: 42.
+	(Chest newNamed: 'ExampleChest')
+		at: 'tata'
+		put: 'someExampleStringCalledTata'
 ]

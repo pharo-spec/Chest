@@ -244,11 +244,7 @@ Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
 	nextAvailableID := 1.
-	defaultInstance := nil.
-	self at: 'fortyTwo' put: 42.
-	(self newNamed: 'ExampleChest')
-		at: 'tata'
-		put: 'someExampleStringCalledTata'
+	defaultInstance := nil
 ]
 
 { #category : #'class initialization' }
