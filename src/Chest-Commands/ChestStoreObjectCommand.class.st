@@ -30,23 +30,30 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 
 	| choicePresenter |
 	choicePresenter := ChestTableWithContentPresenter new.
-	choicePresenter confirmButton action: [ 
-		| chest objectName |
+	choicePresenter confirmButton action: [
+		| chest objectName selectorToSendToSelection |
 		chest := choicePresenter chestsTable selectedItem.
 		objectName := choicePresenter inputField text.
-		[ 
+		selectorToSendToSelection := #yourself.
+		choicePresenter buttonShallowCopy state ifTrue: [
+			selectorToSendToSelection := #shallowCopy ].
+		choicePresenter buttonDeepCopy state ifTrue: [
+			selectorToSendToSelection := #copy ].
+		[
 		self
 			storeSelectionInChest: chest
 			withName: objectName
+			withSelector: selectorToSendToSelection
 			replacing: false ]
 			on: ChestKeyAlreadyInUseError
-			do: [ 
+			do: [
 				((choicePresenter confirm:
-					  (choicePresenter warningNamingObjectInChest: objectName)) 
-					 onAccept: [ 
+					  (choicePresenter warningNamingObjectInChest: objectName))
+					 onAccept: [
 						 self
 							 storeSelectionInChest: chest
 							 withName: objectName
+							 withSelector: selectorToSendToSelection
 							 replacing: true ]) openDialogWithParent:
 					choicePresenter chestContentTable ].
 		choicePresenter window close ].
@@ -86,9 +93,16 @@ ChestStoreObjectCommand >> storeResult: result intoChest: chest withName: object
 ]
 
 { #category : #execution }
-ChestStoreObjectCommand >> storeSelectionInChest: aChest withName: objectName replacing: replacingBoolean [
+ChestStoreObjectCommand >> storeSelectionInChest: aChest withName: objectName withSelector: selectorSentToSelectionBeforeStoring replacing: replacingBoolean [
 
-	self evaluateSelectionAndDo: [ :result | 
-		self storeResult: result intoChest: aChest withName: objectName replacing: replacingBoolean
-	]
+	self evaluateSelectionAndDo: [ :result |
+		| storedResult |
+		storedResult := result
+			                perform: selectorSentToSelectionBeforeStoring
+			                withArguments: #(  ).
+		self
+			storeResult: storedResult
+			intoChest: aChest
+			withName: objectName
+			replacing: replacingBoolean ]
 ]
