@@ -392,9 +392,11 @@ ChestPresenter >> makeChestContentsTable [
 
 	self makeChestContentTableContextMenu.
 	^ chestContentsTable
-		  whenSelectionChangedDo: [ :selection | 
+		  whenSelectionChangedDo: [ :selection |
+			  chestTableWithContent chestContentsTableTransmitBlock cull:
+					  selection.
 			  inspector model inspectedObject:
-					  (selection selectedItem ifNotNil: [ :association | 
+					  (selection selectedItem ifNotNil: [ :association |
 							   association value ]).
 			  inspector updateList ];
 		  applyKeyBindingsFromMenu: chestContentsTable contextMenu value;

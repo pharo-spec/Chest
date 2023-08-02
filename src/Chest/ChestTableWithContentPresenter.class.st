@@ -18,7 +18,9 @@ Class {
 		'chestWithContentTreeTable',
 		'chestTableWithContentContainer',
 		'activePresenter',
-		'chestWithContentTreeTableToolbar'
+		'chestWithContentTreeTableToolbar',
+		'chestTableToolbarCommandGroup',
+		'chestContentsTableToolbarCommandGroup'
 	],
 	#category : #Chest
 }
@@ -212,6 +214,12 @@ ChestTableWithContentPresenter >> chestContentsTableToolbar [
 	^ chestContentsTableToolbar
 ]
 
+{ #category : #initialization }
+ChestTableWithContentPresenter >> chestContentsTableTransmitBlock [
+
+	^ [ :selection | self updateChestContentToolbar ]
+]
+
 { #category : #accessing }
 ChestTableWithContentPresenter >> chestTableContainer [
 
@@ -221,16 +229,18 @@ ChestTableWithContentPresenter >> chestTableContainer [
 { #category : #accessing }
 ChestTableWithContentPresenter >> chestTableTransmitBlock [
 
-	^ [ :aChest | 
+	^ [ :aChest |
 	  aChest
-		  ifNotNil: [ 
+		  ifNotNil: [
 			  self updateChestContentTableForChest: aChest.
-			  chestContentsTable items ifNotEmpty: [ 
+			  chestContentsTable items ifNotEmpty: [
 				  chestContentsTable selectIndex: 1 ].
 			  inputField text: aChest nextDefaultNameForObject ]
-		  ifNil: [ 
+		  ifNil: [
 			  chestContentsTable items: {  } asOrderedCollection.
-			  inputField text: '' ] ]
+			  inputField text: '' ].
+
+	  self updateChestToolbar ]
 ]
 
 { #category : #accessing }
@@ -284,7 +294,9 @@ ChestTableWithContentPresenter >> connectPresenters [
 
 	chestsTable
 		transmitDo: self chestTableTransmitBlock;
-		selectFirst
+		selectFirst.
+
+	chestContentsTable transmitDo: self chestContentsTableTransmitBlock
 ]
 
 { #category : #layout }
@@ -497,7 +509,10 @@ ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 		  displayMode: StPharoSettings toolbarDisplayMode;
 		  addStyle: 'stToolbar';
 		  fillWith:
-			  self rootCommandsGroup / self class chestContentToolbarGroupName;
+			  (chestContentsTableToolbarCommandGroup := self rootCommandsGroup
+			                                            /
+				                                            self class
+					                                            chestContentToolbarGroupName);
 		  yourself
 ]
 
@@ -601,7 +616,10 @@ ChestTableWithContentPresenter >> makeChestsTableToolbar [
 		  displayMode: StPharoSettings toolbarDisplayMode;
 		  addStyle: 'stToolbar';
 		  fillWith:
-			  self rootCommandsGroup / self class chestToolbarGroupName;
+			  (chestTableToolbarCommandGroup := self rootCommandsGroup
+			                                    /
+				                                    self class
+					                                    chestToolbarGroupName);
 		  yourself
 ]
 
@@ -975,6 +993,18 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 ]
 
 { #category : #updating }
+ChestTableWithContentPresenter >> updateChestContentToolbar [
+
+	self updateToolbar: chestContentsTableToolbarCommandGroup
+]
+
+{ #category : #updating }
+ChestTableWithContentPresenter >> updateChestToolbar [
+
+	self updateToolbar: chestTableToolbarCommandGroup
+]
+
+{ #category : #updating }
 ChestTableWithContentPresenter >> updateChestsTable [
 
 	self flag: 'to do with polymorphism'.
@@ -983,6 +1013,13 @@ ChestTableWithContentPresenter >> updateChestsTable [
 		chestWithContentTreeTable roots: Chest allChests.
 		^ self ].
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> updateToolbar: aCmCommandGroup [
+
+	aCmCommandGroup allCommands do: [ :spCommand |
+		spCommand updateEnableStatus ]
 ]
 
 { #category : #'ui - dialogs' }
