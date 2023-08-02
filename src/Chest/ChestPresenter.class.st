@@ -541,6 +541,12 @@ ChestPresenter >> renameSelectedItem [
 ]
 
 { #category : #'ui - dialogs' }
+ChestPresenter >> requestExpressionToStoreInChest [
+
+	chestTableWithContent requestExpressionToStoreInChest
+]
+
+{ #category : #'ui - dialogs' }
 ChestPresenter >> requestNameNewChest [
 
 	chestTableWithContent requestNameNewChest

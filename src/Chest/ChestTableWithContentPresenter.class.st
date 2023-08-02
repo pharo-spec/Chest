@@ -805,6 +805,24 @@ ChestTableWithContentPresenter >> renameSelectedItem [
 ]
 
 { #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> requestExpressionToStoreInChest [
+
+	| expression selectedChest expressionName |
+	selectedChest := self selectedChest.
+	expression := (UIManager default request:
+		               ('Enter expression to be stored into ''{1}'''
+			                format: { selectedChest name })) ifNil: [ ^ self ].
+	expression trim ifEmpty: [ ^ self ].
+	expressionName := self
+		                  storeExpression: expression
+		                  inChest: selectedChest.
+	UIManager default inform:
+		('Object stored into''{1}'' as ''{2}'' successfully' format: {
+				 selectedChest name.
+				 expressionName })
+]
+
+{ #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> requestNameNewChest [
 
 	| requestPresenter |
@@ -884,6 +902,16 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 				   yourself) expand: false;
 		  add: confirmActionBar expand: false;
 		  yourself
+]
+
+{ #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> storeExpression: expression inChest: aChest [
+
+	| result |
+	result := Smalltalk compiler
+		          source: expression;
+		          evaluate.
+	^ aChest add: result
 ]
 
 { #category : #updating }
