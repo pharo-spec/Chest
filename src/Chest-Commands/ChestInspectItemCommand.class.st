@@ -11,6 +11,12 @@ ChestInspectItemCommand class >> defaultDescription [
 ]
 
 { #category : #default }
+ChestInspectItemCommand class >> defaultIconName [
+
+	^ #glamorousInspect
+]
+
+{ #category : #default }
 ChestInspectItemCommand class >> defaultName [
 
 	^ 'Inspect item'

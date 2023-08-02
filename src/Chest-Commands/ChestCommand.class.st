@@ -49,8 +49,9 @@ ChestCommand class >> chestTableContentToolbarCommandClasses [
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTableMenuCommandClasses [
 
-	^ { 
+	^ {
 		  ChestRenameChestCommand.
+		  ChestInspectChestCommand.
 		  ChestAddNewChestCommand.
 		  ChestRemoveChestCommand.
 		  ChestRemoveAllChestsCommand }
