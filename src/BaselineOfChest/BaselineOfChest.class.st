@@ -12,12 +12,14 @@ BaselineOfChest >> baseline: spec [
 		spec
 			package: 'Chest';
 			package: 'Chest-Tests';
-			package: 'Chest-Commands'.
+			package: 'Chest-Commands';
+			package: 'Chest-Commands-Tests'.
 		self createChestExamples ].
 
 	spec
 		group: 'default'
-		with: #( 'Chest' 'Chest-Commands' 'Chest-Tests' )
+		with:
+		#( 'Chest' 'Chest-Commands' 'Chest-Tests' 'Chest-Commands-Tests' )
 ]
 
 { #category : #baselines }
