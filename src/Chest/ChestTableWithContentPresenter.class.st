@@ -20,7 +20,10 @@ Class {
 		'activePresenter',
 		'chestWithContentTreeTableToolbar',
 		'chestTableToolbarCommandGroup',
-		'chestContentsTableToolbarCommandGroup'
+		'chestContentsTableToolbarCommandGroup',
+		'buttonNoCopy',
+		'buttonShallowCopy',
+		'buttonDeepCopy'
 	],
 	#category : #Chest
 }
@@ -191,6 +194,24 @@ ChestTableWithContentPresenter >> activePresenter [
 ]
 
 { #category : #accessing }
+ChestTableWithContentPresenter >> buttonDeepCopy [
+
+	^ buttonDeepCopy
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> buttonNoCopy [
+
+	^ buttonNoCopy
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> buttonShallowCopy [
+
+	^ buttonShallowCopy
+]
+
+{ #category : #accessing }
 ChestTableWithContentPresenter >> cancelButton [
 
 	^ cancelButton
@@ -310,10 +331,8 @@ ChestTableWithContentPresenter >> debuggerLayout [
 		  yourself
 ]
 
-{ #category : #updating }
+{ #category : #layout }
 ChestTableWithContentPresenter >> defaultLayout [
-
-	self makeChestContentsTable.
 
 	chestTableContainer
 		removeAll;
@@ -399,7 +418,7 @@ ChestTableWithContentPresenter >> initializePresenters [
 	chestContentTableContainer := SpBoxLayout newVertical
 		                              add: self chestContentTable;
 		                              yourself.
-	chestsTable selectIndex: 1.
+		
 	chestTableWithContentContainer := SpPanedLayout newHorizontal
 		                                  add: chestTableContainer;
 		                                  add: chestContentTableContainer;
@@ -414,6 +433,8 @@ ChestTableWithContentPresenter >> initializePresenters [
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
 
 	chestWithContentTreeTableToolbar := self makeChestTreeTableToolbar.
+	
+	self makeCopyRadioButtons.
 
 	self layout: self defaultLayout
 ]
@@ -639,6 +660,22 @@ ChestTableWithContentPresenter >> makeConfirmActionBar [
 		  add: confirmButton;
 		  add: cancelButton;
 		  yourself
+]
+
+{ #category : #'presenter building' }
+ChestTableWithContentPresenter >> makeCopyRadioButtons [
+
+	buttonNoCopy := self newRadioButton.
+	buttonShallowCopy := self newRadioButton.
+	buttonDeepCopy := self newRadioButton.
+
+	buttonNoCopy associatedRadioButtons: {
+			buttonShallowCopy.
+			buttonDeepCopy }.
+
+	buttonNoCopy label: 'No copy'.
+	buttonShallowCopy label: 'Shallow copy'.
+	buttonDeepCopy label: 'Deep copy'
 ]
 
 { #category : #'presenter building' }
@@ -918,6 +955,11 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
 				   yourself) expand: false;
+		  add: (SpBoxLayout newHorizontal
+				   add: buttonNoCopy;
+				   add: buttonShallowCopy;
+				   add: buttonDeepCopy;
+				   yourself);
 		  add: confirmActionBar expand: false;
 		  yourself
 ]

@@ -25,19 +25,19 @@ TChestAssociation classSide >> key: key value: value variableName: variableName 
 		  variableName: variableName
 ]
 
-{ #category : #'*Chest' }
+{ #category : #accessing }
 TChestAssociation >> chestChildren [
 
 	^ {  } asOrderedCollection
 ]
 
-{ #category : #'*Chest' }
+{ #category : #accessing }
 TChestAssociation >> chestEvaluation [
 
 	^ self value
 ]
 
-{ #category : #'*Chest' }
+{ #category : #accessing }
 TChestAssociation >> chestName [
 
 	^ self key
