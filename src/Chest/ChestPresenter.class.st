@@ -497,11 +497,16 @@ ChestPresenter >> makeExpandableLayouts [
 ChestPresenter >> makePlayground [
 
 	| newPlayground |
-	newPlayground := StPlayground new.
+	newPlayground := StPlaygroundPresenter new.
 
-	debugger ifNotNil: [ "newPlayground firstPage text interactionModel"
+	debugger ifNotNil: [
 		newPlayground firstPage text interactionModel:
 			(ChestCodeScriptingInteractionModel debugger: debugger) ].
+	newPlayground firstPage text text:
+		'tata := Chest at: ''fortyTwo'' "access an object from the default chest".
+(Chest named: ''ExampleChest'') at: ''tata'' put: #tata "error: an object is already named ''tata'' in this chest".
+Chest inChest: ''ExampleChest'' at: ''tata'' put: #tata "error: an object is already named ''tata'' in this chest. If ''ExampleChest'' didn''t exist, it would create it".
+Chest weak newNamed: ''WeakChestExample'' "creates a new chest that holds weak references to its stored objects"'.
 
 	^ newPlayground
 ]
