@@ -25,12 +25,6 @@ ChestLoadObjectIntoCodeCommand class >> defaultName [
 	^ 'Load object from chest'
 ]
 
-{ #category : #default }
-ChestLoadObjectIntoCodeCommand class >> defaultShortcutKey [
-
-	^ $c meta , $l meta
-]
-
 { #category : #testing }
 ChestLoadObjectIntoCodeCommand class >> isVisibleForContext: aCodePresenter [
 

@@ -22,12 +22,6 @@ ChestRemoveChestCommand class >> defaultName [
 	^ 'Remove chest'
 ]
 
-{ #category : #default }
-ChestRemoveChestCommand class >> defaultShortcutKey [
-
-	^ $c meta , $r meta , $m meta
-]
-
 { #category : #testing }
 ChestRemoveChestCommand >> canBeExecuted [
 

@@ -25,12 +25,6 @@ ChestStoreObjectCommand class >> defaultName [
 	^ 'Store object in a chest'
 ]
 
-{ #category : #'accessing - defaults' }
-ChestStoreObjectCommand class >> defaultShortcutKey [
-
-	^ $c meta , $s meta
-]
-
 { #category : #initialization }
 ChestStoreObjectCommand >> buildChoicePresenter [
 

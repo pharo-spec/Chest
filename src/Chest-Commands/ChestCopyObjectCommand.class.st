@@ -22,12 +22,6 @@ ChestCopyObjectCommand class >> defaultName [
 	^ 'Copy object in a clipboard chest'
 ]
 
-{ #category : #defaults }
-ChestCopyObjectCommand class >> defaultShortcutKey [
-
-	^ $c meta shift
-]
-
 { #category : #executing }
 ChestCopyObjectCommand >> execute [
 
