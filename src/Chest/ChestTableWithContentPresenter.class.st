@@ -298,10 +298,8 @@ ChestTableWithContentPresenter >> debuggerLayout [
 		  yourself
 ]
 
-{ #category : #updating }
+{ #category : #layout }
 ChestTableWithContentPresenter >> defaultLayout [
-
-	self makeChestContentsTable.
 
 	chestTableContainer
 		removeAll;
@@ -387,7 +385,7 @@ ChestTableWithContentPresenter >> initializePresenters [
 	chestContentTableContainer := SpBoxLayout newVertical
 		                              add: self chestContentTable;
 		                              yourself.
-	chestsTable selectIndex: 1.
+		
 	chestTableWithContentContainer := SpPanedLayout newHorizontal
 		                                  add: chestTableContainer;
 		                                  add: chestContentTableContainer;
