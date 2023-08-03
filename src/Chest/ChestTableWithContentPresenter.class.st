@@ -19,6 +19,8 @@ Class {
 		'chestTableWithContentContainer',
 		'activePresenter',
 		'chestWithContentTreeTableToolbar',
+		'chestTableToolbarCommandGroup',
+		'chestContentsTableToolbarCommandGroup',
 		'buttonNoCopy',
 		'buttonShallowCopy',
 		'buttonDeepCopy'
@@ -233,6 +235,12 @@ ChestTableWithContentPresenter >> chestContentsTableToolbar [
 	^ chestContentsTableToolbar
 ]
 
+{ #category : #initialization }
+ChestTableWithContentPresenter >> chestContentsTableTransmitBlock [
+
+	^ [ :selection | self updateChestContentToolbar ]
+]
+
 { #category : #accessing }
 ChestTableWithContentPresenter >> chestTableContainer [
 
@@ -242,16 +250,18 @@ ChestTableWithContentPresenter >> chestTableContainer [
 { #category : #accessing }
 ChestTableWithContentPresenter >> chestTableTransmitBlock [
 
-	^ [ :aChest | 
+	^ [ :aChest |
 	  aChest
-		  ifNotNil: [ 
+		  ifNotNil: [
 			  self updateChestContentTableForChest: aChest.
-			  chestContentsTable items ifNotEmpty: [ 
+			  chestContentsTable items ifNotEmpty: [
 				  chestContentsTable selectIndex: 1 ].
 			  inputField text: aChest nextDefaultNameForObject ]
-		  ifNil: [ 
+		  ifNil: [
 			  chestContentsTable items: {  } asOrderedCollection.
-			  inputField text: '' ] ]
+			  inputField text: '' ].
+
+	  self updateChestToolbar ]
 ]
 
 { #category : #accessing }
@@ -305,7 +315,9 @@ ChestTableWithContentPresenter >> connectPresenters [
 
 	chestsTable
 		transmitDo: self chestTableTransmitBlock;
-		selectFirst
+		selectFirst.
+
+	chestContentsTable transmitDo: self chestContentsTableTransmitBlock
 ]
 
 { #category : #layout }
@@ -448,7 +460,7 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		                            title: 'Variable Name'
 		                            evaluated: #variableName)
 		                           beEditable;
-		                           onAcceptEdition: [ :assoc :newVarName | 
+		                           onAcceptEdition: [ :assoc :newVarName |
 			                           assoc variableName: newVarName ];
 		                           yourself.
 	self makeChestContentsTable.
@@ -468,8 +480,9 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		  add: (SpBoxLayout newHorizontal
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
-				   yourself);
-		  add: confirmActionBar;
+				   yourself)
+		  expand: false;
+		  add: confirmActionBar expand: false;
 		  yourself
 ]
 
@@ -488,15 +501,23 @@ ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
 	chestContentsTable := self newTable
-		                      addColumn: ((SpStringTableColumn
-				                        title: 'Name'
-				                        evaluated: [ :association | 
-					                        association key ]) width: 40);
 		                      addColumn: (SpStringTableColumn
-				                       title: 'Object'
-				                       evaluated: [ :association | 
-					                       association value asString ]);
-		                      items: #(  ) asOrderedCollection.
+				                       title: 'Name'
+				                       evaluated: [ :association |
+					                       association key ]) beExpandable;
+		                      addColumn: (SpStringTableColumn
+				                       title: 'Value'
+				                       evaluated: [ :association |
+					                       association value printString ])
+				                      beExpandable;
+		                      addColumn: (SpStringTableColumn
+				                       title: 'Class'
+				                       evaluated: [ :association |
+					                       association value class name ])
+				                      beExpandable;
+		                      items: #(  ) asOrderedCollection;
+		                      beResizable;
+		                      yourself.
 	self makeChestContentTableContextMenu
 ]
 
@@ -509,7 +530,10 @@ ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 		  displayMode: StPharoSettings toolbarDisplayMode;
 		  addStyle: 'stToolbar';
 		  fillWith:
-			  self rootCommandsGroup / self class chestContentToolbarGroupName;
+			  (chestContentsTableToolbarCommandGroup := self rootCommandsGroup
+			                                            /
+				                                            self class
+					                                            chestContentToolbarGroupName);
 		  yourself
 ]
 
@@ -587,11 +611,19 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 { #category : #'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTable [
 
-	chestsTable := self newList
+	chestsTable := self newTable
 		               items: Chest allChests;
-		               display: [ :chest | chest name ];
-		               sortingBlock: [ :chest1 :chest2 | 
+		               addColumn:
+			               (SpStringTableColumn
+				                title: 'Name'
+				                evaluated: [ :chest | chest name ]) beExpandable;
+		               addColumn: ((SpStringTableColumn
+				                 title: 'Size'
+				                 evaluated: [ :chest |
+					                 chest contents size asString ]) width: 40);
+		               sortingBlock: [ :chest1 :chest2 |
 			               chest1 name < chest2 name ];
+		               beResizable;
 		               yourself.
 	self makeChestTableContextMenu
 ]
@@ -605,7 +637,10 @@ ChestTableWithContentPresenter >> makeChestsTableToolbar [
 		  displayMode: StPharoSettings toolbarDisplayMode;
 		  addStyle: 'stToolbar';
 		  fillWith:
-			  self rootCommandsGroup / self class chestToolbarGroupName;
+			  (chestTableToolbarCommandGroup := self rootCommandsGroup
+			                                    /
+				                                    self class
+					                                    chestToolbarGroupName);
 		  yourself
 ]
 
@@ -825,6 +860,24 @@ ChestTableWithContentPresenter >> renameSelectedItem [
 ]
 
 { #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> requestExpressionToStoreInChest [
+
+	| expression selectedChest expressionName |
+	selectedChest := self selectedChest.
+	expression := (UIManager default request:
+		               ('Enter expression to be stored into ''{1}'''
+			                format: { selectedChest name })) ifNil: [ ^ self ].
+	expression trim ifEmpty: [ ^ self ].
+	expressionName := self
+		                  storeExpression: expression
+		                  inChest: selectedChest.
+	UIManager default inform:
+		('Object stored into''{1}'' as ''{2}'' successfully' format: {
+				 selectedChest name.
+				 expressionName })
+]
+
+{ #category : #'ui - dialogs' }
 ChestTableWithContentPresenter >> requestNameNewChest [
 
 	| requestPresenter |
@@ -890,7 +943,7 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self chestTableContainer
 		removeAll;
-		add: inputField;
+		add: inputField expand: false;
 		add: chestsTable.
 	self chestContentTableContainer
 		removeAll;
@@ -901,14 +954,24 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 		  add: (SpBoxLayout newHorizontal
 				   add: chestsTableToolbar;
 				   add: chestContentsTableToolbar;
-				   yourself);
+				   yourself) expand: false;
 		  add: (SpBoxLayout newHorizontal
 				   add: buttonNoCopy;
 				   add: buttonShallowCopy;
 				   add: buttonDeepCopy;
 				   yourself);
-		  add: confirmActionBar;
+		  add: confirmActionBar expand: false;
 		  yourself
+]
+
+{ #category : #'ui - dialogs' }
+ChestTableWithContentPresenter >> storeExpression: expression inChest: aChest [
+
+	| result |
+	result := Smalltalk compiler
+		          source: expression;
+		          evaluate.
+	^ aChest add: result
 ]
 
 { #category : #updating }
@@ -972,6 +1035,18 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 ]
 
 { #category : #updating }
+ChestTableWithContentPresenter >> updateChestContentToolbar [
+
+	self updateToolbar: chestContentsTableToolbarCommandGroup
+]
+
+{ #category : #updating }
+ChestTableWithContentPresenter >> updateChestToolbar [
+
+	self updateToolbar: chestTableToolbarCommandGroup
+]
+
+{ #category : #updating }
 ChestTableWithContentPresenter >> updateChestsTable [
 
 	self flag: 'to do with polymorphism'.
@@ -980,6 +1055,13 @@ ChestTableWithContentPresenter >> updateChestsTable [
 		chestWithContentTreeTable roots: Chest allChests.
 		^ self ].
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
+]
+
+{ #category : #accessing }
+ChestTableWithContentPresenter >> updateToolbar: aCmCommandGroup [
+
+	aCmCommandGroup allCommands do: [ :spCommand |
+		spCommand updateEnableStatus ]
 ]
 
 { #category : #'ui - dialogs' }

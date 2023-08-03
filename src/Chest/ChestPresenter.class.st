@@ -11,7 +11,16 @@ Class {
 		'chestsTable',
 		'chestContentsTable',
 		'inspector',
-		'chestTableWithContent'
+		'chestTableWithContent',
+		'showPlaygroundButton',
+		'showInspectorButton',
+		'showPlaygroundContainer',
+		'showInspectorContainer',
+		'globalContainer'
+	],
+	#classVars : [
+		'ShowInspector',
+		'ShowPlayground'
 	],
 	#category : #Chest
 }
@@ -56,6 +65,28 @@ ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter fo
 		withContext: aChestWithContentPresenter.
 
 	aRoot register: group
+]
+
+{ #category : #settings }
+ChestPresenter class >> chestSettingsOn: aBuilder [
+
+	<systemsettings>
+	(aBuilder group: #ChestTool)
+		label: 'Chest';
+		parent: #tools;
+		description: 'Settings related to the Chest tool';
+		with: [
+			(aBuilder setting: #showPlayground)
+				label: 'Shows playground in Chest';
+				target: self;
+				default: self showPlayground;
+				description: 'Shows a playground below chests and their contents.'.
+			(aBuilder setting: #showInspector)
+				label: 'Shows inspector in Chest';
+				target: self;
+				default: self showInspector;
+				description:
+					'Shows an inspector on the right to chests and their contents, on the selected chest item' ]
 ]
 
 { #category : #'menu-entry' }
@@ -107,6 +138,30 @@ ChestPresenter class >> registerClasses: commandClasses toGroup: aGroup withCont
 				  shortcutKey: aClass defaultShortcutKey)
 				 context: aChestWithContentPresenter;
 				 beHiddenWhenCantBeRun) ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showInspector [
+
+	^ ShowInspector ifNil: [ ShowInspector := false ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showInspector: anObject [
+
+	ShowInspector := anObject
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showPlayground [
+
+	^ ShowPlayground ifNil: [ ShowPlayground := false ]
+]
+
+{ #category : #accessing }
+ChestPresenter class >> showPlayground: anObject [
+
+	ShowPlayground := anObject
 ]
 
 { #category : #visiting }
@@ -199,13 +254,28 @@ ChestPresenter >> defaultLayout [
 		makeChestsTable;
 		makeChestContentsTable.
 
-	^ SpPanedLayout newHorizontal
-		  add: (SpPanedLayout newVertical
-				   add: #chestTableWithContent;
-				   add: #playground;
-				   yourself);
-		  add: #inspector;
-		  yourself
+	^ globalContainer
+]
+
+{ #category : #layout }
+ChestPresenter >> displayInspector [
+
+	showInspectorContainer := SpBoxLayout newHorizontal
+		                          add: showInspectorButton expand: false;
+		                          add: inspector;
+		                          yourself.
+	globalContainer := SpPanedLayout newHorizontal
+		                   add: showPlaygroundContainer;
+		                   add: showInspectorContainer;
+		                   yourself.
+	showInspectorButton icon: (self application iconNamed: #enable)
+]
+
+{ #category : #layout }
+ChestPresenter >> displayPlayground [
+
+	showPlaygroundContainer add: playground.
+	showPlaygroundButton icon: (self application iconNamed: #enable)
 ]
 
 { #category : #layout }
@@ -215,6 +285,24 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 		  add: aString expand: false;
 		  addLast: aToolbar expand: false;
 		  yourself
+]
+
+{ #category : #layout }
+ChestPresenter >> hideInspector [
+
+	showInspectorContainer := showInspectorButton.
+	globalContainer := SpBoxLayout newHorizontal
+		                   add: showPlaygroundContainer;
+		                   add: showInspectorContainer expand: false;
+		                   yourself.
+	showInspectorButton icon: (self application iconNamed: #disable)
+]
+
+{ #category : #layout }
+ChestPresenter >> hidePlayground [
+
+	showPlaygroundContainer remove: playground.
+	showPlaygroundButton icon: (self application iconNamed: #disable)
 ]
 
 { #category : #helper }
@@ -248,6 +336,8 @@ ChestPresenter >> initializePresenters [
 	chestsTable selectIndex: 1.
 
 	self makeChestTreeTableContextMenu.
+	
+	self makeExpandableLayouts.
 
 	self layout: self defaultLayout
 ]
@@ -301,9 +391,11 @@ ChestPresenter >> makeChestContentsTable [
 
 	self makeChestContentTableContextMenu.
 	^ chestContentsTable
-		  whenSelectionChangedDo: [ :selection | 
+		  whenSelectionChangedDo: [ :selection |
+			  chestTableWithContent chestContentsTableTransmitBlock cull:
+					  selection.
 			  inspector model inspectedObject:
-					  (selection selectedItem ifNotNil: [ :association | 
+					  (selection selectedItem ifNotNil: [ :association |
 							   association value ]).
 			  inspector updateList ];
 		  applyKeyBindingsFromMenu: chestContentsTable contextMenu value;
@@ -356,15 +448,64 @@ ChestPresenter >> makeChestsTable [
 		  yourself
 ]
 
+{ #category : #layout }
+ChestPresenter >> makeExpandableLayouts [
+
+	showPlaygroundButton := self newToggleButton
+		                        state: self class showPlayground;
+		                        icon: (self application iconNamed: #disable);
+		                        yourself.
+	showPlaygroundContainer := SpBoxLayout newVertical
+		                           add: #chestTableWithContent;
+		                           add: showPlaygroundButton expand: false;
+		                           yourself.
+
+	self class showPlayground ifTrue: [ self displayPlayground ].
+
+	showInspectorButton := self newToggleButton
+		                       state: self class showInspector;
+		                       icon: (self application iconNamed: #disable);
+		                       yourself.
+
+	self class showInspector
+		ifTrue: [ self displayInspector ]
+		ifFalse: [ self hideInspector ].
+
+	showPlaygroundButton
+		whenActivatedDo: [
+			self class showPlayground: true.
+			self displayPlayground ];
+		whenDeactivatedDo: [
+			self class showPlayground: false.
+			self hidePlayground.
+			"not satisfied with this but, for obscure reasons, the layout won't update automatically if wer hide the playground after displaying or hiding the inspector. It still displays automatically the playground though, leading to having several playgrounds. I need to force the layout update to prevent that, though I don't really understand why I need to do that. Probably a Spec bug"
+			self layout: globalContainer ].
+
+	showInspectorButton
+		whenActivatedDo: [
+			self class showInspector: true.
+			self displayInspector.
+			self layout: globalContainer ];
+		whenDeactivatedDo: [
+			self class showInspector: false.
+			self hideInspector.
+			self layout: globalContainer ]
+]
+
 { #category : #'presenter building' }
 ChestPresenter >> makePlayground [
 
 	| newPlayground |
-	newPlayground := StPlayground new.
+	newPlayground := StPlaygroundPresenter new.
 
-	debugger ifNotNil: [ "newPlayground firstPage text interactionModel"
+	debugger ifNotNil: [
 		newPlayground firstPage text interactionModel:
 			(ChestCodeScriptingInteractionModel debugger: debugger) ].
+	newPlayground firstPage text text:
+		'tata := Chest at: ''fortyTwo'' "access an object from the default chest".
+(Chest named: ''ExampleChest'') at: ''tata'' put: #tata "error: an object is already named ''tata'' in this chest".
+Chest inChest: ''ExampleChest'' at: ''tata'' put: #tata "error: an object is already named ''tata'' in this chest. If ''ExampleChest'' didn''t exist, it would create it".
+Chest weak newNamed: ''WeakChestExample'' "creates a new chest that holds weak references to its stored objects"'.
 
 	^ newPlayground
 ]
@@ -403,6 +544,12 @@ ChestPresenter >> renameSelectedChest [
 ChestPresenter >> renameSelectedItem [
 
 	^ chestTableWithContent renameSelectedItem
+]
+
+{ #category : #'ui - dialogs' }
+ChestPresenter >> requestExpressionToStoreInChest [
+
+	chestTableWithContent requestExpressionToStoreInChest
 ]
 
 { #category : #'ui - dialogs' }

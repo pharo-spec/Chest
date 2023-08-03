@@ -30,9 +30,10 @@ ChestCommand class >> chestLoadItemCommandClasses [
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTableContentMenuCommandClasses [
 
-	^ { 
+	^ {
 		  ChestRenameItemCommand.
 		  ChestInspectItemCommand.
+		  ChestAddNewItemCommand.
 		  ChestRemoveItemCommand.
 		  ChestRemoveAllItemsInChestCommand }
 ]
@@ -40,16 +41,18 @@ ChestCommand class >> chestTableContentMenuCommandClasses [
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTableContentToolbarCommandClasses [
 
-	^ { 
-		  ChestRemoveItemCommand.
-		  ChestRemoveAllItemsInChestCommand }
+	^ {
+		  ChestAddNewItemCommand.
+		  ChestRemoveItemCommand }
 ]
 
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTableMenuCommandClasses [
 
-	^ { 
+	^ {
 		  ChestRenameChestCommand.
+		  ChestInspectChestCommand.
+		  ChestAddNewChestCommand.
 		  ChestRemoveChestCommand.
 		  ChestRemoveAllChestsCommand }
 ]
@@ -57,10 +60,9 @@ ChestCommand class >> chestTableMenuCommandClasses [
 { #category : #'accessing - commands classes' }
 ChestCommand class >> chestTableToolbarCommandClasses [
 
-	^ { 
+	^ {
 		  ChestAddNewChestCommand.
-		  ChestRemoveChestCommand.
-		  ChestRemoveAllChestsCommand }
+		  ChestRemoveChestCommand }
 ]
 
 { #category : #'accessing - commands classes' }
