@@ -513,7 +513,7 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 		                      addColumn: (SpStringTableColumn
 				                       title: 'Class'
 				                       evaluated: [ :association |
-					                       association value class printString ])
+					                       association value class name ])
 				                      beExpandable;
 		                      items: #(  ) asOrderedCollection;
 		                      beResizable;

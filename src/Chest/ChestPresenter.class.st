@@ -149,7 +149,7 @@ ChestPresenter class >> showInspector [
 { #category : #accessing }
 ChestPresenter class >> showInspector: anObject [
 
-	^ ShowInspector := anObject
+	ShowInspector := anObject
 ]
 
 { #category : #accessing }
@@ -161,7 +161,7 @@ ChestPresenter class >> showPlayground [
 { #category : #accessing }
 ChestPresenter class >> showPlayground: anObject [
 
-	^ ShowPlayground := anObject
+	ShowPlayground := anObject
 ]
 
 { #category : #visiting }
@@ -295,7 +295,6 @@ ChestPresenter >> hideInspector [
 		                   add: showPlaygroundContainer;
 		                   add: showInspectorContainer expand: false;
 		                   yourself.
-	"showInspectorContainer remove: inspector."
 	showInspectorButton icon: (self application iconNamed: #disable)
 ]
 
