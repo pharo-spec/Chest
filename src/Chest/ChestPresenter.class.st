@@ -332,7 +332,7 @@ ChestPresenter >> initializePresenters [
 	self makeChestsTable.
 	chestContentsTable := chestTableWithContent chestContentTable.
 	self makeChestContentsTable.
-	inspector := StInspector on: (StInspectorModel on: nil).
+	inspector := StInspectorPresenter on: (StInspectorModel on: nil).
 	chestsTable selectIndex: 1.
 
 	self makeChestTreeTableContextMenu.
