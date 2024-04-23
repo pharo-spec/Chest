@@ -1,6 +1,6 @@
-Extension { #name : #SpCodeInteractionModel }
+Extension { #name : 'SpCodeInteractionModel' }
 
-{ #category : #'*Chest-Commands' }
+{ #category : '*Chest-Commands' }
 SpCodeInteractionModel >> canLoadBindings [
 
 	^ false

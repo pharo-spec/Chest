@@ -1,28 +1,29 @@
 Class {
-	#name : #ChestAddNewChestCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestAddNewChestCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewChestCommand class >> defaultDescription [
 
 	^ 'Request the naming of a new chest and create it'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewChestCommand class >> defaultIconName [
 
 	^ #add
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewChestCommand class >> defaultName [
 
 	^ 'Add chest'
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestAddNewChestCommand >> execute [
 
 	^ context requestNameNewChest 

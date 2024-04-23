@@ -1,6 +1,6 @@
-Extension { #name : #StDebuggerContextInteractionModel }
+Extension { #name : 'StDebuggerContextInteractionModel' }
 
-{ #category : #'*Chest-Commands' }
+{ #category : '*Chest-Commands' }
 StDebuggerContextInteractionModel >> canLoadBindings [
 
 	^ true

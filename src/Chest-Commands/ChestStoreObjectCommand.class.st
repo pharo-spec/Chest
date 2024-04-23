@@ -2,30 +2,31 @@
 Command that allows to store the result of the evaluation of the selected expression in a `SpCodePresenter` into a chest.
 "
 Class {
-	#name : #ChestStoreObjectCommand,
-	#superclass : #SpCodeSelectionCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestStoreObjectCommand',
+	#superclass : 'SpCodeSelectionCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #'accessing - defaults' }
+{ #category : 'accessing - defaults' }
 ChestStoreObjectCommand class >> defaultDescription [
 
 	^ 'Store the result of the selected expression in the chest of your choice'
 ]
 
-{ #category : #'accessing - defaults' }
+{ #category : 'accessing - defaults' }
 ChestStoreObjectCommand class >> defaultIconName [
 
 	^ #group
 ]
 
-{ #category : #'accessing - defaults' }
+{ #category : 'accessing - defaults' }
 ChestStoreObjectCommand class >> defaultName [
 
 	^ 'Store object in a chest'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestStoreObjectCommand >> buildChoicePresenter [
 
 	| choicePresenter |
@@ -61,7 +62,7 @@ ChestStoreObjectCommand >> buildChoicePresenter [
 	^ choicePresenter
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestStoreObjectCommand >> execute [
 
 	| choicePresenter |
@@ -69,19 +70,19 @@ ChestStoreObjectCommand >> execute [
 	choicePresenter open
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestStoreObjectCommand >> storeObject: result intoChest: chest [
 
 	chest ifNotNil: [ chest add: result ]
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestStoreObjectCommand >> storeObject: result intoChest: chest withName: objectName [
 
 	chest ifNotNil: [ chest at: objectName put: result ]
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestStoreObjectCommand >> storeResult: result intoChest: chest withName: objectName replacing: replacingBoolean [
 
 	replacingBoolean ifTrue: [ chest removeObjectNamed: objectName ].
@@ -92,7 +93,7 @@ ChestStoreObjectCommand >> storeResult: result intoChest: chest withName: object
 		self storeObject: result intoChest: chest withName: objectName ]
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestStoreObjectCommand >> storeSelectionInChest: aChest withName: objectName withSelector: selectorSentToSelectionBeforeStoring replacing: replacingBoolean [
 
 	self evaluateSelectionAndDo: [ :result |

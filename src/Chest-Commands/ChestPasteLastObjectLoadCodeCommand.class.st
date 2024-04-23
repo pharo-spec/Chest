@@ -1,28 +1,29 @@
 Class {
-	#name : #ChestPasteLastObjectLoadCodeCommand,
-	#superclass : #ChestPasteLoadCodeCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestPasteLastObjectLoadCodeCommand',
+	#superclass : 'ChestPasteLoadCodeCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultDescription [
 
 	^ 'Paste last object from clipboard chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultName [
 
 	^ 'Paste last object copied to clipboard'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultShortcutKey [
 
 	^ $v meta shift
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestPasteLastObjectLoadCodeCommand class >> forSpecContext: aContext [
 
 	^ self
@@ -31,13 +32,13 @@ ChestPasteLastObjectLoadCodeCommand class >> forSpecContext: aContext [
 		  withObjectName: ClipboardChest clipboardEntryName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLastObjectLoadCodeCommand >> description [
 
 	^ self class defaultDescription
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLastObjectLoadCodeCommand >> name [ 
 
 	^ self class defaultName

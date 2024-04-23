@@ -1,28 +1,29 @@
 Class {
-	#name : #ChestCopyObjectCommand,
-	#superclass : #SpCodeSelectionCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestCopyObjectCommand',
+	#superclass : 'SpCodeSelectionCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestCopyObjectCommand class >> defaultDescription [
 
 	^ 'Store the result of the selected expression in a clipboard chest to paste it later'
 ]
 
-{ #category : #defaults }
+{ #category : 'defaults' }
 ChestCopyObjectCommand class >> defaultIconName [
 
 	^ #smallCopy
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestCopyObjectCommand class >> defaultName [
 
 	^ 'Copy object in a clipboard chest'
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestCopyObjectCommand >> execute [
 
 	self evaluateSelectionAndDo: [ :result |
