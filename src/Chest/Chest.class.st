@@ -195,6 +195,16 @@ Chest class >> contents [
 	^ self defaultInstance contents
 ]
 
+{ #category : 'examples' }
+Chest class >> createChestExamples [
+
+	<script>
+	Chest at: 'fortyTwo' put: 42.
+	(Chest newNamed: 'ExampleChest')
+		at: 'tata'
+		put: 'someExampleStringCalledTata'
+]
+
 { #category : 'accessing' }
 Chest class >> default [
 
@@ -245,7 +255,9 @@ Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
 	nextAvailableID := 1.
-	defaultInstance := nil
+	defaultInstance := nil.
+
+	self createChestExamples
 ]
 
 { #category : 'class initialization' }
