@@ -2,15 +2,16 @@
 Announcement made by a `ChestAnnouncer` when a chest has been removed.
 "
 Class {
-	#name : #ChestRemoved,
-	#superclass : #Announcement,
+	#name : 'ChestRemoved',
+	#superclass : 'Announcement',
 	#instVars : [
 		'removedChest'
 	],
-	#category : #Chest
+	#category : 'Chest',
+	#package : 'Chest'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestRemoved class >> new: removedChest [
 
 	^ self new
@@ -18,13 +19,13 @@ ChestRemoved class >> new: removedChest [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRemoved >> removedChest [
 
 	^ removedChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRemoved >> removedChest: anObject [
 
 	removedChest := anObject

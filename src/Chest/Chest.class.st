@@ -101,8 +101,8 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 	name:		<String>
 "
 Class {
-	#name : #Chest,
-	#superclass : #Object,
+	#name : 'Chest',
+	#superclass : 'Object',
 	#instVars : [
 		'contents',
 		'name',
@@ -116,46 +116,47 @@ Class {
 		'defaultInstance',
 		'nextAvailableID'
 	],
-	#category : #Chest
+	#category : 'Chest',
+	#package : 'Chest'
 }
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> add: anObject [
 
 	^ self defaultInstance add: anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> allChests [
 
 	^ ChestDictionary values
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> announcer [
 
 	^ CAnnouncer ifNil: [ CAnnouncer := ChestAnnouncer uniqueInstance ]
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> at: anIndex [
 
 	^ self defaultInstance at: anIndex
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> at: aKey put: anObject [
 
 	^ self defaultInstance at: aKey put: anObject
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> at: aKey put: anObject ifPresent: aBlock [
 
 	^ self defaultInstance at: aKey put: anObject ifPresent: aBlock
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 
 	(ChestDictionary includesKey: aKey) ifTrue: [ 
@@ -164,62 +165,62 @@ Chest class >> at: aKey putChestIfKeyIsAbsent: aChest [
 	ChestDictionary at: aKey put: aChest
 ]
 
-{ #category : #validating }
+{ #category : 'validating' }
 Chest class >> checkValidName: aString [
 
 	[ Slot checkValidName: aString ] on: InvalidSlotName do: [ ChestInvalidNameError signal ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> chestDictionary [
 
 	^ ChestDictionary copy
 ]
 
-{ #category : #icons }
+{ #category : 'icons' }
 Chest class >> chestIcon [
 
 	^ Smalltalk ui icons iconNamed: 'group'
 ]
 
-{ #category : #'accessing - tags' }
+{ #category : 'accessing - tags' }
 Chest class >> comesFromChestVariableTag [
 
 	^ #comesFromChest
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> contents [
 
 	^ self defaultInstance contents
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> default [
 
 	^ self defaultInstance 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest class >> defaultInstance [
 
 	^ defaultInstance ifNil: [ 
 		  defaultInstance := self newNamed: self defaultInstanceName ]
 ]
 
-{ #category : #'default values' }
+{ #category : 'default values' }
 Chest class >> defaultInstanceName [
 
 	^ 'Default'
 ]
 
-{ #category : #'default values' }
+{ #category : 'default values' }
 Chest class >> defaultNameForNewChest [
 
 	^ 'Chest_'
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 Chest class >> getNewID [
 
 	| newId |
@@ -228,7 +229,7 @@ Chest class >> getNewID [
 	^ newId
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> inChest: aChestName at: aKey put: anObject [
 
 	| chest |
@@ -239,7 +240,7 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 	^ chest at: aKey put: anObject
 ]
 
-{ #category : #'class initialization' }
+{ #category : 'class initialization' }
 Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
@@ -247,7 +248,7 @@ Chest class >> initialize [
 	defaultInstance := nil
 ]
 
-{ #category : #'class initialization' }
+{ #category : 'class initialization' }
 Chest class >> named: aString [
 
 	"Returns the Chest whose name is aString"
@@ -255,13 +256,13 @@ Chest class >> named: aString [
 	^ ChestDictionary at: aString
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> new [
 
 	^ self newNamed: self defaultNameForNewChest , self getNewID asString
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> newNamed: aString [
 
 	| chest |
@@ -271,37 +272,37 @@ Chest class >> newNamed: aString [
 	^ chest
 ]
 
-{ #category : #'event system' }
+{ #category : 'event system' }
 Chest class >> notifyChestRemoved: aChest [
 
 	self announcer notifyChestRemoved: aChest
 ]
 
-{ #category : #'event system' }
+{ #category : 'event system' }
 Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
 
 	self announcer notifyContentsOfChest: aChest updatedTo: contents
 ]
 
-{ #category : #'event system' }
+{ #category : 'event system' }
 Chest class >> notifyNewChest: aChest [
 
 	self announcer notifyNewChest: aChest
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> remove: anObject [
 
 	^ self defaultInstance remove: anObject
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 Chest class >> removeChest: aChest [
 
 	^ self removeChestNamed: aChest name
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 Chest class >> removeChestNamed: aKey [
 
 	| removedChest |
@@ -310,31 +311,31 @@ Chest class >> removeChestNamed: aKey [
 	self notifyChestRemoved: removedChest
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest class >> removeObjectNamed: aString [
 
 	^ self defaultInstance removeObjectNamed: aString
 ]
 
-{ #category : #subscription }
+{ #category : 'subscription' }
 Chest class >> unsubscribe: subscriber [
 
 	self announcer unsubscribe: subscriber
 ]
 
-{ #category : #validating }
+{ #category : 'validating' }
 Chest class >> variableNameTag [
 
 	^ #variableName
 ]
 
-{ #category : #'wrapped protocol' }
+{ #category : 'wrapped protocol' }
 Chest class >> weak [
 
 	^ WeakChest
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest >> add: anObject [
 
 	"Adds an object to the chest. Returns the index at which it has been added."
@@ -345,13 +346,13 @@ Chest >> add: anObject [
 	^ self at: nameForTheObject put: anObject
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest >> at: aString [
 
 	^ self contentsPrivate at: aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> at: aString put: anObject [
 
 	self checkValidName: aString.
@@ -367,7 +368,7 @@ Chest >> at: aString put: anObject [
 	^ aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> at: aString put: anObject ifPresent: aBlock [
 
 	[ self at: aString put: anObject ]
@@ -375,86 +376,86 @@ Chest >> at: aString put: anObject ifPresent: aBlock [
 		do: aBlock
 ]
 
-{ #category : #validating }
+{ #category : 'validating' }
 Chest >> checkValidName: aString [ 
 	^ self class checkValidName: aString 
 ]
 
-{ #category : #'private - tree building' }
+{ #category : 'private - tree building' }
 Chest >> chestChildren [
 
 	^ self contentsPrivate associations
 ]
 
-{ #category : #evaluation }
+{ #category : 'evaluation' }
 Chest >> chestEvaluation [
 
 	^ self contentsPrivate asString
 ]
 
-{ #category : #'private - tree building' }
+{ #category : 'private - tree building' }
 Chest >> chestName [
 
 	^ self name
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> contents [
 
 	^ self contentsPrivate copy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> contentsPrivate [
 
 	^ contents
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> contentsUpdated [
 
 	self class notifyContentsOfChest: self updatedTo: self contents
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest >> empty [
 
 	self initializeContents.
 	self contentsUpdated
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 Chest >> initialize [
 
 	lastUsedNumber := 1.
 	self initializeContents
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 Chest >> initializeContents [
 
 	contents := ChestContentDictionary new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> inspectAt: aString [
 
 	^ (self contentsPrivate at: aString) inspect
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 Chest >> isChest [
 
 	^ true
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest >> name [
 
 	^ name
 ]
 
-{ #category : #api }
+{ #category : 'api' }
 Chest >> name: aString [
 
 	| oldName |
@@ -465,13 +466,13 @@ Chest >> name: aString [
 	oldName ifNotNil: [ self class removeChestNamed: oldName ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> nextDefaultNameForObject [
 
 	^ self name , '_' , lastUsedNumber asString
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 Chest >> remove [
 
 	"Remove this chest from the list of all chests"
@@ -479,7 +480,7 @@ Chest >> remove [
 	self class removeChest: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> remove: anObject [
 
 	(contents keyForIdentity: anObject) ifNotNil: [ :key | 
@@ -487,7 +488,7 @@ Chest >> remove: anObject [
 	self contentsUpdated
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> removeObjectNamed: aString [
 
 	[ self contentsPrivate removeKey: aString ]
@@ -496,7 +497,7 @@ Chest >> removeObjectNamed: aString [
 	self contentsUpdated
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Chest >> renameObject: anObject into: aString [
 
 	| oldKey |

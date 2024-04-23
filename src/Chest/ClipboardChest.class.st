@@ -1,28 +1,29 @@
 Class {
-	#name : #ClipboardChest,
-	#superclass : #WeakChest,
-	#category : #Chest
+	#name : 'ClipboardChest',
+	#superclass : 'WeakChest',
+	#category : 'Chest',
+	#package : 'Chest'
 }
 
-{ #category : #icons }
+{ #category : 'icons' }
 ClipboardChest class >> chestIcon [
 
 	^ Smalltalk ui icons iconNamed: 'smallCopy'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ClipboardChest class >> clipboardEntryName [
 
 	^ 'clipboardEntry'
 ]
 
-{ #category : #'default values' }
+{ #category : 'default values' }
 ClipboardChest class >> defaultInstanceName [ 
 
 	^ 'ClipboardDefault'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ClipboardChest >> clipboardEntryName [
 
 	^ self class clipboardEntryName 
