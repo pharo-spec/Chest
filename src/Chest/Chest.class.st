@@ -135,7 +135,7 @@ Chest class >> allChests [
 { #category : 'accessing' }
 Chest class >> announcer [
 
-	^ CAnnouncer ifNil: [ CAnnouncer := ChestAnnouncer uniqueInstance ]
+	^ CAnnouncer
 ]
 
 { #category : 'api' }
@@ -254,6 +254,7 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
+	CAnnouncer := ChestAnnouncer uniqueInstance.
 	nextAvailableID := 1.
 	defaultInstance := nil.
 
