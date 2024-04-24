@@ -135,7 +135,7 @@ Chest class >> allChests [
 { #category : 'accessing' }
 Chest class >> announcer [
 
-	^ CAnnouncer
+	^ CAnnouncer ifNil: [ CAnnouncer := ChestAnnouncer uniqueInstance ]
 ]
 
 { #category : 'api' }
@@ -195,16 +195,6 @@ Chest class >> contents [
 	^ self defaultInstance contents
 ]
 
-{ #category : 'examples' }
-Chest class >> createChestExamples [
-
-	<script>
-	Chest at: 'fortyTwo' put: 42.
-	(Chest newNamed: 'ExampleChest')
-		at: 'tata'
-		put: 'someExampleStringCalledTata'
-]
-
 { #category : 'accessing' }
 Chest class >> default [
 
@@ -254,11 +244,8 @@ Chest class >> inChest: aChestName at: aKey put: anObject [
 Chest class >> initialize [
 
 	ChestDictionary := Dictionary new.
-	CAnnouncer := ChestAnnouncer uniqueInstance.
 	nextAvailableID := 1.
-	defaultInstance := nil.
-
-	self createChestExamples
+	defaultInstance := nil
 ]
 
 { #category : 'class initialization' }
