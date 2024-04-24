@@ -1,34 +1,35 @@
 Class {
-	#name : #ChestLoadSingleBindingInPlaygroundCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestLoadSingleBindingInPlaygroundCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestLoadSingleBindingInPlaygroundCommand class >> defaultDescription [ 
 
 	^ 'Load the selected object into the playground, in a variable of same name as its key in the chest.'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestLoadSingleBindingInPlaygroundCommand class >> defaultName [ 
 
 	^ 'Load item'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestLoadSingleBindingInPlaygroundCommand class >> defaultShortcutKey [
 
 	^ $l meta
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestLoadSingleBindingInPlaygroundCommand >> canBeExecuted [
 
 	^ context selectedItem isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestLoadSingleBindingInPlaygroundCommand >> execute [
 
 	^ context loadSelectedItemBindingInPlayground

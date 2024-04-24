@@ -1,34 +1,35 @@
 Class {
-	#name : #ChestRenameItemCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestRenameItemCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRenameItemCommand class >> defaultDescription [
 
 	^ 'Rename the selected item in chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRenameItemCommand class >> defaultName [
 
 	^ 'Rename item'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRenameItemCommand class >> defaultShortcutKey [
 
 	^ $r meta shift
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestRenameItemCommand >> canBeExecuted [
 
 	^ context selectedItem isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestRenameItemCommand >> execute [
 
 	^ context renameSelectedItem

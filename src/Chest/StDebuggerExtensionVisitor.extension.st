@@ -1,5 +1,5 @@
-Extension { #name : #StDebuggerExtensionVisitor }
+Extension { #name : 'StDebuggerExtensionVisitor' }
 
-{ #category : #'*Chest' }
+{ #category : '*Chest' }
 StDebuggerExtensionVisitor >> visitChest: aChestExtension [
 ]

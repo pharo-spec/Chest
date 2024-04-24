@@ -1,6 +1,6 @@
-Extension { #name : #Variable }
+Extension { #name : 'Variable' }
 
-{ #category : #'*Chest-Commands' }
+{ #category : '*Chest-Commands' }
 Variable >> comesFromChest [
 
 	^ self propertyAt: #comesFromChest ifAbsent: [ false ]

@@ -2,21 +2,23 @@
 I'm a trait allowing associations to hold a variable name for a key-value association in chests, to be able to load objects into contexts with a different variable name than its key in the chest.
 "
 Trait {
-	#name : #TChestAssociation,
+	#name : 'TChestAssociation',
 	#instVars : [
 		'variableName'
 	],
-	#category : #Chest
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
-{ #category : #icons }
+{ #category : 'icons' }
 TChestAssociation classSide >> chestIcon [ 
 
 
 	^ Smalltalk ui icons iconNamed: 'objects'
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TChestAssociation classSide >> key: key value: value variableName: variableName [
 
 	^ self new
@@ -25,31 +27,31 @@ TChestAssociation classSide >> key: key value: value variableName: variableName 
 		  variableName: variableName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TChestAssociation >> chestChildren [
 
 	^ {  } asOrderedCollection
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TChestAssociation >> chestEvaluation [
 
 	^ self value
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TChestAssociation >> chestName [
 
 	^ self key
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TChestAssociation >> variableName [
 
 	^ variableName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TChestAssociation >> variableName: aString [
 
 	Chest checkValidName: aString.

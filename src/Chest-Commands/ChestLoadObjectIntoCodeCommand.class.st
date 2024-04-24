@@ -2,42 +2,43 @@
 Command that allows to load an object or several objects from a chest into a code presenter in a playground or in a debugger.
 "
 Class {
-	#name : #ChestLoadObjectIntoCodeCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestLoadObjectIntoCodeCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #'accessing - defaults' }
+{ #category : 'accessing - defaults' }
 ChestLoadObjectIntoCodeCommand class >> defaultDescription [
 
 	^ 'Load an object from a chest into a code presenter'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestLoadObjectIntoCodeCommand class >> defaultIconName [
 
 	^ #group
 ]
 
-{ #category : #'accessing - defaults' }
+{ #category : 'accessing - defaults' }
 ChestLoadObjectIntoCodeCommand class >> defaultName [
 
 	^ 'Load object from chest'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestLoadObjectIntoCodeCommand class >> isVisibleForContext: aCodePresenter [
 
 	^ aCodePresenter canLoadBindings
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestLoadObjectIntoCodeCommand class >> variableTag [
 
 	^ Chest comesFromChestVariableTag
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestLoadObjectIntoCodeCommand >> buildChoicePresenter [
 
 	| choicePresenter |
@@ -61,13 +62,13 @@ ChestLoadObjectIntoCodeCommand >> buildChoicePresenter [
 	^ choicePresenter
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestLoadObjectIntoCodeCommand >> canBeExecuted [
 
 	^ self isVisibleForContext: context
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestLoadObjectIntoCodeCommand >> execute [
 
 	| choicePresenter |
@@ -75,7 +76,7 @@ ChestLoadObjectIntoCodeCommand >> execute [
 	choicePresenter open
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
 
 	^ aCodePresenter interactionModel isNotNil and: [ 
@@ -83,7 +84,7 @@ ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
 			  identityIncludes: #addBinding: ]
 ]
 
-{ #category : #execution }
+{ #category : 'execution' }
 ChestLoadObjectIntoCodeCommand >> loadAssocIntoContext: assoc [
 
 	(context interactionModel hasBindingOf: assoc key)
@@ -95,7 +96,7 @@ ChestLoadObjectIntoCodeCommand >> loadAssocIntoContext: assoc [
 		self loadIntoContextObject: assoc value named: assoc variableName ]
 ]
 
-{ #category : #'private - commands' }
+{ #category : 'private - commands' }
 ChestLoadObjectIntoCodeCommand >> loadIntoContextObject: anObject named: objectName [
 
 	| interactionModel |
@@ -106,13 +107,13 @@ ChestLoadObjectIntoCodeCommand >> loadIntoContextObject: anObject named: objectN
 			 yourself)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestLoadObjectIntoCodeCommand >> variableTag [ 
 
 	^ self class variableTag
 ]
 
-{ #category : #'private - commands' }
+{ #category : 'private - commands' }
 ChestLoadObjectIntoCodeCommand >> warnUserWhenDeletingBindingWithKey: key withNewValue: newValue [
 
 	| presenter |

@@ -2,15 +2,17 @@
 Announcement made by a `ChestAnnouncer` when a new chest has been created
 "
 Class {
-	#name : #ChestCreated,
-	#superclass : #Announcement,
+	#name : 'ChestCreated',
+	#superclass : 'Announcement',
 	#instVars : [
 		'createdChest'
 	],
-	#category : #Chest
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestCreated class >> new: newChest [
 
 	^ self new
@@ -18,13 +20,13 @@ ChestCreated class >> new: newChest [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCreated >> createdChest [
 
 	^ createdChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCreated >> createdChest: newChest [
 
 	createdChest := newChest

@@ -1,40 +1,41 @@
 Class {
-	#name : #ChestInspectItemCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestInspectItemCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestInspectItemCommand class >> defaultDescription [
 
 	^ 'Inspect the object'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestInspectItemCommand class >> defaultIconName [
 
 	^ #glamorousInspect
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestInspectItemCommand class >> defaultName [
 
 	^ 'Inspect item'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestInspectItemCommand class >> defaultShortcutKey [
 
 	^ $i meta
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestInspectItemCommand >> canBeExecuted [
 
 	^ context selectedItem isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestInspectItemCommand >> execute [ 
 
 	^ context selectedItem value inspect

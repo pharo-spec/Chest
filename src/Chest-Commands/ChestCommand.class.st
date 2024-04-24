@@ -2,18 +2,19 @@
 Abstract class whose subclasses are all commands for `Chest`. It is also an utility class that provides on class side groups of commands that can be used to create Commander command groups.
 "
 Class {
-	#name : #ChestCommand,
-	#superclass : #CmCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestCommand',
+	#superclass : 'CmCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestCodePresenterCommandClasses [
 
 	^ { ChestLoadObjectIntoCodeCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestLoadChestCommandClasses [
 
 	^ { 
@@ -21,13 +22,13 @@ ChestCommand class >> chestLoadChestCommandClasses [
 		  ChestLoadBindingsFromAllChestsInPlaygroundCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestLoadItemCommandClasses [
 
 	^ { ChestLoadSingleBindingInPlaygroundCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTableContentMenuCommandClasses [
 
 	^ {
@@ -38,7 +39,7 @@ ChestCommand class >> chestTableContentMenuCommandClasses [
 		  ChestRemoveAllItemsInChestCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTableContentToolbarCommandClasses [
 
 	^ {
@@ -46,7 +47,7 @@ ChestCommand class >> chestTableContentToolbarCommandClasses [
 		  ChestRemoveItemCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTableMenuCommandClasses [
 
 	^ {
@@ -57,7 +58,7 @@ ChestCommand class >> chestTableMenuCommandClasses [
 		  ChestRemoveAllChestsCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTableToolbarCommandClasses [
 
 	^ {
@@ -65,14 +66,14 @@ ChestCommand class >> chestTableToolbarCommandClasses [
 		  ChestRemoveChestCommand }
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTreeTableMenuCommandClasses [
 
 	^ self chestTableMenuCommandClasses
 	  , self chestTableContentMenuCommandClasses
 ]
 
-{ #category : #'accessing - commands classes' }
+{ #category : 'accessing - commands classes' }
 ChestCommand class >> chestTreeTableToolbarCommandClasses [
 
 	^ { 
@@ -80,19 +81,19 @@ ChestCommand class >> chestTreeTableToolbarCommandClasses [
 		  ChestRemoveAllChestsCommand }
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestCommand class >> defaultIconName [
 
 	^ nil
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestCommand class >> defaultShortcutKey [
 
 	^ nil
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestCommand class >> isVisibleForContext: aSpecContext [
 
 	^ true

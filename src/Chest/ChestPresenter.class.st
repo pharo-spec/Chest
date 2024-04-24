@@ -2,8 +2,8 @@
 Presenter used to visualize chests and their contents. This is also a debugger extension.
 "
 Class {
-	#name : #ChestPresenter,
-	#superclass : #SpPresenter,
+	#name : 'ChestPresenter',
+	#superclass : 'SpPresenter',
 	#traits : 'TStDebuggerExtension',
 	#classTraits : 'TStDebuggerExtension classTrait',
 	#instVars : [
@@ -22,10 +22,12 @@ Class {
 		'ShowInspector',
 		'ShowPlayground'
 	],
-	#category : #Chest
+	#category : 'Chest-Presenters',
+	#package : 'Chest',
+	#tag : 'Presenters'
 }
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestPresenter class >> buildCommandsGroupWith: aChestWithTablePresenter forRoot: aCmCommandGroup [
 
 	self
@@ -37,7 +39,7 @@ ChestPresenter class >> buildCommandsGroupWith: aChestWithTablePresenter forRoot
 		forRoot: aCmCommandGroup
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestPresenter class >> buildLoadChestCommandGroup: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -52,7 +54,7 @@ ChestPresenter class >> buildLoadChestCommandGroup: aChestWithContentPresenter f
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -67,7 +69,7 @@ ChestPresenter class >> buildLoadItemCommandGroup: aChestWithContentPresenter fo
 	aRoot register: group
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 ChestPresenter class >> chestSettingsOn: aBuilder [
 
 	<systemsettings>
@@ -89,7 +91,7 @@ ChestPresenter class >> chestSettingsOn: aBuilder [
 					'Shows an inspector on the right to chests and their contents, on the selected chest item' ]
 ]
 
-{ #category : #'menu-entry' }
+{ #category : 'menu-entry' }
 ChestPresenter class >> debugWorldMenuOn: aBuilder [
 
 	<worldMenu>
@@ -106,19 +108,19 @@ ChestPresenter class >> debugWorldMenuOn: aBuilder [
 				icon: (Smalltalk ui icons iconNamed: #group) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> loadChestGroupName [
 
 	^ 'LoadChest'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> loadItemGroupName [
 
 	^ 'LoadItem'
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 ChestPresenter class >> open [
 
 	<example>
@@ -129,7 +131,7 @@ ChestPresenter class >> open [
 	^ chestPresenter
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestPresenter class >> registerClasses: commandClasses toGroup: aGroup withContext: aChestWithContentPresenter [
 
 	commandClasses do: [ :aClass | 
@@ -140,44 +142,44 @@ ChestPresenter class >> registerClasses: commandClasses toGroup: aGroup withCont
 				 beHiddenWhenCantBeRun) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> showInspector [
 
 	^ ShowInspector ifNil: [ ShowInspector := false ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> showInspector: anObject [
 
 	ShowInspector := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> showPlayground [
 
 	^ ShowPlayground ifNil: [ ShowPlayground := false ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter class >> showPlayground: anObject [
 
 	ShowPlayground := anObject
 ]
 
-{ #category : #visiting }
+{ #category : 'visiting' }
 ChestPresenter >> accept: aVisitor [
 
 	^ aVisitor visitChest: self
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 ChestPresenter >> addBindingsInPlayground: aCollectionOfBindings [
 
 	playground firstPage interactionModel addBindings:
 		aCollectionOfBindings
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBlock [
 
 	| dialogLayout |
@@ -188,45 +190,45 @@ ChestPresenter >> addButtonsToPresenter: aDialogPresenter withConfirmAction: aBl
 			 yourself)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter >> chestContentsTableToolbar [
 
 	^ chestTableWithContent chestContentsTableToolbar
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter >> chestsTableToolbar [
 
 	^ chestTableWithContent chestsTableToolbar
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestPresenter >> collectBindingsFromAllChests [
 
 	^ chestsTable items flatCollect: [ :each | 
 		  self collectBindingsFromChest: each ]
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestPresenter >> collectBindingsFromChest: aChest [
 
 	^ aChest contents associations collect: [ :each | 
 		  self convertBindingIntoProperWorkspaceVariable: each ]
 ]
 
-{ #category : #converting }
+{ #category : 'converting' }
 ChestPresenter >> convertBindingIntoProperWorkspaceVariable: aBinding [
 
 	^ WorkspaceVariable key: aBinding key value: aBinding value
 ]
 
-{ #category : #'debugger extension' }
+{ #category : 'debugger extension' }
 ChestPresenter >> debuggerExtensionToolName [
 
 	^ 'Chest'
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> debuggerLayout [
 
 	^ SpBoxLayout newVertical
@@ -237,7 +239,7 @@ ChestPresenter >> debuggerLayout [
 		  yourself
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> defaultLayout [
 
 	| labelHeight topThirdHeight toolbarHeight helpButtonSize bottomRibbonHeight |
@@ -257,7 +259,7 @@ ChestPresenter >> defaultLayout [
 	^ globalContainer
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> displayInspector [
 
 	showInspectorContainer := SpBoxLayout newHorizontal
@@ -271,14 +273,14 @@ ChestPresenter >> displayInspector [
 	showInspectorButton icon: (self application iconNamed: #enable)
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> displayPlayground [
 
 	showPlaygroundContainer add: playground.
 	showPlaygroundButton icon: (self application iconNamed: #enable)
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
 	^ SpBoxLayout newHorizontal
@@ -287,7 +289,7 @@ ChestPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 		  yourself
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> hideInspector [
 
 	showInspectorContainer := showInspectorButton.
@@ -298,32 +300,32 @@ ChestPresenter >> hideInspector [
 	showInspectorButton icon: (self application iconNamed: #disable)
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> hidePlayground [
 
 	showPlaygroundContainer remove: playground.
 	showPlaygroundButton icon: (self application iconNamed: #disable)
 ]
 
-{ #category : #helper }
+{ #category : 'helper' }
 ChestPresenter >> iconManager [
 
 	^ Smalltalk ui icons
 ]
 
-{ #category : #specs }
+{ #category : 'specs' }
 ChestPresenter >> initialExtent [
 
 	^ 800 @ 600
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestPresenter >> initialize [
 
 	super initialize
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestPresenter >> initializePresenters [
 
 	playground := self makePlayground.
@@ -342,34 +344,34 @@ ChestPresenter >> initializePresenters [
 	self layout: self defaultLayout
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestPresenter >> initializeWindow: aWindowPresenter [
 
 	chestTableWithContent initializeWindow: aWindowPresenter.
 	super initializeWindow: aWindowPresenter
 ]
 
-{ #category : #loading }
+{ #category : 'loading' }
 ChestPresenter >> loadBindingsFromAllChestsInPlayground [
 
 	^ self addBindingsInPlayground: self collectBindingsFromAllChests
 ]
 
-{ #category : #loading }
+{ #category : 'loading' }
 ChestPresenter >> loadBindingsFromSelectedChestInPlayground [
 
 	^ self addBindingsInPlayground:
 		  (self collectBindingsFromChest: self selectedChest)
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 ChestPresenter >> loadSelectedItemBindingInPlayground [
 
 	self addBindingsInPlayground:
 		{ (self convertBindingIntoProperWorkspaceVariable: self selectedItem) }
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makeChestContentTableContextMenu [
 
 	| contextMenu |
@@ -386,7 +388,7 @@ ChestPresenter >> makeChestContentTableContextMenu [
 	chestContentsTable contextMenu: contextMenu
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makeChestContentsTable [
 
 	self makeChestContentTableContextMenu.
@@ -402,7 +404,7 @@ ChestPresenter >> makeChestContentsTable [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makeChestTableContextMenu [
 
 	| contextMenu |
@@ -417,7 +419,7 @@ ChestPresenter >> makeChestTableContextMenu [
 	chestsTable contextMenu: contextMenu
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makeChestTreeTableContextMenu [
 
 	| contextMenu |
@@ -439,7 +441,7 @@ ChestPresenter >> makeChestTreeTableContextMenu [
 		applyKeyBindingsFromMenu: contextMenu value
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makeChestsTable [
 
 	self makeChestTableContextMenu.
@@ -448,7 +450,7 @@ ChestPresenter >> makeChestsTable [
 		  yourself
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestPresenter >> makeExpandableLayouts [
 
 	showPlaygroundButton := self newToggleButton
@@ -492,7 +494,7 @@ ChestPresenter >> makeExpandableLayouts [
 			self layout: globalContainer ]
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestPresenter >> makePlayground [
 
 	| newPlayground |
@@ -510,73 +512,73 @@ Chest weak newNamed: ''WeakChestExample'' "creates a new chest that holds weak r
 	^ newPlayground
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestPresenter >> removeAllChests [
 
 	chestTableWithContent removeAllChests
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestPresenter >> removeAllItemsFromSelectedChest [
 
 	chestTableWithContent removeAllItemsFromSelectedChest
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestPresenter >> removeSelectedChest [
 
 	chestTableWithContent removeSelectedChest
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestPresenter >> removeSelectedItem [
 
 	chestTableWithContent removeSelectedItem
 ]
 
-{ #category : #renaming }
+{ #category : 'renaming' }
 ChestPresenter >> renameSelectedChest [
 
 	^ chestTableWithContent renameSelectedChest
 ]
 
-{ #category : #renaming }
+{ #category : 'renaming' }
 ChestPresenter >> renameSelectedItem [
 
 	^ chestTableWithContent renameSelectedItem
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestPresenter >> requestExpressionToStoreInChest [
 
 	chestTableWithContent requestExpressionToStoreInChest
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestPresenter >> requestNameNewChest [
 
 	chestTableWithContent requestNameNewChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter >> selectedChest [
 
 	^ chestTableWithContent selectedChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPresenter >> selectedItem [
 
 	^ chestTableWithContent selectedItem
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestPresenter >> setModelBeforeInitialization: aStDebugger [
 
 	debugger := aStDebugger
 ]
 
-{ #category : #specs }
+{ #category : 'specs' }
 ChestPresenter >> title [
 
 	^ 'Chests'

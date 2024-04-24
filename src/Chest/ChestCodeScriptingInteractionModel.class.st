@@ -1,13 +1,15 @@
 Class {
-	#name : #ChestCodeScriptingInteractionModel,
-	#superclass : #StPlaygroundInteractionModel,
+	#name : 'ChestCodeScriptingInteractionModel',
+	#superclass : 'StPlaygroundInteractionModel',
 	#instVars : [
 		'debugger'
 	],
-	#category : #Chest
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCodeScriptingInteractionModel class >> debugger: aStDebugger [
 
 	^ self new
@@ -15,7 +17,7 @@ ChestCodeScriptingInteractionModel class >> debugger: aStDebugger [
 		  yourself
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestCodeScriptingInteractionModel >> addBinding: aBinding [
 
 	super addBinding: aBinding.
@@ -23,7 +25,7 @@ ChestCodeScriptingInteractionModel >> addBinding: aBinding [
 	debugger ifNotNil: [ debugger interactionModel addBinding: aBinding ]
 ]
 
-{ #category : #'private - bindings' }
+{ #category : 'private - bindings' }
 ChestCodeScriptingInteractionModel >> addSelfAndThisContextBindings [
 
 	| debuggerInteractionModel |
@@ -38,7 +40,7 @@ ChestCodeScriptingInteractionModel >> addSelfAndThisContextBindings [
 				 value: debuggerInteractionModel doItContext)
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestCodeScriptingInteractionModel >> bindingOf: aString [
 
 	| key |
@@ -58,7 +60,7 @@ ChestCodeScriptingInteractionModel >> bindingOf: aString [
 	^ self localBindings associationAt: key
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestCodeScriptingInteractionModel >> bindings [
 
 	"Combining shared bindings and local bindings needs to be done like this because the 
@@ -83,7 +85,7 @@ ChestCodeScriptingInteractionModel >> bindings [
 	^ joinedBindings
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCodeScriptingInteractionModel >> debugger: aStDebugger [
 
 	debugger := aStDebugger.
@@ -92,7 +94,7 @@ ChestCodeScriptingInteractionModel >> debugger: aStDebugger [
 	debugger code whenInteractionModelChangedDo: [ self addSelfAndThisContextBindings ]
 ]
 
-{ #category : #binding }
+{ #category : 'binding' }
 ChestCodeScriptingInteractionModel >> hasBindingOf: aString [
 
 	^ (self sharedBindings includesKey: aString asSymbol) or: [ 
@@ -101,7 +103,7 @@ ChestCodeScriptingInteractionModel >> hasBindingOf: aString [
 				  debugger interactionModel hasBindingOf: aString ] ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCodeScriptingInteractionModel >> removeBinding: aBinding [
 
 	self bindings removeKey: aBinding key.

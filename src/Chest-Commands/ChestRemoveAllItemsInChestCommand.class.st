@@ -1,40 +1,41 @@
 Class {
-	#name : #ChestRemoveAllItemsInChestCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestRemoveAllItemsInChestCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveAllItemsInChestCommand class >> defaultDescription [
 
 	^ 'Remove all objects from the selected chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveAllItemsInChestCommand class >> defaultIconName [
 
 	^ #glamorousTrash
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveAllItemsInChestCommand class >> defaultName [
 
 	^ 'Remove all items'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveAllItemsInChestCommand class >> defaultShortcutKey [ 
 
 	^  $r meta , $m meta shift
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestRemoveAllItemsInChestCommand >> canBeExecuted [
 
 	^ context selectedChest isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestRemoveAllItemsInChestCommand >> execute [
 
 	^ context removeAllItemsFromSelectedChest 
