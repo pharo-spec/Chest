@@ -32,6 +32,13 @@ ClipboardChest class >> defaultInstanceName [
 	^ 'ClipboardDefault'
 ]
 
+{ #category : 'class initialization' }
+ClipboardChest class >> initialize [
+
+	nextAvailableID := 1.
+	defaultInstance := nil
+]
+
 { #category : 'accessing' }
 ClipboardChest class >> lastClipboardKeys [
 
