@@ -20,12 +20,6 @@ ClipboardChest class >> chestIcon [
 	^ Smalltalk ui icons iconNamed: 'smallCopy'
 ]
 
-{ #category : 'accessing' }
-ClipboardChest class >> clipboardEntryName [
-
-	^ 'clipboardEntry'
-]
-
 { #category : 'default values' }
 ClipboardChest class >> defaultInstanceName [ 
 
@@ -72,12 +66,6 @@ ClipboardChest >> at: aString put: anObject [
 	currentSize = maxSize ifTrue: [ self removeFirstClipboardEntry ].
 	currentSize := currentSize + 1.
 	^ result
-]
-
-{ #category : 'accessing' }
-ClipboardChest >> clipboardEntryName [
-
-	^ self class clipboardEntryName 
 ]
 
 { #category : 'initialization' }
