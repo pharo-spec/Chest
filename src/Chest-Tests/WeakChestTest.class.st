@@ -1,16 +1,17 @@
 Class {
-	#name : #WeakChestTest,
-	#superclass : #ChestTest,
-	#category : #'Chest-Tests'
+	#name : 'WeakChestTest',
+	#superclass : 'ChestTest',
+	#category : 'Chest-Tests',
+	#package : 'Chest-Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 WeakChestTest >> chestClass [
 
 	^ WeakChest
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 WeakChestTest >> testAddObjectToWeakChest [
 
 	| chest object |
@@ -27,7 +28,7 @@ WeakChestTest >> testAddObjectToWeakChest [
 	self assert: (chest at: 'toto') equals: nil
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 WeakChestTest >> testWeakDefaultInstance [
 
 	self assert: (WeakChest defaultInstance isKindOf: WeakChest)
