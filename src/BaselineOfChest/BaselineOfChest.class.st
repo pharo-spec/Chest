@@ -29,7 +29,7 @@ BaselineOfChest >> baseline: spec [
 BaselineOfChest >> createChestExamples [
 
 	| chestClass |
-	chestClass := self class environment at: #Chest.
+	chestClass := self class environment at: #Chest ifAbsent: [ ^ self ].
 	chestClass at: 'fortyTwo' put: 42.
 	(chestClass newNamed: 'ExampleChest')
 		at: 'tata'
