@@ -22,8 +22,9 @@ Class {
 		'ShowInspector',
 		'ShowPlayground'
 	],
-	#category : 'Chest',
-	#package : 'Chest'
+	#category : 'Chest-Presenters',
+	#package : 'Chest',
+	#tag : 'Presenters'
 }
 
 { #category : 'commands' }

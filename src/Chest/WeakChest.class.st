@@ -4,8 +4,9 @@ I am a chest that holds weakly each object I contain.
 Class {
 	#name : 'WeakChest',
 	#superclass : 'Chest',
-	#category : 'Chest',
-	#package : 'Chest'
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
 { #category : 'icons' }

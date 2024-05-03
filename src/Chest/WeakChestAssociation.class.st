@@ -7,6 +7,7 @@ Class {
 	#type : 'weak',
 	#traits : 'TChestAssociation',
 	#classTraits : 'TChestAssociation classTrait',
-	#category : 'Chest',
-	#package : 'Chest'
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }

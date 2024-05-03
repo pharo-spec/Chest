@@ -26,11 +26,5 @@ ChestCopyObjectCommand class >> defaultName [
 { #category : 'executing' }
 ChestCopyObjectCommand >> execute [
 
-	self evaluateSelectionAndDo: [ :result |
-		[ ClipboardChest at: ClipboardChest clipboardEntryName put: result ]
-			on: ChestKeyAlreadyInUseError
-			do: [
-				ClipboardChest removeObjectNamed:
-					ClipboardChest clipboardEntryName.
-				ClipboardChest at: ClipboardChest clipboardEntryName put: result ] ]
+	self evaluateSelectionAndDo: [ :result | ClipboardChest add: result ]
 ]

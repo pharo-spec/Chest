@@ -11,8 +11,9 @@ Class {
 	#classInstVars : [
 		'uniqueInstance'
 	],
-	#category : 'Chest',
-	#package : 'Chest'
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
 { #category : 'class initialization' }

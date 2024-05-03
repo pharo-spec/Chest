@@ -4,8 +4,9 @@ Dictionary used by Chest that contains `(key, value, variable name)` triplets, v
 Class {
 	#name : 'ChestContentDictionary',
 	#superclass : 'Dictionary',
-	#category : 'Chest',
-	#package : 'Chest'
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
 { #category : 'accessing' }
