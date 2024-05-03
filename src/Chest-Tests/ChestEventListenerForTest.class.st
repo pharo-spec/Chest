@@ -1,6 +1,6 @@
 Class {
-	#name : #ChestEventListenerForTest,
-	#superclass : #Object,
+	#name : 'ChestEventListenerForTest',
+	#superclass : 'Object',
 	#instVars : [
 		'chestRemovedReceived',
 		'contentOfChestUpdatedReceived',
@@ -10,26 +10,27 @@ Class {
 		'newContentsOfUpdatedChest',
 		'newChest'
 	],
-	#category : #'Chest-Tests'
+	#category : 'Chest-Tests',
+	#package : 'Chest-Tests'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> chestRemovedReceived [
 	^ chestRemovedReceived
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> contentOfChestUpdatedReceived [
 	^ contentOfChestUpdatedReceived
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestEventListenerForTest >> eventChestRemoved: aChestRemovedAnnouncement [
 	chestRemovedReceived := true.
 	removedChest := aChestRemovedAnnouncement removedChest 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestEventListenerForTest >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
 	contentOfChestUpdatedReceived := true.
 	updatedChest := aChestUpdatedAnnouncement updatedChest .
@@ -37,40 +38,40 @@ ChestEventListenerForTest >> eventContentOfChestUpdated: aChestUpdatedAnnounceme
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestEventListenerForTest >> eventNewChest: aChestCreatedAnnouncement [
 	newChestReceived := true.
 	newChest := aChestCreatedAnnouncement createdChest 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestEventListenerForTest >> initialize [
 	chestRemovedReceived := false.
 	contentOfChestUpdatedReceived := false.
 	newChestReceived := false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> newChest [
 	^ newChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> newChestReceived [
 	^ newChestReceived
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> newContentsOfUpdatedChest [
 	^ newContentsOfUpdatedChest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> removedChest [
 	^ removedChest
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestEventListenerForTest >> subscribeToChestAnnouncer [
 
 	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self.
@@ -80,7 +81,7 @@ ChestEventListenerForTest >> subscribeToChestAnnouncer [
 	
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestEventListenerForTest >> updatedChest [
 	^ updatedChest
 ]

@@ -1,34 +1,35 @@
 Class {
-	#name : #ChestAddNewItemCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestAddNewItemCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewItemCommand class >> defaultDescription [
 
 	^ 'Request an expression whose result will be stored inside the selected chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewItemCommand class >> defaultIconName [
 
 	^ #add
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestAddNewItemCommand class >> defaultName [
 
 	^ 'Add item'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestAddNewItemCommand >> canBeExecuted [
 
 	^ context selectedChest isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestAddNewItemCommand >> execute [
 
 	^ context requestExpressionToStoreInChest

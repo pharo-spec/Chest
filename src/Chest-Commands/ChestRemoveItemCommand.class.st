@@ -1,40 +1,41 @@
 Class {
-	#name : #ChestRemoveItemCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestRemoveItemCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveItemCommand class >> defaultDescription [
 
 	^ 'Remove the selected object from the selected chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveItemCommand class >> defaultIconName [ 
 
 	^ #remotesManagerRemoveRemote
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveItemCommand class >> defaultName [ 
 
 	^ 'Remove item'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveItemCommand class >> defaultShortcutKey [
 
 	^ $r meta , $m meta
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestRemoveItemCommand >> canBeExecuted [
 
 	^ context selectedItem isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestRemoveItemCommand >> execute [
 
 	^ context removeSelectedItem

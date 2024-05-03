@@ -1,34 +1,35 @@
 Class {
-	#name : #ChestRemoveChestCommand,
-	#superclass : #ChestCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestRemoveChestCommand',
+	#superclass : 'ChestCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveChestCommand class >> defaultDescription [
 
 	^ 'Remove selected chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveChestCommand class >> defaultIconName [
 
 	^ #remotesManagerRemoveRemote
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestRemoveChestCommand class >> defaultName [
 
 	^ 'Remove chest'
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ChestRemoveChestCommand >> canBeExecuted [
 
 	^ context selectedChest isNotNil
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestRemoveChestCommand >> execute [
 
 	^ context removeSelectedChest

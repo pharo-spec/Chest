@@ -2,40 +2,41 @@
 Command that allows to paste (inject) code to load an object from a chest into a spec context
 "
 Class {
-	#name : #ChestPasteLoadCodeCommand,
-	#superclass : #ChestCommand,
+	#name : 'ChestPasteLoadCodeCommand',
+	#superclass : 'ChestCommand',
 	#instVars : [
 		'chestName',
 		'objectName'
 	],
-	#category : #'Chest-Commands'
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLoadCodeCommand class >> defaultDescription [
 
 	^ 'Paste object from a chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLoadCodeCommand class >> defaultIconName [
 
 	^ #smallPaste
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLoadCodeCommand class >> defaultName [
 
 	^ 'ChestObjectPaste'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLoadCodeCommand class >> defaultShortcutKey [
 
 	^ $v meta , $l meta
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestPasteLoadCodeCommand class >> forSpecContext: specContext withChestName: chestName withObjectName: objectName [
 
 	^ self new
@@ -46,7 +47,7 @@ ChestPasteLoadCodeCommand class >> forSpecContext: specContext withChestName: ch
 		  asSpecCommand
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestPasteLoadCodeCommand >> buildInjectedCode [
 
 	^ '(Chest named: ''{1}'') at: ''{2}''' format: {
@@ -54,19 +55,19 @@ ChestPasteLoadCodeCommand >> buildInjectedCode [
 			  objectName }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> chestName [
 
 	^ chestName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> chestName: anObject [
 
 	chestName := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> description [
 
 	^ 'Paste object from chest > {1} > {2}' format: {
@@ -74,7 +75,7 @@ ChestPasteLoadCodeCommand >> description [
 			  objectName }
 ]
 
-{ #category : #executing }
+{ #category : 'executing' }
 ChestPasteLoadCodeCommand >> execute [
 
 	| code |
@@ -83,19 +84,19 @@ ChestPasteLoadCodeCommand >> execute [
 	context doTextPaste
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> name [
 
 	^ objectName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> objectName [
 
 	^ objectName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLoadCodeCommand >> objectName: anObject [
 
 	objectName := anObject

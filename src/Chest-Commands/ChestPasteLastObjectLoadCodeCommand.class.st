@@ -1,43 +1,57 @@
 Class {
-	#name : #ChestPasteLastObjectLoadCodeCommand,
-	#superclass : #ChestPasteLoadCodeCommand,
-	#category : #'Chest-Commands'
+	#name : 'ChestPasteLastObjectLoadCodeCommand',
+	#superclass : 'ChestPasteLoadCodeCommand',
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultDescription [
 
 	^ 'Paste last object from clipboard chest'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultName [
 
 	^ 'Paste last object copied to clipboard'
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 ChestPasteLastObjectLoadCodeCommand class >> defaultShortcutKey [
 
 	^ $v meta shift
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestPasteLastObjectLoadCodeCommand class >> forSpecContext: aContext [
 
 	^ self
 		  forSpecContext: aContext
 		  withChestName: ClipboardChest defaultInstance name
-		  withObjectName: ClipboardChest clipboardEntryName
+		  withObjectName: nil
 ]
 
-{ #category : #accessing }
+{ #category : 'executing' }
+ChestPasteLastObjectLoadCodeCommand >> buildInjectedCode [
+
+	objectName := ClipboardChest lastClipboardKeys last.
+	^ super buildInjectedCode
+]
+
+{ #category : 'testing' }
+ChestPasteLastObjectLoadCodeCommand >> canBeExecuted [
+
+	^ ClipboardChest lastClipboardKeys notEmpty
+]
+
+{ #category : 'accessing' }
 ChestPasteLastObjectLoadCodeCommand >> description [
 
 	^ self class defaultDescription
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestPasteLastObjectLoadCodeCommand >> name [ 
 
 	^ self class defaultName

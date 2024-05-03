@@ -1,6 +1,6 @@
-Extension { #name : #StDebuggerExtensionInspectorNodeBuilderVisitor }
+Extension { #name : 'StDebuggerExtensionInspectorNodeBuilderVisitor' }
 
-{ #category : #'*Chest' }
+{ #category : '*Chest' }
 StDebuggerExtensionInspectorNodeBuilderVisitor >> visitChest: aChestExtension [
 
 	| debuggerInteractionModel |

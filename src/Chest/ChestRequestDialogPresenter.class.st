@@ -2,8 +2,8 @@
 Request dialog used by `ChestPresenter` to ask users to name/rename a chest or an object in a chest.
 "
 Class {
-	#name : #ChestRequestDialogPresenter,
-	#superclass : #SpPresenter,
+	#name : 'ChestRequestDialogPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'titleLabel',
 		'image',
@@ -12,10 +12,12 @@ Class {
 		'acceptBlock',
 		'cancelBlock'
 	],
-	#category : #Chest
+	#category : 'Chest-Presenters',
+	#package : 'Chest',
+	#tag : 'Presenters'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestRequestDialogPresenter class >> confirm: requestText onAccept: acceptBlock onCancel: cancelBlock [
 
 	^ self basicNew
@@ -27,7 +29,7 @@ ChestRequestDialogPresenter class >> confirm: requestText onAccept: acceptBlock 
 		  yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ChestRequestDialogPresenter class >> request: requestText onAccept: aBlock [
 
 	^ self basicNew
@@ -36,19 +38,19 @@ ChestRequestDialogPresenter class >> request: requestText onAccept: aBlock [
 		  initialize
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> acceptBlock [
 
 	^ acceptBlock ifNil: [ acceptBlock := [ :textContent |  ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> acceptBlock: anObject [
 
 	acceptBlock := anObject
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestRequestDialogPresenter >> buildActionBar [
 
 	^ self newActionBar
@@ -71,19 +73,19 @@ ChestRequestDialogPresenter >> buildActionBar [
 		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> cancelBlock [
 
 	^ cancelBlock ifNil: [ cancelBlock := [ :aText| ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> cancelBlock: anObject [
 
 	cancelBlock := anObject
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestRequestDialogPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -101,13 +103,13 @@ ChestRequestDialogPresenter >> defaultLayout [
 		  yourself
 ]
 
-{ #category : #configuration }
+{ #category : 'configuration' }
 ChestRequestDialogPresenter >> disableText [
 
 	text beNotEditable
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestRequestDialogPresenter >> initializePresenters [
 
 	actionBar := self buildActionBar.
@@ -116,13 +118,13 @@ ChestRequestDialogPresenter >> initializePresenters [
 	image := self newImage image: (self application iconNamed: #question)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> text [
 
 	^ text
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestRequestDialogPresenter >> titleLabel: aString [
 
 	titleLabel := self newLabel.

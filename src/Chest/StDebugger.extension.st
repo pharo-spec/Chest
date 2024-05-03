@@ -1,12 +1,12 @@
-Extension { #name : #StDebugger }
+Extension { #name : 'StDebugger' }
 
-{ #category : #'*Chest' }
+{ #category : '*Chest' }
 StDebugger >> bindings [
 
 	^ self interactionModel bindings
 ]
 
-{ #category : #'*Chest' }
+{ #category : '*Chest' }
 StDebugger >> interactionModel [
 
 	^ self code interactionModel

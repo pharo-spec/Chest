@@ -2,8 +2,8 @@
 Minimal subpresenter used by `ChestPresenter` and some commands in the `Chest-Commands` package, that displays all chests with their contents, and a text input field to name different entities according to the context.
 "
 Class {
-	#name : #ChestTableWithContentPresenter,
-	#superclass : #SpPresenter,
+	#name : 'ChestTableWithContentPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'chestsTable',
 		'chestContentsTable',
@@ -25,10 +25,12 @@ Class {
 		'buttonShallowCopy',
 		'buttonDeepCopy'
 	],
-	#category : #Chest
+	#category : 'Chest-Presenters',
+	#package : 'Chest',
+	#tag : 'Presenters'
 }
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildChestContentTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -44,7 +46,7 @@ ChestTableWithContentPresenter class >> buildChestContentTableMenuGroupWith: aCh
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildChestContentTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -58,7 +60,7 @@ ChestTableWithContentPresenter class >> buildChestContentTableToolbarGroupWith: 
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildChestTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -73,7 +75,7 @@ ChestTableWithContentPresenter class >> buildChestTableMenuGroupWith: aChestWith
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildChestTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -87,7 +89,7 @@ ChestTableWithContentPresenter class >> buildChestTableToolbarGroupWith: aChestW
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildCommandsGroupWith: aChestWithTablePresenter forRoot: aCmCommandGroup [
 
 	self
@@ -110,7 +112,7 @@ ChestTableWithContentPresenter class >> buildCommandsGroupWith: aChestWithTableP
 		forRoot: aCmCommandGroup
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -126,7 +128,7 @@ ChestTableWithContentPresenter class >> buildTreeTableMenuGroupWith: aChestWithC
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> buildTreeTableToolbarGroupWith: aChestWithContentPresenter forRoot: aRoot [
 
 	| group |
@@ -140,43 +142,43 @@ ChestTableWithContentPresenter class >> buildTreeTableToolbarGroupWith: aChestWi
 	aRoot register: group
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestContentMenuGroupName [
 
 	^ 'ChestContentMenu'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestContentToolbarGroupName [
 
 	^ 'ChestContentToolbar'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestMenuGroupName [
 
 	^ 'ChestMenu'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestToolbarGroupName [
 
 	^ 'ChestToolbar'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestWithContentMenuGroupName [
 
 	^ 'ChestWithContentMenu'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> chestWithContentToolbarGroupName [
 
 	^ 'ChestWithContentToolbar'
 ]
 
-{ #category : #commands }
+{ #category : 'commands' }
 ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup: aGroup withContext: aChestWithContentPresenter [
 
 	commandClasses do: [ :aClass | 
@@ -187,67 +189,67 @@ ChestTableWithContentPresenter class >> registerClasses: commandClasses toGroup:
 				 beHiddenWhenCantBeRun) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> activePresenter [
 
 	^ activePresenter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> buttonDeepCopy [
 
 	^ buttonDeepCopy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> buttonNoCopy [
 
 	^ buttonNoCopy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> buttonShallowCopy [
 
 	^ buttonShallowCopy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> cancelButton [
 
 	^ cancelButton
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> chestContentTable [
 
 	^ chestContentsTable
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestContentTableContainer [
 
 	^ chestContentTableContainer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestContentsTableToolbar [
 
 	^ chestContentsTableToolbar
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> chestContentsTableTransmitBlock [
 
 	^ [ :selection | self updateChestContentToolbar ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestTableContainer [
 
 	^ chestTableContainer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestTableTransmitBlock [
 
 	^ [ :aChest |
@@ -264,31 +266,31 @@ ChestTableWithContentPresenter >> chestTableTransmitBlock [
 	  self updateChestToolbar ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestTableWithContentContainer [
 
 	^ chestTableWithContentContainer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestWithContentTreeTable [
 
 	^ chestWithContentTreeTable
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> chestsTable [
 
 	^ chestsTable
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> chestsTableToolbar [
 
 	^ chestsTableToolbar
 ]
 
-{ #category : #'ui requests' }
+{ #category : 'ui requests' }
 ChestTableWithContentPresenter >> confirm: aWarning [
 
 	^ SpConfirmDialog new
@@ -298,19 +300,19 @@ ChestTableWithContentPresenter >> confirm: aWarning [
 		  cancelLabel: 'No'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> confirmActionBar [
 
 	^ confirmActionBar
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> confirmButton [
 
 	^ confirmButton
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> connectPresenters [
 
 	chestsTable
@@ -320,7 +322,7 @@ ChestTableWithContentPresenter >> connectPresenters [
 	chestContentsTable transmitDo: self chestContentsTableTransmitBlock
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestTableWithContentPresenter >> debuggerLayout [
 
 	activePresenter := self chestWithContentTreeTable.
@@ -331,7 +333,7 @@ ChestTableWithContentPresenter >> debuggerLayout [
 		  yourself
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestTableWithContentPresenter >> defaultLayout [
 
 	chestTableContainer
@@ -355,13 +357,13 @@ ChestTableWithContentPresenter >> defaultLayout [
 	^ chestTableWithContentContainer
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> eventChestRemoved: aChestRemovedAnnouncement [
 
 	self updateChestsTable
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnouncement [
 
 	| currentlySelectedChest updatedChest |
@@ -376,13 +378,13 @@ ChestTableWithContentPresenter >> eventContentOfChestUpdated: aChestUpdatedAnnou
 		self updateChestContentTableForChest: updatedChest ]
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> eventNewChest: aChestCreatedAnnouncement [
 
 	self updateChestsTable
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestTableWithContentPresenter >> headerLayoutWithTitle: aString withToolbar: aToolbar [
 
 	^ SpBoxLayout newHorizontal
@@ -394,20 +396,20 @@ ChestTableWithContentPresenter >> headerLayoutWithTitle: aString withToolbar: aT
 		  yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> iconManager [
 
 	^ Smalltalk ui icons
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> initialize [
 
 	super initialize.
 	self subscribeToChestAnnouncer
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> initializePresenters [
 
 	self makeChestsTable.
@@ -439,20 +441,20 @@ ChestTableWithContentPresenter >> initializePresenters [
 	self layout: self defaultLayout
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ChestTableWithContentPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
 	aWindowPresenter whenClosedDo: [ self unsubscribeFromChestAnnouncer ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> inputField [
 
 	^ inputField
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestTableWithContentPresenter >> loadCommandLayout [
 
 	| inputVariableNameColumn |
@@ -486,7 +488,7 @@ ChestTableWithContentPresenter >> loadCommandLayout [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 
 	chestContentsTable contextMenu: [ 
@@ -497,7 +499,7 @@ ChestTableWithContentPresenter >> makeChestContentTableContextMenu [
 		chestContentsTable contextMenu value
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentsTable [
 
 	chestContentsTable := self newTable
@@ -521,7 +523,7 @@ ChestTableWithContentPresenter >> makeChestContentsTable [
 	self makeChestContentTableContextMenu
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 
 	| toolbar |
@@ -537,7 +539,7 @@ ChestTableWithContentPresenter >> makeChestContentsTableToolbar [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestTableContextMenu [
 
 	chestsTable contextMenu: [ 
@@ -547,7 +549,7 @@ ChestTableWithContentPresenter >> makeChestTableContextMenu [
 	chestsTable applyKeyBindingsFromMenu: chestsTable contextMenu value
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestTreeTableContextMenu [
 
 	chestWithContentTreeTable contextMenu: [ 
@@ -558,7 +560,7 @@ ChestTableWithContentPresenter >> makeChestTreeTableContextMenu [
 		chestWithContentTreeTable contextMenu value
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestTreeTableToolbar [
 
 	| toolbar |
@@ -571,7 +573,7 @@ ChestTableWithContentPresenter >> makeChestTreeTableToolbar [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 
 	| treeTable |
@@ -608,7 +610,7 @@ ChestTableWithContentPresenter >> makeChestWithContentTreeTable [
 	self makeChestTreeTableContextMenu
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTable [
 
 	chestsTable := self newTable
@@ -628,7 +630,7 @@ ChestTableWithContentPresenter >> makeChestsTable [
 	self makeChestTableContextMenu
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeChestsTableToolbar [
 
 	| toolbar |
@@ -644,7 +646,7 @@ ChestTableWithContentPresenter >> makeChestsTableToolbar [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeConfirmActionBar [
 
 	confirmButton := self newButton
@@ -662,7 +664,7 @@ ChestTableWithContentPresenter >> makeConfirmActionBar [
 		  yourself
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeCopyRadioButtons [
 
 	buttonNoCopy := self newRadioButton.
@@ -678,7 +680,7 @@ ChestTableWithContentPresenter >> makeCopyRadioButtons [
 	buttonDeepCopy label: 'Deep copy'
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> makeInputField [
 
 	^ self newTextInput
@@ -690,13 +692,13 @@ ChestTableWithContentPresenter >> makeInputField [
 		  yourself
 ]
 
-{ #category : #'ui - requests' }
+{ #category : 'ui - requests' }
 ChestTableWithContentPresenter >> namingQuery [
 
 	^ 'What name do you want to give to your object?'
 ]
 
-{ #category : #'ui - requests' }
+{ #category : 'ui - requests' }
 ChestTableWithContentPresenter >> popupWithPresenter: requestPresenter onRightTo: anItem [
 
 	(self newPopover
@@ -706,7 +708,7 @@ ChestTableWithContentPresenter >> popupWithPresenter: requestPresenter onRightTo
 		 yourself) popup
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> presenterToNameNewChest [
 
 	^ ChestRequestDialogPresenter
@@ -732,7 +734,7 @@ ChestTableWithContentPresenter >> presenterToNameNewChest [
 					  newChestName , ' is not a valid name for a chest.' ] ]
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> presenterToRenameChest: chest [
 
 	^ ChestRequestDialogPresenter
@@ -759,7 +761,7 @@ ChestTableWithContentPresenter >> presenterToRenameChest: chest [
 						  , ' is not a valid name for a chest.' ] ]
 ]
 
-{ #category : #'presenter building' }
+{ #category : 'presenter building' }
 ChestTableWithContentPresenter >> presenterToRenameObject: object inChest: chest [
 
 	^ ChestRequestDialogPresenter
@@ -779,7 +781,7 @@ ChestTableWithContentPresenter >> presenterToRenameObject: object inChest: chest
 						  name , ' is not a valid name an object.' ] ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestTableWithContentPresenter >> removeAllChests [
 
 	| items |
@@ -791,7 +793,7 @@ ChestTableWithContentPresenter >> removeAllChests [
 	items copy do: [ :chest | chest remove ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestTableWithContentPresenter >> removeAllItemsFromSelectedChest [
 
 	| items |
@@ -804,7 +806,7 @@ ChestTableWithContentPresenter >> removeAllItemsFromSelectedChest [
 	items do: [ :assoc | self selectedChest remove: assoc value ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestTableWithContentPresenter >> removeSelectedChest [
 
 	self flag: 'to do with polymorphism'.
@@ -815,7 +817,7 @@ ChestTableWithContentPresenter >> removeSelectedChest [
 		(1 max: chestsTable selection selectedIndex - 1)
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 ChestTableWithContentPresenter >> removeSelectedItem [
 
 	| assoc |
@@ -832,7 +834,7 @@ ChestTableWithContentPresenter >> removeSelectedItem [
 				chestContentsTable selection selectedIndex - 1 ]
 ]
 
-{ #category : #renaming }
+{ #category : 'renaming' }
 ChestTableWithContentPresenter >> renameSelectedChest [
 
 	self flag: 'to do with polymorphism'.
@@ -844,7 +846,7 @@ ChestTableWithContentPresenter >> renameSelectedChest [
 				 ifFalse: [ chestsTable ])
 ]
 
-{ #category : #renaming }
+{ #category : 'renaming' }
 ChestTableWithContentPresenter >> renameSelectedItem [
 
 	"need to redo renaming and removing + event handlers to take into account tree table (+ add load commands in ChestPresenter for treeTable menu)"
@@ -859,7 +861,7 @@ ChestTableWithContentPresenter >> renameSelectedItem [
 				   ifFalse: [ chestContentsTable ])
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> requestExpressionToStoreInChest [
 
 	| expression selectedChest expressionName |
@@ -877,7 +879,7 @@ ChestTableWithContentPresenter >> requestExpressionToStoreInChest [
 				 expressionName })
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> requestNameNewChest [
 
 	| requestPresenter |
@@ -885,7 +887,7 @@ ChestTableWithContentPresenter >> requestNameNewChest [
 	self popupWithPresenter: requestPresenter onRightTo: activePresenter
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> requestRenameChest: chest fromContextMenuItem: anItem [
 
 	| requestPresenter |
@@ -893,7 +895,7 @@ ChestTableWithContentPresenter >> requestRenameChest: chest fromContextMenuItem:
 	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> requestRenameObjectFromChest: objectNameValueAssociation fromContextMenuItem: anItem [
 
 	| chest requestPresenter object |
@@ -910,7 +912,7 @@ ChestTableWithContentPresenter >> requestRenameObjectFromChest: objectNameValueA
 	self popupWithPresenter: requestPresenter onRightTo: anItem
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> selectedChest [
 
 	self flag: 'to do with polymorphism'.
@@ -923,7 +925,7 @@ ChestTableWithContentPresenter >> selectedChest [
 	^ chestsTable selection selectedItem
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> selectedItem [
 
 	self flag: 'to do with polymorphism'.
@@ -936,7 +938,7 @@ ChestTableWithContentPresenter >> selectedItem [
 	^ chestContentsTable selection selectedItem
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 ChestTableWithContentPresenter >> storeCommandLayout [
 
 	self makeChestContentsTable.
@@ -964,7 +966,7 @@ ChestTableWithContentPresenter >> storeCommandLayout [
 		  yourself
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> storeExpression: expression inChest: aChest [
 
 	| result |
@@ -974,7 +976,7 @@ ChestTableWithContentPresenter >> storeExpression: expression inChest: aChest [
 	^ aChest add: result
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
 
 	self
@@ -983,7 +985,7 @@ ChestTableWithContentPresenter >> subscribeToChestAnnouncer [
 		subscribeToChestRemovedAnnouncement
 ]
 
-{ #category : #subscription }
+{ #category : 'subscription' }
 ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 
 	Chest announcer weak
@@ -992,7 +994,7 @@ ChestTableWithContentPresenter >> subscribeToChestCreatedAnnouncement [
 		to: self
 ]
 
-{ #category : #subscription }
+{ #category : 'subscription' }
 ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 
 	Chest announcer weak
@@ -1001,7 +1003,7 @@ ChestTableWithContentPresenter >> subscribeToChestRemovedAnnouncement [
 		to: self
 ]
 
-{ #category : #subscription }
+{ #category : 'subscription' }
 ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
 
 	Chest announcer weak
@@ -1010,19 +1012,19 @@ ChestTableWithContentPresenter >> subscribeToChestUpdatedAnnouncement [
 		to: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> title [
 
 	^ 'Choose a variable name for your object'
 ]
 
-{ #category : #subscription }
+{ #category : 'subscription' }
 ChestTableWithContentPresenter >> unsubscribeFromChestAnnouncer [
 
 	Chest unsubscribe: self
 ]
 
-{ #category : #update }
+{ #category : 'update' }
 ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 
 	self flag: 'to do with polymorphism'.
@@ -1034,19 +1036,19 @@ ChestTableWithContentPresenter >> updateChestContentTableForChest: aChest [
 		lst items: aChest contents associations asOrderedCollection ]
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> updateChestContentToolbar [
 
 	self updateToolbar: chestContentsTableToolbarCommandGroup
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> updateChestToolbar [
 
 	self updateToolbar: chestTableToolbarCommandGroup
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 ChestTableWithContentPresenter >> updateChestsTable [
 
 	self flag: 'to do with polymorphism'.
@@ -1057,14 +1059,14 @@ ChestTableWithContentPresenter >> updateChestsTable [
 	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestTableWithContentPresenter >> updateToolbar: aCmCommandGroup [
 
 	aCmCommandGroup allCommands do: [ :spCommand |
 		spCommand updateEnableStatus ]
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> warningNamingChest: newChestName [
 
 	^ '`' , newChestName
@@ -1072,7 +1074,7 @@ ChestTableWithContentPresenter >> warningNamingChest: newChestName [
 	  '` is the name of a chest that already exists. If you proceed, all objects in the existing chest will be lost. Are you sure you want to proceed?'
 ]
 
-{ #category : #'ui - dialogs' }
+{ #category : 'ui - dialogs' }
 ChestTableWithContentPresenter >> warningNamingObjectInChest: newObjectName [
 
 	^ '`' , newObjectName

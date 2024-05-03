@@ -1,6 +1,6 @@
-Extension { #name : #Object }
+Extension { #name : 'Object' }
 
-{ #category : #'*Chest' }
+{ #category : '*Chest' }
 Object >> isChest [
 
 	^ false

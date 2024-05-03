@@ -2,16 +2,17 @@
 Class that builds the group of Chest commands for the `SpCodePresenter` context menu.
 "
 Class {
-	#name : #ChestCommandTreeBuilder,
-	#superclass : #Object,
+	#name : 'ChestCommandTreeBuilder',
+	#superclass : 'Object',
 	#instVars : [
 		'rootCommandGroup',
 		'codePresenter'
 	],
-	#category : #'Chest-Commands'
+	#category : 'Chest-Commands',
+	#package : 'Chest-Commands'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder class >> buildCommandsGroupWith: aCodePresenter forRoot: aRootCommandGroup [
 
 	self new
@@ -19,25 +20,25 @@ ChestCommandTreeBuilder class >> buildCommandsGroupWith: aCodePresenter forRoot:
 		forRoot: aRootCommandGroup
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder class >> displayStrategy [
 
 	^ CmUIDisplayAsSubMenu
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder class >> groupDescription [
 
 	^ 'Actions interacting with Chest'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder class >> groupName [
 
 	^ 'Chest'
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> buildAndRegisterGroup [
 
 	"builds the group that will register under the provided root command group"
@@ -50,7 +51,7 @@ ChestCommandTreeBuilder >> buildAndRegisterGroup [
 	^ group
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> buildChestCommandGroup [
 
 	self chestCommandClasses do: [ :commandClass |
@@ -60,7 +61,7 @@ ChestCommandTreeBuilder >> buildChestCommandGroup [
 	self group beDisplayedAsGroup
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> buildCommandsGroupWith: aCodePresenter forRoot: aRootCommandGroup [
 
 	codePresenter := aCodePresenter.
@@ -68,7 +69,7 @@ ChestCommandTreeBuilder >> buildCommandsGroupWith: aCodePresenter forRoot: aRoot
 	self buildChestCommandGroup
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> buildPasteLoadCodeGroup [
 
 	| specGroup allChests subSpecGroup |
@@ -89,13 +90,13 @@ ChestCommandTreeBuilder >> buildPasteLoadCodeGroup [
 	^ specGroup
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> buildSpecCommand: commandClass forContext: aContext [
 
 	^ commandClass forSpecContext: aContext
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 ChestCommandTreeBuilder >> chestCommandClasses [
 
 	^ {
@@ -104,13 +105,13 @@ ChestCommandTreeBuilder >> chestCommandClasses [
 		  each isVisibleForContext: codePresenter ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder >> displayStrategy [
 
 	^ self class displayStrategy new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder >> group [
 
 	^ rootCommandGroup
@@ -118,13 +119,13 @@ ChestCommandTreeBuilder >> group [
 		  ifNone: [ self buildAndRegisterGroup ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder >> groupDescription [
 
 	^ self class groupDescription
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ChestCommandTreeBuilder >> groupName [
 
 	^ self class groupName
