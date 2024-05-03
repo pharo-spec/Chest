@@ -12,8 +12,10 @@ Class {
 		'acceptBlock',
 		'cancelBlock'
 	],
-	#category : 'Chest',
-	#package : 'Chest'
+  
+	#category : 'Chest-Presenters',
+	#package : 'Chest',
+	#tag : 'Presenters'
 }
 
 { #category : 'instance creation' }

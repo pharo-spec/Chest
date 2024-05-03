@@ -29,7 +29,20 @@ ChestPasteLastObjectLoadCodeCommand class >> forSpecContext: aContext [
 	^ self
 		  forSpecContext: aContext
 		  withChestName: ClipboardChest defaultInstance name
-		  withObjectName: ClipboardChest clipboardEntryName
+		  withObjectName: nil
+]
+
+{ #category : 'executing' }
+ChestPasteLastObjectLoadCodeCommand >> buildInjectedCode [
+
+	objectName := ClipboardChest lastClipboardKeys last.
+	^ super buildInjectedCode
+]
+
+{ #category : 'testing' }
+ChestPasteLastObjectLoadCodeCommand >> canBeExecuted [
+
+	^ ClipboardChest lastClipboardKeys notEmpty
 ]
 
 { #category : 'accessing' }

@@ -116,8 +116,10 @@ Class {
 		'defaultInstance',
 		'nextAvailableID'
 	],
-	#category : 'Chest',
-	#package : 'Chest'
+
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
 { #category : 'api' }
@@ -356,12 +358,12 @@ Chest >> at: aString [
 Chest >> at: aString put: anObject [
 
 	self checkValidName: aString.
-	(self contentsPrivate includesKey: aString) ifTrue: [ 
+	(self contentsPrivate includesKey: aString) ifTrue: [
 		ChestKeyAlreadyInUseError signal:
 			'You cannot put an object named ' , aString
 			, ' as it already exist in this chest' ].
-	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key | 
-		self contentsPrivate removeKey: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
+	(self contentsPrivate keyForIdentity: anObject) ifNotNil: [ :key |
+		self removeKeySilently: key ]. "The idea is that an object has a unique key in a chest: its name. So if the object was already in a chest, the former key should be removed."
 	self contentsPrivate at: aString put: anObject.
 	(self contentsPrivate associationAt: aString) variableName: aString.
 	self contentsUpdated.
@@ -483,15 +485,21 @@ Chest >> remove [
 { #category : 'accessing' }
 Chest >> remove: anObject [
 
-	(contents keyForIdentity: anObject) ifNotNil: [ :key | 
-		contents removeKey: key ].
+	(contents keyForIdentity: anObject) ifNotNil: [ :key |
+		self removeKeySilently: key ].
 	self contentsUpdated
+]
+
+{ #category : 'accessing' }
+Chest >> removeKeySilently: key [
+
+	^ self contentsPrivate removeKey: key
 ]
 
 { #category : 'accessing' }
 Chest >> removeObjectNamed: aString [
 
-	[ self contentsPrivate removeKey: aString ]
+	[ self removeKeySilently: aString ]
 		on: KeyNotFound
 		do: [ ObjectNotInChestError signal ].
 	self contentsUpdated

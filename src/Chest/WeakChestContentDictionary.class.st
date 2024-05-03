@@ -4,8 +4,10 @@ I'm a dictionary used by `WeakChest` to keep weak references to objects a weak c
 Class {
 	#name : 'WeakChestContentDictionary',
 	#superclass : 'ChestContentDictionary',
-	#category : 'Chest',
-	#package : 'Chest'
+
+	#category : 'Chest-Model',
+	#package : 'Chest',
+	#tag : 'Model'
 }
 
 { #category : 'accessing' }
