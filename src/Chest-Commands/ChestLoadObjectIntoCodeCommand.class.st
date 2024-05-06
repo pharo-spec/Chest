@@ -87,12 +87,12 @@ ChestLoadObjectIntoCodeCommand >> isVisibleForContext: aCodePresenter [
 { #category : 'execution' }
 ChestLoadObjectIntoCodeCommand >> loadAssocIntoContext: assoc [
 
-	(context interactionModel hasBindingOf: assoc key)
-		ifTrue: [ 
+	(context interactionModel hasBindingOf: assoc variableName)
+		ifTrue: [
 			self
-				warnUserWhenDeletingBindingWithKey: assoc key
+				warnUserWhenDeletingBindingWithKey: assoc variableName
 				withNewValue: assoc value ]
-		ifFalse: [ 
+		ifFalse: [
 		self loadIntoContextObject: assoc value named: assoc variableName ]
 ]
 

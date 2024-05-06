@@ -205,7 +205,7 @@ ChestPresenter >> chestsTableToolbar [
 { #category : 'binding' }
 ChestPresenter >> collectBindingsFromAllChests [
 
-	^ chestsTable items flatCollect: [ :each | 
+	^ Chest allChests collect: [ :each |
 		  self collectBindingsFromChest: each ]
 ]
 
