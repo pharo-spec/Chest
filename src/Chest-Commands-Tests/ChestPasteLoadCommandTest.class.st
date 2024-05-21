@@ -1,10 +1,11 @@
 Class {
-	#name : #ChestPasteLoadCommandTest,
-	#superclass : #ChestCommandTest,
-	#category : #'Chest-Commands-Tests'
+	#name : 'ChestPasteLoadCommandTest',
+	#superclass : 'ChestCommandTest',
+	#category : 'Chest-Commands-Tests',
+	#package : 'Chest-Commands-Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 ChestPasteLoadCommandTest >> testBuildInjectedCode [
 
 	| chest obj command code |

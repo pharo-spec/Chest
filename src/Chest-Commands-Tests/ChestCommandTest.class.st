@@ -1,20 +1,21 @@
 Class {
-	#name : #ChestCommandTest,
-	#superclass : #TestCase,
+	#name : 'ChestCommandTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'initialChests'
 	],
-	#category : #'Chest-Commands-Tests'
+	#category : 'Chest-Commands-Tests',
+	#package : 'Chest-Commands-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 ChestCommandTest >> setUp [
 
 	super setUp.
 	initialChests := Chest allChests copy "Keep a copy of all the chests that currently exist"
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ChestCommandTest >> tearDown [
 
 	| nowChests |
