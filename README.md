@@ -1,12 +1,13 @@
 # Chest
-Chest allows you to store objects from anywhere, to keep them around to check equality...   
+Chest is a Pharo tool providing an API and a Graphical User Interface (GUI) to store and access
+objects from anywhere in the Pharo system.
 
 ![image](https://user-images.githubusercontent.com/97704417/228243015-b21be643-bad9-400d-bd7f-16a0ed883e05.png)
   
 
 ## Original repository
-
-[Link to original repository](https://github.com/dupriezt/Chest)
+It can be found [here](https://github.com/dupriezt/Chest). It has only 45 commits, and since then the code base has significantly diverged.
+The official Chest repository, as a Pharo tool, is now the current one.
 
 ## Install Chest
 ```smalltalk
